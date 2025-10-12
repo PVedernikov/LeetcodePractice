@@ -81,7 +81,6 @@
             return pairsCount;
         }
 
-
         // Minimum Absolute Difference in an Array - HackerRank
         // Given an array of integers, find the minimum absolute difference between any two elements in the array.
         public static int minimumAbsoluteDifference(List<int> arr)
@@ -106,7 +105,6 @@
 
             return minDiff;
         }
-
 
         // Merge two sorted linked lists - HackerRank
         // Given pointers to the heads of two sorted linked lists, merge them into a single, sorted linked list. Either head pointer may be null meaning that the corresponding list is empty.
@@ -158,7 +156,104 @@
             return newHead.next;
         }
 
+        // Maximum Subarray - LeetCode
+        // Given an integer array nums, find the subarray with the largest sum, and return its sum.
+        // Kadane’s Algorithm
+        // Time complexity: O(n)
+        public int MaxSubArray(int[] nums)
+        {
+            var maxSum = nums[0];
+            var currentSum = nums[0];
+            for (var i = 1; i < nums.Length; i++)
+            {
+                currentSum = Math.Max(nums[i], currentSum + nums[i]);
+                maxSum = Math.Max(currentSum, maxSum);
+            }
 
+            return maxSum;
+        }
+
+        // The Maximum Subarray - HackerRank
+        // Given an array, find the maximum possible sum among: 1. all nonempty subarrays. 2.all nonempty subsequences.
+        // We define subsequence as any subset of an array. We define a subarray as a contiguous subsequence in an array.
+        // Kadane’s Algorithm
+        // Time complexity: O(n)
+        public static List<int> maxSubarray(List<int> arr)
+        {
+            var maxSubarraySum = arr[0];
+            var currentSubarraySum = arr[0];
+            var maxSunsequenceSum = arr[0];
+
+            for (int i = 1; i < arr.Count(); i++)
+            {
+                currentSubarraySum = Math.Max(arr[i], currentSubarraySum + arr[i]);
+                maxSubarraySum = Math.Max(currentSubarraySum, maxSubarraySum);
+
+                maxSunsequenceSum = Math.Max(maxSunsequenceSum, maxSunsequenceSum + arr[i]);
+                maxSunsequenceSum = Math.Max(maxSunsequenceSum, arr[i]);
+            }
+
+            return new List<int> { maxSubarraySum, maxSunsequenceSum };
+        }
+
+        // Sherlock and Anagrams - HackerRank
+        #region sherlockAndAnagrams
+        public static int sherlockAndAnagrams(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                return 0;
+            }
+
+            var sunstrings = GetSubstringsFrequency(s);
+
+            var count = 0;
+
+            foreach (var item in sunstrings)
+            {
+                count += countPairs(item.Value);
+            }
+
+            return count;
+        }
+
+        private static int countPairs(int n)
+        {
+            // Pairs count: Ckn (C k from n) = n! / (n - k)! * k! 
+            // C2n = n! / (n - 2)! * 2! = n * (n - 1) / 2
+            return (n * (n - 1)) / 2;
+        }
+
+        private static Dictionary<string, int> GetSubstringsFrequency(string s)
+        {
+            var result = new Dictionary<string, int>();
+            var cArr = s.ToCharArray();
+
+            for (var i = 0; i < s.Length; i++)
+            {
+                for (var j = i + 1; j <= s.Length; j++)
+                {
+                    var subArr = cArr
+                        .Skip(i)
+                        .Take(j - i)
+                        .Order()
+                        .ToArray();
+
+                    var sortedSubstring = new string(subArr);
+                    if (result.ContainsKey(sortedSubstring))
+                    {
+                        result[sortedSubstring] = result[sortedSubstring] + 1;
+                    }
+                    else
+                    {
+                        result[sortedSubstring] = 1;
+                    }
+                }
+            }
+
+            return result;
+        }
+        #endregion
     }
 
     internal class Program
@@ -177,6 +272,8 @@
             int result = Result.CountKDifference(1, [1, 2, 2, 1]);
 
             Console.WriteLine(result);
+
+            var arr = new[] { 1, 2 };
         }
     }
 
