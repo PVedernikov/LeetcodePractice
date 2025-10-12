@@ -227,26 +227,22 @@
         private static Dictionary<string, int> GetSubstringsFrequency(string s)
         {
             var result = new Dictionary<string, int>();
-            var cArr = s.ToCharArray();
 
             for (var i = 0; i < s.Length; i++)
             {
-                for (var j = i + 1; j <= s.Length; j++)
-                {
-                    var subArr = cArr
-                        .Skip(i)
-                        .Take(j - i)
-                        .Order()
-                        .ToArray();
+                var charCount = new int[26];
 
-                    var sortedSubstring = new string(subArr);
-                    if (result.ContainsKey(sortedSubstring))
+                for (var j = i; j < s.Length; j++)
+                {
+                    charCount[s[j] - 'a']++;
+                    var key = string.Join('-', charCount);
+                    if (result.ContainsKey(key))
                     {
-                        result[sortedSubstring] = result[sortedSubstring] + 1;
+                        result[key]++;
                     }
                     else
                     {
-                        result[sortedSubstring] = 1;
+                        result[key] = 1;
                     }
                 }
             }
