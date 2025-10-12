@@ -254,6 +254,36 @@
             return result;
         }
         #endregion
+
+        // Subarray Division - HackerRank
+        public static int birthday(List<int> s, int d, int m)
+        {
+            if (s is null || s.Count() < m)
+            {
+                return 0;
+            }
+
+            var length = s.Count();
+            var sumS = new int[length];
+            var sum = 0;
+            for (var i = 0; i < length; i++)
+            {
+                sum += s[i];
+                sumS[i] = sum;
+            }
+
+            var count = 0;
+            for (var i = 0; i < length - m + 1; i++)
+            {
+                var prevSum = i == 0 ? 0 : sumS[i - 1];
+                if (sumS[i + m - 1] - prevSum == d)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
     }
 
     internal class Program
@@ -270,6 +300,8 @@
 
             //int result = Result.pairs(k, arr);
             int result = Result.CountKDifference(1, [1, 2, 2, 1]);
+            //int result = Result.birthday(new List<int>{ });
+
 
             Console.WriteLine(result);
 
