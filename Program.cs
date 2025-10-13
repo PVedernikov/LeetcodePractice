@@ -470,6 +470,122 @@
 
             return dp[s1.Length, s2.Length];
         }
+
+        // Making Anagrams - HackerRank
+        #region Making Anagrams
+        public static int makingAnagrams(string s1, string s2)
+        {
+            var frequenciesS1 = GetFrequencies(s1);
+            var frequenciesS2 = GetFrequencies(s2);
+
+            var count = 0;
+
+            foreach (var frequencyS1 in frequenciesS1)
+            {
+                if (frequenciesS2.ContainsKey(frequencyS1.Key))
+                {
+                    count += Math.Abs(frequenciesS2[frequencyS1.Key] - frequencyS1.Value);
+                }
+                else
+                {
+                    count += frequencyS1.Value;
+                }
+            }
+
+            foreach (var frequencyS2 in frequenciesS2)
+            {
+                if (!frequenciesS1.ContainsKey(frequencyS2.Key))
+                {
+                    count += frequencyS2.Value;
+                }
+            }
+
+            return count;
+        }
+
+        private static Dictionary<char, int> GetFrequencies(string s)
+        {
+            var frequencies = new Dictionary<char, int>();
+
+            for (var i = 0; i < s.Length; i++)
+            {
+                if (frequencies.ContainsKey(s[i]))
+                {
+                    frequencies[s[i]]++;
+                }
+                else
+                {
+                    frequencies[s[i]] = 1;
+                }
+            }
+
+            return frequencies;
+        }
+        #endregion
+
+
+        // Bear and Steady Gene - HackerRank
+        #region Bear and Steady Gene
+        public static int steadyGene(string gene)
+        {
+            var quarter = gene.Length / 4;
+            var freq = GetFrequenciesSteadyGene(gene);
+
+            if (IsValidSubgene(freq, quarter))
+            {
+                return 0;
+            }
+
+            var l = 0;
+            var result = int.MaxValue;
+            for (var r = 0; r < gene.Length; r++)
+            {
+                freq[gene[r]]--;
+
+                while (l <= r && IsValidSubgene(freq, quarter))
+                {
+                    result = Math.Min(result, r - l + 1);
+                    freq[gene[l]]++;
+                    l++;
+                }
+            }
+
+            return result;
+        }
+
+        private static bool IsValidSubgene(Dictionary<char, int> frequencies, int target)
+        {
+            foreach (var frequency in frequencies)
+            {
+                if (frequency.Value > target)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static Dictionary<char, int> GetFrequenciesSteadyGene(string s)
+        {
+            var result = new Dictionary<char, int>();
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (result.ContainsKey(s[i]))
+                {
+                    result[s[i]]++;
+                }
+                else
+                {
+                    result[s[i]] = 1;
+                }
+            }
+            return result;
+        }
+        #endregion
+
+
+
     }
 
     internal class Program
