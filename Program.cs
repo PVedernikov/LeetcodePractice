@@ -341,6 +341,135 @@
 
             return "NO";
         }
+
+
+        // Two Characters - HackerRank
+        // https://www.hackerrank.com/challenges/two-characters/problem
+        #region Two Characters
+        public static int alternate(string s)
+        {
+            var maxLength = 0;
+
+            for (var i = 0; i < 26; i++)
+            {
+                for (var j = i + 1; j < 26; j++)
+                {
+                    var length = GetLength(s, (char)(i + 'a'), (char)(j + 'a'));
+                    if (length > maxLength)
+                    {
+                        maxLength = length;
+                    }
+                }
+            }
+
+            return maxLength;
+        }
+
+        private static int GetLength(string s, char a, char b)
+        {
+            var expectedChar = '0';
+            var length = 0;
+            for (var i = 0; i < s.Length; i++)
+            {
+                if (s[i] == a || s[i] == b)
+                {
+                    if (expectedChar != a && expectedChar != b)
+                    {
+                        expectedChar = s[i] == a ? b : a;
+                        length = 1;
+                    }
+                    else
+                    {
+                        if (s[i] != expectedChar)
+                        {
+                            return 0;
+                        }
+
+                        expectedChar = s[i] == a ? b : a;
+
+                        length++;
+                    }
+                }
+            }
+
+            return length > 1 ? length : 0;
+        }
+        #endregion
+
+
+        // Special String Again - HackerRank
+        public static long substrCount(int n, string s)
+        {
+            if (string.IsNullOrEmpty(s) || n <= 0)
+            {
+                return 0;
+            }
+
+            long count = s.Length;
+            var k = 0;
+            while (k < s.Length)
+            {
+                long subCount = 0;
+                var j = 1;
+                while (k + j < s.Length && s[k] == s[k + j])
+                {
+                    subCount++;
+                    j++;
+                }
+
+                // Substrings in a string with length = n formula:
+                // n * (n + 1) / 2
+                count += subCount * (subCount + 1) / 2;
+
+                k += j;
+            }
+
+            for (var i = 1; i < s.Length - 1; i++)
+            {
+                long subCount = 0;
+                var j = 1;
+                while (i - j >= 0
+                    && i + j < s.Length
+                    && s[i - 1] == s[i + j]
+                    && s[i - 1] == s[i - j]
+                    && s[i - 1] != s[i])
+                {
+                    subCount++;
+                    j++;
+                }
+
+                count += subCount;
+            }
+
+            return count;
+        }
+
+
+        // Common Child - HackerRank
+        // Given two strings of equal length, what's the longest string that can be constructed such that it is a child of both?
+        // Dynamic Programming, subsequence problem
+        // O(n^2) time complexity, O(n^2) space complexity
+        public static int commonChild(string s1, string s2)
+        {
+            var dp = new int[s1.Length + 1, s2.Length + 1];
+
+            for (var i = 1; i <= s1.Length; i++)
+            {
+                for (var j = 1; j <= s2.Length; j++)
+                {
+                    if (s1[i - 1] == s2[j - 1])
+                    {
+                        dp[i, j] = dp[i - 1, j - 1] + 1;
+                    }
+                    else
+                    {
+                        dp[i, j] = Math.Max(dp[i, j - 1], dp[i - 1, j]);
+                    }
+                }
+            }
+
+            return dp[s1.Length, s2.Length];
+        }
     }
 
     internal class Program
@@ -358,7 +487,6 @@
             //int result = Result.pairs(k, arr);
             int result = Result.CountKDifference(1, [1, 2, 2, 1]);
             //int result = Result.birthday(new List<int>{ });
-
 
             Console.WriteLine(result);
 
