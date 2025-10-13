@@ -280,6 +280,67 @@
 
             return count;
         }
+
+        // Sherlock and the Valid String - HackerRank
+        // O(n) time complexity, O(1) space complexity
+        public static string isValid(string s)
+        {
+            var charFrequenciesMap = new Dictionary<char, int>();
+            for (var i = 0; i < s.Length; i++)
+            {
+                if (charFrequenciesMap.ContainsKey(s[i]))
+                {
+                    charFrequenciesMap[s[i]]++;
+                }
+                else
+                {
+                    charFrequenciesMap[s[i]] = 1;
+                }
+            }
+
+            var freq = new Dictionary<int, int>();
+
+            foreach (var item in charFrequenciesMap)
+            {
+                if (freq.ContainsKey(item.Value))
+                {
+                    freq[item.Value]++;
+                }
+                else
+                {
+                    freq[item.Value] = 1;
+                }
+            }
+
+            if (freq.Keys.Count() == 1)
+            {
+                return "YES";
+            }
+
+            if (freq.Keys.Count() == 2)
+            {
+                var minKey = freq.Keys.First();
+                var maxKey = freq.Keys.Last();
+                if (minKey > maxKey)
+                {
+                    var tmp = minKey;
+                    minKey = maxKey;
+                    maxKey = tmp;
+                }
+
+                if (freq[maxKey] == 1 && maxKey - minKey == 1)
+                {
+                    return "YES";
+                }
+
+                if (freq[minKey] == 1 && minKey == 1)
+                {
+                    return "YES";
+                }
+            }
+
+            return "NO";
+        }
     }
 
     internal class Program
