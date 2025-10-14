@@ -585,6 +585,128 @@
         #endregion
 
 
+        // Count Triplets - HackerRank
+        public static long countTriplets(List<long> arr, long r)
+        {
+            var elementCount = new Dictionary<long, long>();
+            var expectingCount = new Dictionary<long, long>();
+            long arrLength = arr.Count();
+            long result = 0;
+            for (var i = 0; i < arrLength; i++)
+            {
+                if (expectingCount.ContainsKey(arr[i]))
+                {
+                    result += expectingCount[arr[i]];
+                }
+
+                var leftElement = arr[i] / r;
+                if (arr[i] % r == 0 && elementCount.ContainsKey(leftElement))
+                {
+                    if (expectingCount.ContainsKey(arr[i] * r))
+                    {
+                        expectingCount[arr[i] * r] += elementCount[leftElement];
+                    }
+                    else
+                    {
+                        expectingCount[arr[i] * r] = elementCount[leftElement];
+                    }
+                }
+
+                if (elementCount.ContainsKey(arr[i]))
+                {
+                    elementCount[arr[i]]++;
+                }
+                else
+                {
+                    elementCount[arr[i]] = 1;
+                }
+            }
+            return result;
+        }
+
+        // Frequency Queries - HackerRank
+        public static List<int> freqQuery(List<List<int>> queries)
+        {
+            var result = new List<int>();
+
+            var frequencies = new Dictionary<int, int>();
+            var elements = new Dictionary<int, int>();
+            //var elements = new List<int>();
+
+            foreach (var query in queries)
+            {
+                if (query[0] == 1)
+                {
+                    if (elements.ContainsKey(query[1]))
+                    {
+                        if (frequencies.ContainsKey(elements[query[1]]) && frequencies[elements[query[1]]] > 0)
+                        {
+                            frequencies[elements[query[1]]]--;
+                        }
+
+                        elements[query[1]]++;
+
+                        if (frequencies.ContainsKey(elements[query[1]]))
+                        {
+                            frequencies[elements[query[1]]]++;
+                        }
+                        else
+                        {
+                            frequencies[elements[query[1]]] = 1;
+                        }
+                    }
+                    else
+                    {
+                        elements[query[1]] = 1;
+
+                        if (frequencies.ContainsKey(1))
+                        {
+                            frequencies[1]++;
+                        }
+                        else
+                        {
+                            frequencies[1] = 1;
+                        }
+                    }
+                }
+
+                if (query[0] == 2)
+                {
+                    if (elements.ContainsKey(query[1]) && elements[query[1]] > 0)
+                    {
+                        if (frequencies.ContainsKey(elements[query[1]]) && frequencies[elements[query[1]]] > 0)
+                        {
+                            frequencies[elements[query[1]]]--;
+                        }
+
+                        elements[query[1]]--;
+
+                        if (frequencies.ContainsKey(elements[query[1]]))
+                        {
+                            frequencies[elements[query[1]]]++;
+                        }
+                        else
+                        {
+                            frequencies[elements[query[1]]] = 1;
+                        }
+                    }
+                }
+
+                if (query[0] == 3)
+                {
+                    if (frequencies.ContainsKey(query[1]) && frequencies[query[1]] > 0)
+                    {
+                        result.Add(1);
+                    }
+                    else
+                    {
+                        result.Add(0);
+                    }
+                }
+            }
+
+            return result;
+        }
 
     }
 
