@@ -847,6 +847,27 @@
         }
         #endregion
 
+        // Max Min - HackerRank
+        // Sliding window problem
+        public static int maxMin(int k, List<int> arr)
+        {
+            arr.Sort();
+
+            var min = arr[0];
+            var max = arr[k - 1];
+
+            for (var i = 1; i <= arr.Count - k; i++)
+            {
+                if (max - min > arr[i + k - 1] - arr[i])
+                {
+                    min = arr[i];
+                    max = arr[i + k - 1];
+                }
+            }
+
+            return max - min;
+        }
+
 
     }
 
@@ -863,12 +884,14 @@
             //List<int> arr = Console.ReadLine().TrimEnd().Split(' ').ToList().Select(arrTemp => Convert.ToInt32(arrTemp)).ToList();
 
             //int result = Result.pairs(k, arr);
-            int result = Result.CountKDifference(1, [1, 2, 2, 1]);
+            //int result = Result.CountKDifference(1, [1, 2, 2, 1]);
             //int result = Result.birthday(new List<int>{ });
 
-            Console.WriteLine(result);
+            var arr = new List<int> { 100, 200, 300, 350, 400, 401, 402 };
 
-            var arr = new[] { 1, 2 };
+            int result = Result.maxMin(3, arr);
+
+            Console.WriteLine(result);
         }
     }
 
