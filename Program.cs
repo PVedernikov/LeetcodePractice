@@ -787,6 +787,65 @@
         }
         #endregion
 
+        // Binary Search Tree : Lowest Common Ancestor - HackerRank
+        #region Binary Search Tree : Lowest Common Ancestor
+        public static TreeNodeLCA LCA_Recursive(TreeNodeLCA root, int a, int b)
+        {
+            if (root is null)
+            {
+                return null;
+            }
+
+            if (a > b)
+            {
+                var tmp = a;
+                a = b;
+                b = tmp;
+            }
+
+            if (a <= root.Value && root.Value <= b)
+            {
+                return root;
+            }
+
+            if (a < root.Value && b < root.Value)
+            {
+                return LCA_Recursive(root.Left, a, b);
+            }
+
+            return LCA_Recursive(root.Right, a, b);
+        }
+
+        public static TreeNodeLCA LCA(TreeNodeLCA root, int a, int b)
+        {
+            if (a > b)
+            {
+                var tmp = a;
+                a = b;
+                b = tmp;
+            }
+
+            var ancestor = root;
+            while (ancestor != null)
+            {
+                if (a <= ancestor.Value && ancestor.Value <= b)
+                {
+                    return ancestor;
+                }
+
+                if (b < root.Value)
+                {
+                    ancestor = ancestor.Left;
+                }
+                else
+                {
+                    ancestor = ancestor.Right;
+                }
+            }
+
+            return ancestor;
+        }
+        #endregion
 
 
     }
@@ -821,6 +880,45 @@
         }
 
         public int data { get; init; }
+        
         public SinglyLinkedListNode next { get; set; }
+    }
+
+    public class TreeNodeLCA
+    {
+        public int Value { get; set; }
+        public TreeNodeLCA Left { get; set; }
+        public TreeNodeLCA Right { get; set; }
+
+        public TreeNodeLCA(int value)
+        {
+            Value = value;
+        }
+
+        public void Insert(int value)
+        {
+            if (value < Value)
+            {
+                if (Left is null)
+                {
+                    Left = new TreeNodeLCA(value);
+                }
+                else
+                {
+                    Left.Insert(value);
+                }
+            }
+            else
+            {
+                if (Right is null)
+                {
+                    Right = new TreeNodeLCA(value);
+                }
+                else
+                {
+                    Right.Insert(value);
+                }
+            }
+        }
     }
 }
