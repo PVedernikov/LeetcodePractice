@@ -739,6 +739,56 @@
         }
 
 
+        // Missing Numbers - HackerRank
+        #region Missing Numbers
+        public static List<int> missingNumbers(List<int> arr, List<int> brr)
+        {
+            var freqA = GetFrequenciesMissingNumbers(arr);
+            var freqB = GetFrequenciesMissingNumbers(brr);
+
+            var missing = new List<int>();
+
+            foreach (var itemB in freqB)
+            {
+                if (freqA.ContainsKey(itemB.Key))
+                {
+                    if (freqA[itemB.Key] < itemB.Value)
+                    {
+                        missing.Add(itemB.Key);
+                    }
+                }
+                else
+                {
+                    missing.Add(itemB.Key);
+                }
+            }
+            missing.Sort();
+
+            return missing;
+        }
+
+        private static Dictionary<int, int> GetFrequenciesMissingNumbers(List<int> arr)
+        {
+            var result = new Dictionary<int, int>();
+
+            for (int i = 0; i < arr.Count; i++)
+            {
+                if (result.ContainsKey(arr[i]))
+                {
+                    result[arr[i]]++;
+                }
+                else
+                {
+                    result[arr[i]] = 1;
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+
+
     }
 
     internal class Program
