@@ -708,6 +708,37 @@
             return result;
         }
 
+        // Closest Numbers - HackerRank
+        public static List<int> closestNumbers(List<int> arr)
+        {
+            arr.Sort();
+
+            var length = arr.Count;
+            var absoluteMin = int.MaxValue;
+            var result = new List<int>();
+
+            for (var i = 0; i < arr.Count - 1; i++)
+            {
+                var currentMin = arr[i + 1] - arr[i];
+                if (currentMin == absoluteMin)
+                {
+                    result.Add(arr[i]);
+                    result.Add(arr[i + 1]);
+                }
+
+                if (currentMin < absoluteMin)
+                {
+                    absoluteMin = currentMin;
+                    result.Clear();
+                    result.Add(arr[i]);
+                    result.Add(arr[i + 1]);
+                }
+            }
+
+            return result;
+        }
+
+
     }
 
     internal class Program
