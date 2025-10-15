@@ -847,7 +847,7 @@
         }
         #endregion
 
-        // Max Min - HackerRank
+        // Max Min (Angry Children) - HackerRank
         // Sliding window problem
         public static int maxMin(int k, List<int> arr)
         {
@@ -868,7 +868,67 @@
             return max - min;
         }
 
+        // Lily's Homework - HackerRank
+        // Index Mapping
+        public static int lilysHomework(List<int> arr)
+        {
+            var indexMap1 = new Dictionary<int, int>();
+            var indexMap2 = new Dictionary<int, int>();
+            var copyArr1 = new List<int>();
+            var copyArr2 = new List<int>();
 
+            for (int i = 0; i < arr.Count; i++)
+            {
+                indexMap1[arr[i]] = i;
+                indexMap2[arr[i]] = i;
+                copyArr1.Add(arr[i]);
+                copyArr2.Add(arr[i]);
+            }
+
+            var ascArr = copyArr1.OrderBy(i => i).ToArray();
+            var resultAsc = 0;
+            for (int i = 0; i < copyArr1.Count; i++)
+            {
+                if (copyArr1[i] == ascArr[i])
+                {
+                    continue;
+                }
+
+                var correctI = indexMap1[ascArr[i]];
+                var tmp = copyArr1[i];
+                copyArr1[i] = copyArr1[correctI];
+                copyArr1[correctI] = tmp;
+
+                indexMap1[copyArr1[correctI]] = correctI;
+                indexMap1[copyArr1[i]] = i;
+
+                resultAsc++;
+            }
+
+            var descArr = copyArr2.OrderByDescending(i => i).ToArray();
+            var resultDesc = 0;
+            for (int i = 0; i < copyArr2.Count; i++)
+            {
+                if (copyArr2[i] == descArr[i])
+                {
+                    continue;
+                }
+
+                var correctI = indexMap2[descArr[i]];
+                var tmp = copyArr2[i];
+                copyArr2[i] = copyArr2[correctI];
+                copyArr2[correctI] = tmp;
+
+                indexMap2[copyArr2[correctI]] = correctI;
+                indexMap2[copyArr2[i]] = i;
+
+                resultDesc++;
+            }
+
+            return Math.Min(resultAsc, resultDesc);
+        }
+    
+    
     }
 
     internal class Program
