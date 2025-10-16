@@ -108,7 +108,7 @@
 
         // Merge two sorted linked lists - HackerRank
         // Given pointers to the heads of two sorted linked lists, merge them into a single, sorted linked list. Either head pointer may be null meaning that the corresponding list is empty.
-        static SinglyLinkedListNode mergeLists(SinglyLinkedListNode head1, SinglyLinkedListNode head2)
+        public static SinglyLinkedListNode mergeLists(SinglyLinkedListNode head1, SinglyLinkedListNode head2)
         {
             if (head1 is null)
             {
@@ -927,8 +927,44 @@
 
             return Math.Min(resultAsc, resultDesc);
         }
-    
-    
+
+        // Balanced Brackets - HackerRank
+        public static string isBalanced(string s)
+        {
+            var openingBrackets = new Stack<char>();
+
+            for (var i = 0; i < s.Length; i++)
+            {
+                if (s[i] == '(' || s[i] == '{' || s[i] == '[')
+                {
+                    openingBrackets.Push(s[i]);
+                }
+
+                if (s[i] == ')' || s[i] == '}' || s[i] == ']')
+                {
+                    if (openingBrackets.Count <= 0)
+                    {
+                        return "NO";
+                    }
+
+                    var openingBracket = openingBrackets.Pop();
+
+                    if ((s[i] == ')' && openingBracket != '(')
+                        || (s[i] == '}' && openingBracket != '{')
+                        || (s[i] == ']' && openingBracket != '['))
+                    {
+                        return "NO";
+                    }
+                }
+            }
+
+            if (openingBrackets.Count > 0)
+            {
+                return "NO";
+            }
+
+            return "YES";
+        }
     }
 
     internal class Program
