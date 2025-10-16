@@ -965,6 +965,23 @@
 
             return "YES";
         }
+
+        // Reverse a linked list - HackerRank
+        public static SinglyLinkedListNode reverse(SinglyLinkedListNode llist)
+        {
+            var tmpHead = new SinglyLinkedListNode(0);
+
+            while (llist is not null)
+            {
+                // insert element behind the head
+                var tmp = tmpHead.next;
+                tmpHead.next = llist;
+                llist = llist.next;
+                tmpHead.next.next = tmp;
+            }
+
+            return tmpHead.next;
+        }
     }
 
     internal class Program
