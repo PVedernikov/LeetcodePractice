@@ -197,6 +197,7 @@ class Result
     }
 
     // Sherlock and Anagrams - HackerRank
+    // https://www.hackerrank.com/challenges/sherlock-and-anagrams/problem
     #region sherlockAndAnagrams
     public static int sherlockAndAnagrams(string s)
     {
@@ -586,6 +587,9 @@ class Result
 
 
     // Count Triplets - HackerRank
+    // You are given an array and you need to find number of tripets of indices
+    // such that the elements at those indices are in geometric progression for a given common ratio
+    // https://www.hackerrank.com/challenges/count-triplets-1/problem
     public static long countTriplets(List<long> arr, long r)
     {
         var elementCount = new Dictionary<long, long>();
