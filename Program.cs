@@ -1173,6 +1173,204 @@ class Result
         return dp[a.Length, b.Length] ? "YES" : "NO";
     }
 
+    // Journey to the Moon - HackerRank
+    // Determine how many pairs of astronauts from different countries they can choose from.
+    // DFS, Graph, список смежности 
+    // Рекурсия через стек
+    #region Journey to the Moon
+    public static long journeyToMoon(int n, List<List<int>> astronaut)
+    {
+        var connections = new List<int>[n];
+        var visited = new bool[n];
+
+        foreach (var pair in astronaut)
+        {
+            if (connections[pair[0]] is null)
+            {
+                connections[pair[0]] = new List<int>();
+            }
+            if (connections[pair[1]] is null)
+            {
+                connections[pair[1]] = new List<int>();
+            }
+
+            connections[pair[0]].Add(pair[1]);
+            connections[pair[1]].Add(pair[0]);
+        }
+
+        long result = 0;
+        long sum = 0;
+        for (var i = 0; i < n; i++)
+        {
+            if (visited[i])
+            {
+                continue;
+            }
+
+            long groupSize = CountNeigbours(i, visited, connections);
+            result += groupSize * sum;
+            sum += groupSize;
+        }
+
+        return result;
+    }
+
+    private static long CountNeigbours(int id, bool[] visited, List<int>[] connections)
+    {
+        if (visited[id])
+            return 0;
+
+        visited[id] = true;
+
+        long result = 1;
+        if (connections[id] is null || connections[id].Count() == 0)
+        {
+            return result;
+        }
+
+        foreach (var nid in connections[id])
+        {
+            result += CountNeigbours(nid, visited, connections);
+        }
+
+        return result;
+    }
+
+    private static long CountNeighboursIterative(int start, bool[] visited, List<int>[] connections)
+    {
+        long count = 0;
+        var stack = new Stack<int>();
+        stack.Push(start);
+
+        while (stack.Count > 0)
+        {
+            var node = stack.Pop();
+
+            if (visited[node])
+                continue;
+
+            visited[node] = true;
+            count++;
+
+            if (connections[node] != null)
+            {
+                foreach (var neighbor in connections[node])
+                {
+                    if (!visited[neighbor])
+                    {
+                        stack.Push(neighbor);
+                    }
+                }
+            }
+        }
+
+        return count;
+    }
+    #endregion
+
+
+    // Roads and Libraries - HackerRank
+    // Идея: если библиотека дешевле дороги, просто строим библиотеки в каждом городе
+    // Иначе считаем связные компоненты графа и для каждой строим 1 библиотеку и дороги ко всем остальным городам в компоненте
+    // DFS, Graph, список смежности
+    // Рекурсивный и итеративный варианты обхода графа 
+    #region Roads and Libraries
+    public static long roadsAndLibraries(int n, int c_lib, int c_road, List<List<int>> cities)
+    {
+        if (c_lib < c_road)
+        {
+            return (long)c_lib * (long)n;
+        }
+
+        var linkedCities = new List<int>[n];
+        var visited = new bool[n];
+
+        // init list
+        for (var i = 0; i < n; i++)
+        {
+            linkedCities[i] = new List<int>();
+        }
+
+        foreach (var pair in cities)
+        {
+            // Important! cities are 1-based indexed
+            // so actual index is pair[i] - 1
+            linkedCities[pair[0] - 1].Add(pair[1] - 1);
+            linkedCities[pair[1] - 1].Add(pair[0] - 1);
+        }
+
+        // counting groups and their sizes
+        var groupSizes = new List<long>();
+        for (var i = 0; i < n; i++)
+        {
+            var size = CountLinksIterative(i, visited, linkedCities);
+            if (size > 0)
+            {
+                groupSizes.Add(size);
+            }
+        }
+
+        // If library is more expensive, build 1 library and connect other cities with roads
+        long result = 0;
+        foreach (var size in groupSizes)
+        {
+            result += c_lib + c_road * (size - 1);
+        }
+
+        return result;
+    }
+
+    private static long CountLinksRecursive(int id, bool[] visited, List<int>[] linkedCities)
+    {
+        if (visited[id])
+        {
+            return 0;
+        }
+
+        long result = 1;
+        visited[id] = true;
+
+        if (linkedCities[id] is not null && linkedCities[id].Count > 0)
+        {
+            foreach (var linkedCityId in linkedCities[id])
+            {
+                result += CountLinksRecursive(linkedCityId, visited, linkedCities);
+            }
+        }
+
+        return result;
+    }
+
+    private static long CountLinksIterative(int id, bool[] visited, List<int>[] linkedCities)
+    {
+        var cities = new Stack<int>();
+        cities.Push(id);
+
+        long result = 0;
+        while (cities.Count > 0)
+        {
+            var cityId = cities.Pop();
+            if (visited[cityId])
+            {
+                continue;
+            }
+
+            visited[cityId] = true;
+            result++;
+
+            if (linkedCities[cityId] is not null && linkedCities[cityId].Count > 0)
+            {
+                foreach (var linkedCityId in linkedCities[cityId])
+                {
+                    cities.Push(linkedCityId);
+                }
+            }
+        }
+
+        return result;
+    }
+    #endregion
+
 }
 
 internal class Program
