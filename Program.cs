@@ -1,4 +1,6 @@
-﻿namespace LeetcodePreapare;
+﻿using System.Reflection;
+
+namespace LeetcodePreapare;
 
 class Result
 {
@@ -180,20 +182,19 @@ class Result
     // Time complexity: O(n)
     public static List<int> maxSubarray(List<int> arr)
     {
-        var maxSubarraySum = arr[0];
-        var currentSubarraySum = arr[0];
-        var maxSunsequenceSum = arr[0];
-
-        for (int i = 1; i < arr.Count(); i++)
+        var maxArrSum = arr[0];
+        var maxSeqSum = arr[0];
+        var currSum = arr[0];
+        for (var i = 1; i < arr.Count; i++)
         {
-            currentSubarraySum = Math.Max(arr[i], currentSubarraySum + arr[i]);
-            maxSubarraySum = Math.Max(currentSubarraySum, maxSubarraySum);
+            currSum = Math.Max(arr[i], currSum + arr[i]);
+            maxArrSum = Math.Max(currSum, maxArrSum);
 
-            maxSunsequenceSum = Math.Max(maxSunsequenceSum, maxSunsequenceSum + arr[i]);
-            maxSunsequenceSum = Math.Max(maxSunsequenceSum, arr[i]);
+            maxSeqSum = Math.Max(maxSeqSum, maxSeqSum + arr[i]);
+            maxSeqSum = Math.Max(maxSeqSum, arr[i]);
         }
 
-        return new List<int> { maxSubarraySum, maxSunsequenceSum };
+        return new List<int> { maxArrSum, maxSeqSum };
     }
 
     // Sherlock and Anagrams - HackerRank
@@ -283,6 +284,8 @@ class Result
     }
 
     // Sherlock and the Valid String - HackerRank
+    // Sherlock considers a string to be valid if all characters of the string appear the same number of times.
+    // It is also valid if he can remove just 1 character at 1 index in the string, and the remaining characters will occur the same number of times.
     // O(n) time complexity, O(1) space complexity
     public static string isValid(string s)
     {
@@ -473,6 +476,10 @@ class Result
     }
 
     // Making Anagrams - HackerRank
+    // Given two strings, s1 and s2, that may not be of the same length,
+    // determine the minimum number of character deletions required to make s1 and s2 anagrams.
+    // Any characters can be deleted from either of the strings.
+    // HashMap
     #region Making Anagrams
     public static int makingAnagrams(string s1, string s2)
     {
@@ -526,6 +533,10 @@ class Result
 
 
     // Bear and Steady Gene - HackerRank
+    // Given a string GENE, can you help Limak find the length of the smallest possible substring that he can replace to make GENE a steady gene?
+    // Where all the characters occur exactly n/4 times.
+    // Sliding window problem
+    // Идея: Двигаем правую границу пока не станет валидно, затем двигаем левую границу пока не станет невалидно
     #region Bear and Steady Gene
     public static int steadyGene(string gene)
     {
@@ -744,6 +755,8 @@ class Result
 
 
     // Missing Numbers - HackerRank
+    // Given two arrays of integers, find which elements in the second array are missing from the first array.
+    // HashMap
     #region Missing Numbers
     public static List<int> missingNumbers(List<int> arr, List<int> brr)
     {
@@ -852,6 +865,7 @@ class Result
     #endregion
 
     // Max Min (Angry Children) - HackerRank
+    // Составить массив размера k из массива arr, такой что разница между максимальным и минимальным элементом была минимальна
     // Sliding window problem
     public static int maxMin(int k, List<int> arr)
     {
@@ -873,6 +887,7 @@ class Result
     }
 
     // Lily's Homework - HackerRank
+    // Сколько перестановок нужно сделать, чтобы массив стал упорядочен по возрастанию или убыванию
     // Index Mapping
     public static int lilysHomework(List<int> arr)
     {
@@ -986,6 +1001,178 @@ class Result
 
         return tmpHead.next;
     }
+
+    // The Coin Change Problem - HackerRank
+    // 2DP, составить сумму из монет
+    #region The Coin Change Problem
+    public static long getWays(int n, List<long> c)
+    {
+        var coins = new List<long> { 0 };
+        coins.AddRange(c);
+
+        var dp = new long[coins.Count, n + 1];
+
+        for (var i = 0; i < coins.Count; i++)
+        {
+            dp[i, 0] = 1;
+        }
+        for (var j = 1; j <= n; j++)
+        {
+            dp[0, j] = 0;
+        }
+
+        for (var i = 1; i < coins.Count; i++)
+        {
+            for (var j = 1; j <= n; j++)
+            {
+                if (coins[i] > j)
+                {
+                    dp[i, j] = dp[i - 1, j];
+                }
+                else
+                {
+                    dp[i, j] = dp[i - 1, j] + dp[i, j - coins[i]];
+                }
+            }
+        }
+
+        return dp[coins.Count - 1, n];
+    }
+
+    //public static long getWays(int n, List<long> c)
+    //{
+    //    var dp = new long[n + 1];
+    //    dp[0] = 1;
+    //    foreach (var coin in c)
+    //    {
+    //        for (var amount = (int)coin; amount <= n; amount++)
+    //        {
+    //            dp[amount] += dp[amount - (int)coin];
+    //        }
+    //    }
+    //    return dp[n];
+    //}
+    #endregion
+
+    // Unbounded Knapsack - HackerRank
+    // DP
+    // Given an array of integers and a target sum, determine the sum nearest to but not exceeding the target that can be created.
+    // To create the sum, use any element of your array zero or more times.
+    public static int unboundedKnapsack(int k, List<int> arr)
+    {
+        var dp = new int[k + 1];
+        dp[0] = 0;
+
+        for (int i = 0; i < arr.Count; i++)
+        {
+            for (var j = arr[i]; j <= k; j++)
+            {
+                if (j >= arr[i])
+                {
+                    dp[j] = Math.Max(dp[j], arr[i] + dp[j - arr[i]]);
+                }
+
+            }
+        }
+
+        return dp[k];
+    }
+
+    // Candies - HackerRank
+    // Alice wants to give at least 1 candy to each child.
+    // If two children sit next to each other, then the one with the higher rating must get more candies. Alice wants to minimize the total number of candies she must buy.
+    public static long candies(int n, List<int> arr)
+    {
+        var candies = new long[arr.Count];
+
+        for (int i = 0; i < arr.Count; i++)
+        {
+            candies[i] = 1;
+        }
+
+        for (int i = 1; i < arr.Count; i++)
+        {
+            if (arr[i] > arr[i - 1])
+            {
+                candies[i] = candies[i - 1] + 1;
+            }
+        }
+
+        for (int i = arr.Count - 2; i >= 0; i--)
+        {
+            if (arr[i] > arr[i + 1])
+            {
+                candies[i] = Math.Max(candies[i], candies[i + 1] + 1);
+            }
+        }
+
+
+        return candies.Sum();
+    }
+
+    // Abbreviation - HackerRank
+    // https://www.hackerrank.com/challenges/abbr/problem
+    // Вам даются две строки A и B. Вам нужно преобразовать строку A в два шага:
+    // 1. Сделать некоторые маленькие буквы большими,
+    // 2. Удалить оставшиеся маленькие буквы, так, чтобы получить в итоге строку B.
+    // Для каждого тестового случая выведите "YES", если возможно преобразовать строку A в строку B и "NO", если невозможно.
+    // A = daBcd, B = ABC
+    // Result: YES
+    // ВАЖНО: Заглавные символы удалять нельзя, по ним должно быть точное соответствие
+    public static string abbreviation(string a, string b)
+    {
+        var dp = new bool[a.Length + 1, b.Length + 1];
+        var can = true;
+        dp[0, 0] = true;
+        for (var i = 1; i < a.Length + 1; i++)
+        {
+            if (a[i - 1] >= 'A' && a[i - 1] <= 'Z')
+            {
+                can = false;
+            }
+
+            dp[i, 0] = can;
+        }
+
+        for (var j = 1; j < b.Length + 1; j++)
+        {
+            dp[0, j] = false;
+        }
+
+        for (var i = 1; i < a.Length + 1; i++)
+        {
+            for (var j = 1; j < b.Length + 1; j++)
+            {
+                if (a[i - 1] >= 'A' && a[i - 1] <= 'Z')
+                {
+
+                    if (a[i - 1] == b[j - 1])
+                    {
+                        dp[i, j] = dp[i - 1, j - 1];
+                    }
+                    else
+                    {
+                        dp[i, j] = false;
+                    }
+                }
+                else
+                {
+                    var bigA = (char)(a[i - 1] - ('a' - 'A'));
+                    if (a[i - 1] == b[j - 1] || bigA == b[j - 1])
+                    {
+                        dp[i, j] = dp[i - 1, j - 1] || dp[i - 1, j]; ;
+                    }
+                    else
+                    {
+                        dp[i, j] = dp[i - 1, j];
+                    }
+                }
+            }
+        }
+
+        return dp[a.Length, b.Length] ? "YES" : "NO";
+    }
+
 }
 
 internal class Program
@@ -1004,11 +1191,22 @@ internal class Program
         //int result = Result.CountKDifference(1, [1, 2, 2, 1]);
         //int result = Result.birthday(new List<int>{ });
 
-        var arr = new List<int> { 100, 200, 300, 350, 400, 401, 402 };
+        //var arr = new List<int> { 100, 200, 300, 350, 400, 401, 402 };
 
-        int result = Result.maxMin(3, arr);
+        //int result = Result.maxMin(3, arr);
+        //Console.WriteLine(result);
 
-        Console.WriteLine(result);
+        var b = 'b';
+        var B = (char)(b - ('a' - 'A'));
+
+        Console.WriteLine($"b: {b} -> {B}");
+
+        var w = 'k';
+        var W = (char)(w - ('a' - 'A'));
+
+        Console.WriteLine($"k: {w} -> {W}");
+
+
     }
 }
 
