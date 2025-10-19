@@ -1371,6 +1371,71 @@ class Result
     }
     #endregion
 
+    // Even Tree - HackerRank
+    // DFS, Graph, список смежности
+    // ВАЖНО: DFS реализован не идеально, подумать как улучшить
+    #region Even Tree
+    public static int evenForest(int t_nodes, int t_edges, List<int> t_from, List<int> t_to)
+    {
+        var tree = new List<int>[t_nodes];
+        var countedSubtrees = new int[t_nodes];
+
+        for (var i = 0; i < tree.Length; i++)
+        {
+            tree[i] = new List<int>();
+            countedSubtrees[i] = -1;
+        }
+
+        for (var i = 0; i < t_edges; i++)
+        {
+            tree[t_to[i] - 1].Add(t_from[i] - 1);
+        }
+
+        var result = 0;
+        for (var i = 1; i < tree.Length; i++) // can't cut root, so start from 1
+        {
+            var nodesCount = GetNodesCount(i, tree, countedSubtrees);
+            if (nodesCount % 2 == 0)
+            {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    private static int GetNodesCount(int id, List<int>[] tree, int[] countedSubtrees)
+    {
+        if (countedSubtrees[id] >= 0)
+        {
+            return countedSubtrees[id];
+        }
+
+        var nodes = new Stack<int>();
+        nodes.Push(id);
+
+        var result = 0;
+
+        while (nodes.Count > 0)
+        {
+            var rootId = nodes.Pop();
+
+            result++; // count root element
+
+            if (tree[rootId].Count > 0)
+            {
+                foreach (var childId in tree[rootId])
+                {
+                    nodes.Push(childId); // add children to count
+                }
+            }
+        }
+        countedSubtrees[id] = result;
+        return result;
+    }
+    #endregion
+
+
+
 }
 
 internal class Program
