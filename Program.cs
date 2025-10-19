@@ -1465,6 +1465,42 @@ class Result
         return sweets.Peek() < k ? -1 : result;
     }
 
+    // Luck Balance - HackerRank
+    // Greedy Algorithm
+    // DESC sort
+    public static int luckBalance(int k, List<List<int>> contests)
+    {
+        var importantContests = new List<int>();
+        var luck = 0;
+
+        foreach (var contest in contests)
+        {
+            if (contest[1] == 0)
+            {
+                luck += contest[0];
+            }
+            else
+            {
+                importantContests.Add(contest[0]);
+            }
+        }
+
+        importantContests.Sort((a, b) => b.CompareTo(a));
+
+
+        for (var i = 0; i < Math.Min(importantContests.Count, k); i++)
+        {
+            luck += importantContests[i];
+        }
+        for (var i = k; i < importantContests.Count; i++)
+        {
+            luck -= importantContests[i];
+        }
+
+        return luck;
+    }
+
+
 }
 
 internal class Program
