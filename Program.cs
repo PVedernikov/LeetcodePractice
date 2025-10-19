@@ -1488,13 +1488,16 @@ class Result
         importantContests.Sort((a, b) => b.CompareTo(a));
 
 
-        for (var i = 0; i < Math.Min(importantContests.Count, k); i++)
+        for (var i = 0; i < importantContests.Count; i++)
         {
-            luck += importantContests[i];
-        }
-        for (var i = k; i < importantContests.Count; i++)
-        {
-            luck -= importantContests[i];
+            if (i < k)
+            {
+                luck += importantContests[i];
+            }
+            else
+            {
+                luck -= importantContests[i];
+            }
         }
 
         return luck;
