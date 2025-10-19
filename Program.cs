@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Net;
+using System.Reflection;
 
 namespace LeetcodePreapare;
 
@@ -1435,6 +1437,33 @@ class Result
     #endregion
 
 
+    // Jesse and Cookies - HackerRank
+    // Min-Heap (Priority Queue)
+    // https://www.hackerrank.com/challenges/jesse-and-cookies/problem
+    public static int cookies(int k, List<int> A)
+    {
+        var sweets = new PriorityQueue<int, int>();
+
+        foreach (var sweet in A)
+        {
+            sweets.Enqueue(sweet, sweet);
+        }
+
+        var result = 0;
+
+
+        while (sweets.Peek() < k && sweets.Count > 1)
+        {
+            var lowestSweet = sweets.Dequeue();
+            var secondLowestSweet = sweets.Dequeue();
+            var newSweet = lowestSweet + 2 * secondLowestSweet;
+            sweets.Enqueue(newSweet, newSweet);
+
+            result++;
+        }
+
+        return sweets.Peek() < k ? -1 : result;
+    }
 
 }
 
@@ -1459,16 +1488,18 @@ internal class Program
         //int result = Result.maxMin(3, arr);
         //Console.WriteLine(result);
 
-        var b = 'b';
-        var B = (char)(b - ('a' - 'A'));
+        //var k = 100000;
+        //var num = 105823341;
+        var num = 100000;
+        var k = 105823341;
+        var arr = new List<int>();
+        for (int i = 0; i < num; i++)
+        {
+            arr.Add(1);
+        }
+        int result = Result.cookies(k, arr);
 
-        Console.WriteLine($"b: {b} -> {B}");
-
-        var w = 'k';
-        var W = (char)(w - ('a' - 'A'));
-
-        Console.WriteLine($"k: {w} -> {W}");
-
+        Console.WriteLine(result);
 
     }
 }
