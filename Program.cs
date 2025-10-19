@@ -1545,6 +1545,75 @@ class Result
 
         return totalWaitingTime / customers.Count;
     }
+
+    // Connected Cells in a Grid - HackerRank
+    // DFS, Graph, матрица смежности
+    // Найти максимальный размер связной компоненты в матрице
+    // Идея: затапливаем ячейку, проверяем смежные
+    #region Connected Cells in a Grid
+    private static int[] dirI = new int[] { -1, -1, -1, 0, 0, 1, 1, 1 };
+    private static int[] dirJ = new int[] { 0, -1, 1, -1, 1, 0, -1, 1 };
+
+    public static int connectedCell(List<List<int>> matrix)
+    {
+        var result = 0;
+
+        for (var i = 0; i < matrix.Count; i++)
+        {
+            for (var j = 0; j < matrix[i].Count; j++)
+            {
+                if (matrix[i][j] == 0)
+                {
+                    continue;
+                }
+
+                var size = FindRegionSize(i, j, matrix);
+
+                result = Math.Max(result, size);
+            }
+        }
+
+        return result;
+    }
+
+    private static int FindRegionSize(int ii, int jj, List<List<int>> matrix)
+    {
+        var result = 0;
+        var cells = new Stack<int[]>();
+        cells.Push(new int[] { ii, jj });
+
+        while (cells.Count > 0)
+        {
+            var cell = cells.Pop();
+            var i = cell[0];
+            var j = cell[1];
+
+            if (i < 0 || i >= matrix.Count)
+            {
+                continue;
+            }
+            if (j < 0 || j >= matrix[i].Count)
+            {
+                continue;
+            }
+            if (matrix[i][j] == 0)
+            {
+                continue;
+            }
+
+            result++;
+            matrix[i][j] = 0;
+
+            for (var d = 0; d < 8; d++)
+            {
+                cells.Push(new int[] { i + dirI[d], j + dirJ[d] });
+            }
+        }
+
+        return result;
+    }
+    #endregion
+
 }
 
 internal class Program
