@@ -1504,6 +1504,46 @@ class Result
     }
 
 
+    // Minimum Average Waiting Time - HackerRank
+    // Min-Heap (Priority Queue), Greedy Algorithm
+    // Идея: сортируем клиентов по времени, затем двигаем время когда очередная пицца готова,
+    // затем добавляем в очередь всех клиентов, которые пришли к этому времени
+    public static long minimumAverage(List<List<long>> customers)
+    {
+        customers.Sort((a, b) => a[0].CompareTo(b[0]));
+
+        var customersQueue = new Queue<List<long>>();
+        for (int i = 0; i < customers.Count; i++)
+        {
+            customersQueue.Enqueue(customers[i]);
+        }
+        var ordersTaken = new PriorityQueue<List<long>, long>();
+
+        var timeNow = customersQueue.Peek()[0]; // start with first order begin
+        long totalWaitingTime = 0;
+
+        while (customersQueue.Count > 0 || ordersTaken.Count > 0)
+        {
+            while (customersQueue.Count > 0 && customersQueue.Peek()[0] <= timeNow)
+            {
+                var c = customersQueue.Dequeue();
+                ordersTaken.Enqueue(c, c[1]);
+            }
+
+            if (ordersTaken.Count > 0)
+            {
+                var nextOrder = ordersTaken.Dequeue();
+                timeNow += nextOrder[1]; // add pizza cooking time
+                totalWaitingTime += timeNow - nextOrder[0]; // Вреся ожидания = сейчас минус когда был сделан заказ
+            }
+            else if (customersQueue.Count > 0) // if there is a gap between customers. т.е. пицца была готова, но новых клиентов еще нет
+            {
+                timeNow = customersQueue.Peek()[0];
+            }
+        }
+
+        return totalWaitingTime / customers.Count;
+    }
 }
 
 internal class Program
