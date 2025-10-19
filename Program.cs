@@ -1508,6 +1508,7 @@ class Result
     // Min-Heap (Priority Queue), Greedy Algorithm
     // Идея: сортируем клиентов по времени, затем двигаем время когда очередная пицца готова,
     // затем добавляем в очередь всех клиентов, которые пришли к этому времени
+    // выбираем из PriorityQueue следующий заказ с минимальным временем приготовления
     public static long minimumAverage(List<List<long>> customers)
     {
         customers.Sort((a, b) => a[0].CompareTo(b[0]));
