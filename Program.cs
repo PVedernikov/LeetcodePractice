@@ -1743,6 +1743,56 @@ class Result
         return result;
     }
     #endregion
+
+    // Prim's (MST) : Special Subtree - HackerRank
+    // Graph, Prim's Algorithm, Priority Queue
+    // Найти минимальную сумму весов ребер, чтобы связать все вершины графа, начиная с заданной стартовой вершины
+    #region Prim's (MST) : Special Subtree
+    public static int prims(int n, List<List<int>> edges, int start)
+    {
+        var visited = new bool[n];
+        var conn = new List<(int, int)>[n];
+        var heap = new PriorityQueue<(int, int), int>();
+
+        for (int i = 0; i < n; i++)
+        {
+            conn[i] = new List<(int, int)>();
+        }
+
+        foreach (var e in edges)
+        {
+            conn[e[0] - 1].Add((e[1] - 1, e[2]));
+            conn[e[1] - 1].Add((e[0] - 1, e[2]));
+        }
+
+        var result = 0;
+        visited[start - 1] = true;
+
+        foreach ((var city, var dist) in conn[start - 1])
+        {
+            heap.Enqueue((city, dist), dist);
+        }
+
+        while (heap.Count > 0)
+        {
+            (var city, var dist) = heap.Dequeue();
+            if (visited[city])
+            {
+                continue;
+            }
+            visited[city] = true;
+            result += dist;
+
+            foreach ((var nextCity, var nextDist) in conn[city])
+            {
+                heap.Enqueue((nextCity, nextDist), nextDist);
+            }
+        }
+        return result;
+    }
+    #endregion
+
+
 }
 
 internal class Program
