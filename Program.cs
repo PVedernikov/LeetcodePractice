@@ -1204,7 +1204,7 @@ class Result
         for (int i = 0; i < n; i++)
         {
             var size = CountGroupSize(i, visited, connections);
-            if (size > 0)
+            if (size > 1) // Если в группе 1 человек, нет смысла считать. Если 0 - тем более
             {
                 groups.Add(size);
             }
