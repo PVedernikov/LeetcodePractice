@@ -1681,6 +1681,68 @@ class Result
     }
     #endregion
 
+    // Dijkstra: Shortest Reach 2 - HackerRank
+    // Graph, Dijkstra, Priority Queue
+    // Найти расстояние до всех вершин графа начиная со стартовой s
+    // Учитываются недостижимые вершины
+    #region Dijkstra: Shortest Reach 2
+    public static List<int> shortestReach(int n, List<List<int>> edges, int s)
+    {
+        var distance = new int[n];
+        var conn = new List<(int, int)>[n];
+        var heap = new PriorityQueue<(int, int), int>();
+
+        for (int i = 0; i < n; i++)
+        {
+            distance[i] = int.MaxValue;
+            conn[i] = new List<(int, int)>();
+        }
+
+        foreach (var e in edges)
+        {
+            conn[e[0] - 1].Add((e[1] - 1, e[2]));
+            conn[e[1] - 1].Add((e[0] - 1, e[2]));
+        }
+
+        distance[s - 1] = 0;
+        heap.Enqueue((s - 1, 0), 0);
+
+        while (heap.Count > 0)
+        {
+            (int town, int townD) = heap.Dequeue();
+
+            if (townD > distance[town])
+            {
+                continue;
+            }
+
+            foreach ((int next, int nextD) in conn[town])
+            {
+                int newD = townD + nextD;
+                if (newD < distance[next])
+                {
+                    distance[next] = newD;
+                    heap.Enqueue((next, distance[next]), distance[next]);
+                }
+            }
+        }
+
+        var result = new List<int>();
+        for (int i = 0; i < n; i++)
+        {
+            if (i == s - 1) continue;
+            if (distance[i] == int.MaxValue)
+            {
+                result.Add(-1);
+            }
+            else
+            {
+                result.Add(distance[i]);
+            }
+        }
+        return result;
+    }
+    #endregion
 }
 
 internal class Program
