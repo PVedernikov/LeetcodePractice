@@ -1792,6 +1792,22 @@ class Result
     }
     #endregion
 
+    // Maximum Perimeter Triangle - HackerRank
+    // Greedy Algorithm, Sorting
+    public static List<int> maximumPerimeterTriangle(List<int> sticks)
+    {
+        sticks.Sort((a, b) => b.CompareTo(a));
+
+        for (var i = 0; i < sticks.Count - 2; i++)
+        {
+            if (sticks[i] < sticks[i + 1] + sticks[i + 2])
+            {
+                return new List<int> { sticks[i + 2], sticks[i + 1], sticks[i] };
+            }
+        }
+
+        return new List<int> { -1 };
+    }
 
 }
 
@@ -1818,16 +1834,19 @@ internal class Program
 
         //var k = 100000;
         //var num = 105823341;
-        var num = 100000;
-        var k = 105823341;
-        var arr = new List<int>();
-        for (int i = 0; i < num; i++)
-        {
-            arr.Add(1);
-        }
-        int result = Result.cookies(k, arr);
+        //var num = 100000;
+        //var k = 105823341;
+        //var arr = new List<int>();
+        //for (int i = 0; i < num; i++)
+        //{
+        //    arr.Add(1);
+        //}
+        //int result = Result.cookies(k, arr);
 
-        Console.WriteLine(result);
+        var stricks = new List<int> { 9, 2015, 5294, 58768, 285, 477, 72, 13867, 97, 22445, 48, 36318, 764, 8573, 183, 3270, 81, 1251, 59, 95094 };
+        var result = Result.maximumPerimeterTriangle(stricks);
+
+        Console.WriteLine(string.Join(" ", result));
 
     }
 }
