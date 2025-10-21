@@ -201,6 +201,9 @@ class Result
 
     // Sherlock and Anagrams - HackerRank
     // https://www.hackerrank.com/challenges/sherlock-and-anagrams/problem
+    // To solve the HackerRank problem "Sherlock and Anagrams,"
+    // you need to find the number of pairs of substrings within a given string that are anagrams of each other.
+    // The most efficient way to do this is using a hash map (or dictionary) to store a canonical representation of each substring.
     #region sherlockAndAnagrams
     public static int sherlockAndAnagrams(string s)
     {
@@ -1185,89 +1188,153 @@ class Result
         var connections = new List<int>[n];
         var visited = new bool[n];
 
+        for (int i = 0; i < n; i++)
+        {
+            connections[i] = new List<int>();
+        }
+
         foreach (var pair in astronaut)
         {
-            if (connections[pair[0]] is null)
-            {
-                connections[pair[0]] = new List<int>();
-            }
-            if (connections[pair[1]] is null)
-            {
-                connections[pair[1]] = new List<int>();
-            }
-
             connections[pair[0]].Add(pair[1]);
             connections[pair[1]].Add(pair[0]);
         }
 
-        long result = 0;
-        long sum = 0;
-        for (var i = 0; i < n; i++)
+        var groups = new List<long>();
+
+        for (int i = 0; i < n; i++)
         {
-            if (visited[i])
+            var size = CountGroupSize(i, visited, connections);
+            if (size > 0)
             {
-                continue;
+                groups.Add(size);
             }
-
-            long groupSize = CountNeigbours(i, visited, connections);
-            result += groupSize * sum;
-            sum += groupSize;
         }
-
+        long lN = (long)n;
+        // C2n = n * (n - 1) / 2
+        long totalPairs = (lN * (lN - 1)) / 2;
+        long sameCountryPairs = 0;
+        foreach (var g in groups)
+        {
+            sameCountryPairs += (g * (g - 1)) / 2;
+        }
+        long result = totalPairs - sameCountryPairs;
         return result;
     }
 
-    private static long CountNeigbours(int id, bool[] visited, List<int>[] connections)
+    private static long CountGroupSize(int id, bool[] visited, List<int>[] connections)
     {
-        if (visited[id])
-            return 0;
-
-        visited[id] = true;
-
-        long result = 1;
-        if (connections[id] is null || connections[id].Count() == 0)
-        {
-            return result;
-        }
-
-        foreach (var nid in connections[id])
-        {
-            result += CountNeigbours(nid, visited, connections);
-        }
-
-        return result;
-    }
-
-    private static long CountNeighboursIterative(int start, bool[] visited, List<int>[] connections)
-    {
-        long count = 0;
+        long result = 0;
         var stack = new Stack<int>();
-        stack.Push(start);
+        stack.Push(id);
 
         while (stack.Count > 0)
         {
-            var node = stack.Pop();
-
-            if (visited[node])
-                continue;
-
-            visited[node] = true;
-            count++;
-
-            if (connections[node] != null)
+            var cId = stack.Pop();
+            if (visited[cId])
             {
-                foreach (var neighbor in connections[node])
-                {
-                    if (!visited[neighbor])
-                    {
-                        stack.Push(neighbor);
-                    }
-                }
+                continue;
+            }
+
+            result++;
+            visited[cId] = true;
+
+            foreach (var ccId in connections[cId])
+            {
+                stack.Push(ccId);
             }
         }
 
-        return count;
+        return result;
     }
+    
+    //public static long journeyToMoon(int n, List<List<int>> astronaut)
+    //{
+    //    var connections = new List<int>[n];
+    //    var visited = new bool[n];
+
+    //    foreach (var pair in astronaut)
+    //    {
+    //        if (connections[pair[0]] is null)
+    //        {
+    //            connections[pair[0]] = new List<int>();
+    //        }
+    //        if (connections[pair[1]] is null)
+    //        {
+    //            connections[pair[1]] = new List<int>();
+    //        }
+
+    //        connections[pair[0]].Add(pair[1]);
+    //        connections[pair[1]].Add(pair[0]);
+    //    }
+
+    //    long result = 0;
+    //    long sum = 0;
+    //    for (var i = 0; i < n; i++)
+    //    {
+    //        if (visited[i])
+    //        {
+    //            continue;
+    //        }
+
+    //        long groupSize = CountNeigbours(i, visited, connections);
+    //        result += groupSize * sum;
+    //        sum += groupSize;
+    //    }
+
+    //    return result;
+    //}
+
+    //private static long CountNeigbours(int id, bool[] visited, List<int>[] connections)
+    //{
+    //    if (visited[id])
+    //        return 0;
+
+    //    visited[id] = true;
+
+    //    long result = 1;
+    //    if (connections[id] is null || connections[id].Count() == 0)
+    //    {
+    //        return result;
+    //    }
+
+    //    foreach (var nid in connections[id])
+    //    {
+    //        result += CountNeigbours(nid, visited, connections);
+    //    }
+
+    //    return result;
+    //}
+
+    //private static long CountNeighboursIterative(int start, bool[] visited, List<int>[] connections)
+    //{
+    //    long count = 0;
+    //    var stack = new Stack<int>();
+    //    stack.Push(start);
+
+    //    while (stack.Count > 0)
+    //    {
+    //        var node = stack.Pop();
+
+    //        if (visited[node])
+    //            continue;
+
+    //        visited[node] = true;
+    //        count++;
+
+    //        if (connections[node] != null)
+    //        {
+    //            foreach (var neighbor in connections[node])
+    //            {
+    //                if (!visited[neighbor])
+    //                {
+    //                    stack.Push(neighbor);
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    return count;
+    //}
     #endregion
 
 
