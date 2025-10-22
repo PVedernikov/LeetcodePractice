@@ -1661,6 +1661,7 @@ class Result
 
     // Minimum Average Waiting Time - HackerRank
     // Min-Heap (Priority Queue), Greedy Algorithm
+    // Pizza problem
     // Идея: сортируем клиентов по времени, затем двигаем время когда очередная пицца готова,
     // затем добавляем в очередь всех клиентов, которые пришли к этому времени
     // выбираем из PriorityQueue следующий заказ с минимальным временем приготовления
@@ -1999,6 +2000,36 @@ class Result
 
         return distance[row - 1][col - 1];
     }
+
+    // Course Schedule III - LeetCode 630
+    // Greedy Algorithm, Priority Queue, Scheduling
+    // Даны длительности курстов и их дедлайны.
+    // Ноужно определить максимальное количество курсов, которые можно пройти, если проходить курсы последовательно, не прерываясь.
+    // Идея: Берем курсы в порядке дедлайнов. Каждый раз добавляем курс и смотрим, превышен ли дедлайн.
+    // Если да, то выкидываем самый длинный курс, чтобы остались только самые короткие.
+    // Раз мы выкинули самый длинные, остальные должны гарантированно поместиться в дедлайн. 
+    public int ScheduleCourse(int[][] courses)
+    {
+        Array.Sort(courses, (a, b) => a[1].CompareTo(b[1]));
+
+        var maxHeap = new PriorityQueue<int[], int>();
+        var currentTime = 0;
+        for (int i = 0; i < courses.Length; i++)
+        {
+            var duration = courses[i][0];
+            var deadline = courses[i][1];
+            maxHeap.Enqueue(courses[i], -duration);
+            currentTime += duration;
+            while (deadline < currentTime)
+            {
+                var longestCourse = maxHeap.Dequeue();
+                currentTime -= longestCourse[0];
+            }
+        }
+
+        return maxHeap.Count;
+    }
+
 }
 
 internal class Program
@@ -2009,8 +2040,21 @@ internal class Program
         var result = Result.maximumPerimeterTriangle(stricks);
 
         Console.WriteLine(string.Join(" ", result));
-    }
 
+        var d = new int[10][];
+
+        //Array.Sort(d, (a, b) =>
+        //{
+        //    if (a is null && b is null)
+        //        return 0;
+        //    if (a is null)
+        //        return -1;
+        //    if (b is null)
+        //        return 1;
+        //    return a[0].CompareTo(b[0]);
+        //});
+
+    }
 }
 
 public class SinglyLinkedListNode
