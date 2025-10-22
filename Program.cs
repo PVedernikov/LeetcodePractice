@@ -1950,49 +1950,67 @@ class Result
         long maxGain = (cloudEffect.Count > 0) ? cloudEffect.Values.Max() : 0;
         return sunny + maxGain;
     }
+
+    // Path With Minimum Effort - LeetCode 1631
+    // Graph, Dijkstra, Priority Queue
+    // MiniMax Dijkstra
+    public int MinimumEffortPath(int[][] heights)
+    {
+        var dI = new[] { 1, -1, 0, 0 };
+        var dJ = new[] { 0, 0, 1, -1 };
+        var row = heights.Length;
+        var col = heights[0].Length;
+        var heap = new PriorityQueue<(int, int, int), int>();
+
+        var distance = new int[row][];
+        for (int i = 0; i < row; i++)
+        {
+            distance[i] = new int[col];
+            for (int j = 0; j < col; j++)
+            {
+                distance[i][j] = int.MaxValue;
+            }
+        }
+        distance[0][0] = 0;
+        heap.Enqueue((0, 0, 0), 0);
+        while (heap.Count > 0)
+        {
+            (int i, int j, int dist) = heap.Dequeue();
+            if (dist > distance[i][j])
+            {
+                continue;
+            }
+
+            for (int d = 0; d < 4; d++)
+            {
+                var nI = i + dI[d];
+                var nJ = j + dJ[d];
+                if (nI >= 0 && nI < row && nJ >= 0 && nJ < col)
+                {
+                    var newDist = Math.Max(Math.Abs(heights[i][j] - heights[nI][nJ]), dist);
+                    if (newDist < distance[nI][nJ])
+                    {
+                        distance[nI][nJ] = newDist;
+                        heap.Enqueue((nI, nJ, distance[nI][nJ]), distance[nI][nJ]);
+                    }
+                }
+            }
+        }
+
+        return distance[row - 1][col - 1];
+    }
 }
 
 internal class Program
 {
     static void Main(string[] args)
     {
-        //string[] firstMultipleInput = Console.ReadLine().TrimEnd().Split(' ');
-
-        //int n = Convert.ToInt32(firstMultipleInput[0]);
-
-        //int k = Convert.ToInt32(firstMultipleInput[1]);
-
-        //List<int> arr = Console.ReadLine().TrimEnd().Split(' ').ToList().Select(arrTemp => Convert.ToInt32(arrTemp)).ToList();
-
-        //int result = Result.pairs(k, arr);
-        //int result = Result.CountKDifference(1, [1, 2, 2, 1]);
-        //int result = Result.birthday(new List<int>{ });
-
-        //var arr = new List<int> { 100, 200, 300, 350, 400, 401, 402 };
-
-        //int result = Result.maxMin(3, arr);
-        //Console.WriteLine(result);
-
-        //var k = 100000;
-        //var num = 105823341;
-        //var num = 100000;
-        //var k = 105823341;
-        //var arr = new List<int>();
-        //for (int i = 0; i < num; i++)
-        //{
-        //    arr.Add(1);
-        //}
-        //int result = Result.cookies(k, arr);
-
         var stricks = new List<int> { 9, 2015, 5294, 58768, 285, 477, 72, 13867, 97, 22445, 48, 36318, 764, 8573, 183, 3270, 81, 1251, 59, 95094 };
         var result = Result.maximumPerimeterTriangle(stricks);
 
-        var tmp = new int[] {  };
-        Array.Sort(tmp);
-
         Console.WriteLine(string.Join(" ", result));
-
     }
+
 }
 
 public class SinglyLinkedListNode
