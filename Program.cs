@@ -1,11 +1,99 @@
 ﻿using System;
 using System.Net;
 using System.Reflection;
+using System.Security.Cryptography;
 
 namespace LeetcodePreapare;
 
 class Result
 {
+    // Two Sum - LeetCode 1.
+    public int[] TwoSum(int[] nums, int target)
+    {
+        var expecting = new Dictionary<int, int>();
+
+        for (int i = 0; i < nums.Length; i++)
+        {
+            if (expecting.ContainsKey(nums[i]))
+            {
+                return [expecting[nums[i]], i];
+            }
+            expecting[target - nums[i]] = i;
+        }
+
+        return Array.Empty<int>();
+    }
+
+    // Two Sum II - Input Array Is Sorted - LeetCode 167.
+    public int[] TwoSum2(int[] numbers, int target)
+    {
+        var left = 0;
+        var right = numbers.Length - 1;
+
+        while (left < right)
+        {
+            if (numbers[left] + numbers[right] == target)
+            {
+                return [left + 1, right + 1];
+            }
+
+            if (numbers[left] + numbers[right] < target)
+            {
+                left++;
+            }
+            else
+            {
+                right--;
+            }
+        }
+
+        return Array.Empty<int>();
+    }
+
+    // 3Sum - LeetCode 15.
+    // Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]]
+    // such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
+    // Notice that the solution set must not contain duplicate triplets.
+    public IList<IList<int>> ThreeSum(int[] nums)
+    {
+        Array.Sort(nums);
+
+        IList<IList<int>> result = new List<IList<int>>();
+
+        for (int i = 0; i < nums.Length - 2; i++)
+        {
+            // Чтоб избежать дублей
+            if (i > 0 && nums[i] == nums[i - 1])
+                continue;
+
+            var l = i + 1;
+            var r = nums.Length - 1;
+            while (l < r)
+            {
+                var sum = nums[i] + nums[l] + nums[r];
+                if (sum < 0)
+                {
+                    l++;
+                }
+                else if (sum > 0)
+                {
+                    r--;
+                }
+                else
+                {
+                    // Чтоб избежать дублей
+                    result.Add(new List<int> { nums[i], nums[l], nums[r] });
+                    l++;
+                    while (nums[l] == nums[l - 1] && l < r)
+                    {
+                        l++;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     // Pairs - HackerRank
     // Given an array of integers and a target value, determine the number of pairs of array elements that have a difference equal to the target value.
     // O(n log n) + O(n) time complexity due to sorting, O(1) space complexity.
@@ -1809,6 +1897,59 @@ class Result
         return new List<int> { -1 };
     }
 
+    // Cloudy Day - HackerRank
+    public static long maximumPeople(List<long> p, List<long> x, List<long> y, List<long> r)
+    {
+        int n = p.Count;
+        int m = y.Count;
+
+        var cities = new List<(long pos, long pop)>();
+        for (int i = 0; i < n; i++)
+            cities.Add((x[i], p[i]));
+        cities.Sort((a, b) => a.pos.CompareTo(b.pos));
+
+        var coverage = new List<(long pos, long type, int cloudId)>();
+        for (int i = 0; i < m; i++)
+        {
+            long left = y[i] - r[i];
+            long right = y[i] + r[i];
+            coverage.Add((left, +1, i));
+            coverage.Add((right + 1, -1, i));
+        }
+        coverage.Sort((a, b) => a.pos.CompareTo(b.pos));
+
+        long sunny = 0;
+        var cloudEffect = new Dictionary<int, long>();
+        var active = new HashSet<int>();
+
+        int c = 0;
+        foreach (var city in cities)
+        {
+            while (c < coverage.Count && coverage[c].pos <= city.pos)
+            {
+                if (coverage[c].type == +1)
+                    active.Add(coverage[c].cloudId);
+                else
+                    active.Remove(coverage[c].cloudId);
+                c++;
+            }
+
+            if (active.Count == 0)
+            {
+                sunny += city.pop;
+            }
+            else if (active.Count == 1)
+            {
+                int cloudId = active.First();
+                if (!cloudEffect.ContainsKey(cloudId))
+                    cloudEffect[cloudId] = 0;
+                cloudEffect[cloudId] += city.pop;
+            }
+        }
+
+        long maxGain = (cloudEffect.Count > 0) ? cloudEffect.Values.Max() : 0;
+        return sunny + maxGain;
+    }
 }
 
 internal class Program
@@ -1845,6 +1986,9 @@ internal class Program
 
         var stricks = new List<int> { 9, 2015, 5294, 58768, 285, 477, 72, 13867, 97, 22445, 48, 36318, 764, 8573, 183, 3270, 81, 1251, 59, 95094 };
         var result = Result.maximumPerimeterTriangle(stricks);
+
+        var tmp = new int[] {  };
+        Array.Sort(tmp);
 
         Console.WriteLine(string.Join(" ", result));
 
