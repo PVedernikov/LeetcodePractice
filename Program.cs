@@ -1955,7 +1955,7 @@ class Result
     // Path With Minimum Effort - LeetCode 1631
     // Graph, Dijkstra, Priority Queue
     // MiniMax Dijkstra
-    public int MinimumEffortPath(int[][] heights)
+    public static int MinimumEffortPath(int[][] heights)
     {
         var dI = new[] { 1, -1, 0, 0 };
         var dJ = new[] { 0, 0, 1, -1 };
@@ -2008,7 +2008,7 @@ class Result
     // Идея: Берем курсы в порядке дедлайнов. Каждый раз добавляем курс и смотрим, превышен ли дедлайн.
     // Если да, то выкидываем самый длинный курс, чтобы остались только самые короткие.
     // Раз мы выкинули самый длинные, остальные должны гарантированно поместиться в дедлайн. 
-    public int ScheduleCourse(int[][] courses)
+    public static int ScheduleCourse(int[][] courses)
     {
         Array.Sort(courses, (a, b) => a[1].CompareTo(b[1]));
 
@@ -2030,6 +2030,57 @@ class Result
         return maxHeap.Count;
     }
 
+
+    // Swim in Rising Water - LeetCode 778
+    // Graph, Dijkstra, Priority Queue
+    public static int SwimInWater(int[][] grid)
+    {
+        var row = grid.Length;
+        var col = grid[0].Length;
+        var dirI = new int[] { 1, -1, 0, 0 };
+        var dirJ = new int[] { 0, 0, 1, -1 };
+        var heap = new PriorityQueue<(int, int, int), int>();
+
+        var levels = new int[row][];
+        for (int i = 0; i < row; i++)
+        {
+            levels[i] = new int[col];
+            for (int j = 0; j < col; j++)
+            {
+                levels[i][j] = int.MaxValue;
+            }
+        }
+        levels[0][0] = grid[0][0];
+
+        heap.Enqueue((0, 0, grid[0][0]), grid[0][0]);
+        while (heap.Count > 0)
+        {
+            (int i, int j, int level) = heap.Dequeue();
+            if (i == row - 1 && j == col - 1)
+            {
+                return Math.Max(levels[i][j], grid[i][j]);
+            }
+
+            if (level > levels[i][j]) continue;
+
+            for (int d = 0; d < dirI.Length; d++)
+            {
+                var nI = i + dirI[d];
+                var nJ = j + dirJ[d];
+                if (nI >= 0 && nJ >= 0 && nI < row && nJ < col)
+                {
+                    var newLevel = Math.Max(level, grid[nI][nJ]);
+                    if (newLevel < levels[nI][nJ])
+                    {
+                        levels[nI][nJ] = newLevel;
+                        heap.Enqueue((nI, nJ, levels[nI][nJ]), levels[nI][nJ]);
+                    }
+                }
+            }
+        }
+
+        return levels[row - 1][col - 1];
+    }
 }
 
 internal class Program
@@ -2037,11 +2088,12 @@ internal class Program
     static void Main(string[] args)
     {
         var stricks = new List<int> { 9, 2015, 5294, 58768, 285, 477, 72, 13867, 97, 22445, 48, 36318, 764, 8573, 183, 3270, 81, 1251, 59, 95094 };
-        var result = Result.maximumPerimeterTriangle(stricks);
+        //var result = Result.maximumPerimeterTriangle(stricks);
+        var result = Result.SwimInWater([[0, 2], [1, 3]]); //new int[] { new int[] { }, new int[] { } } );
 
         Console.WriteLine(string.Join(" ", result));
 
-        var d = new int[10][];
+        //var d = new int[10][];
 
         //Array.Sort(d, (a, b) =>
         //{
