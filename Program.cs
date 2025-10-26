@@ -2081,17 +2081,107 @@ class Result
 
         return levels[row - 1][col - 1];
     }
+
+
+    // Minimum Difficulty of a Job Schedule - LeetCode 1335
+    // partition DP, Dynamic Programming
+    public static int MinDifficulty(int[] jobDifficulty, int d)
+    {
+        var n = jobDifficulty.Length;
+        if (n < d) return -1;
+
+        var dp = new int[n + 1, d + 1];
+        for (int job = 0; job <= n; job++)
+        {
+            for (int day = 0; day <= d; day++)
+            {
+                dp[job, day] = int.MaxValue;
+            }
+        }
+        dp[0, 0] = 0;
+
+        for (int day = 1; day <= d; day++)
+        {
+            for (int job = day; job <= n; job++)
+            {
+                var prevMaxJob = 0;
+                var minDifficulty = int.MaxValue;
+                for (int k = job - 1; k >= day - 1; k--)
+                {
+                    prevMaxJob = Math.Max(prevMaxJob, jobDifficulty[k]);
+                    if (dp[k, day - 1] != int.MaxValue)
+                    {
+                        minDifficulty = Math.Min(minDifficulty, dp[k, day - 1] + prevMaxJob);
+                    }
+                }
+
+                dp[job, day] = Math.Min(dp[job, day], minDifficulty);
+            }
+        }
+
+        return dp[n, d];
+    }
+
+    // Minimum Difficulty of a Job Schedule - LeetCode 1335
+    // Recursive with Memoization
+    #region Minimum Difficulty of a Job Schedule - Recursive with Memoization
+    public static int MinDifficultyRecursive(int[] jobDifficulty, int d)
+    {
+        var n = jobDifficulty.Length;
+        if (n < d) return -1;
+        var cache = new Dictionary<(int, int), int>();
+        return minSubdifficultyRecursive(0, d, jobDifficulty, cache);
+    }
+
+    private static int minSubdifficultyRecursive(int job, int daysLeft, int[] jobs, Dictionary<(int, int), int> cache)
+    {
+        if (cache.ContainsKey((job, daysLeft)))
+        {
+            return cache[(job, daysLeft)];
+        }
+        var n = jobs.Length;
+        if (job >= n || n - job < daysLeft || daysLeft <= 0) return int.MaxValue;
+
+        if (daysLeft == 1)
+        {
+            var result = 0;
+            for (int i = job; i < n; i++)
+            {
+                result = Math.Max(result, jobs[i]);
+            }
+            cache[(job, daysLeft)] = result;
+            return result;
+        }
+
+        var curMin = int.MaxValue;
+        var maxJob = 0;
+        for (int i = job; i <= n - daysLeft; i++)
+        {
+            maxJob = Math.Max(maxJob, jobs[i]);
+            var nextDiff = minSubdifficultyRecursive(i + 1, daysLeft - 1, jobs, cache);
+            if (nextDiff != int.MaxValue)
+            {
+                curMin = Math.Min(curMin, nextDiff + maxJob);
+            }
+        }
+
+        cache[(job, daysLeft)] = curMin;
+        return curMin;
+    }
+    #endregion
+
+
 }
 
 internal class Program
 {
     static void Main(string[] args)
     {
-        var stricks = new List<int> { 9, 2015, 5294, 58768, 285, 477, 72, 13867, 97, 22445, 48, 36318, 764, 8573, 183, 3270, 81, 1251, 59, 95094 };
-        //var result = Result.maximumPerimeterTriangle(stricks);
-        var result = Result.SwimInWater([[0, 2], [1, 3]]); //new int[] { new int[] { }, new int[] { } } );
+        //var stricks = new List<int> { 9, 2015, 5294, 58768, 285, 477, 72, 13867, 97, 22445, 48, 36318, 764, 8573, 183, 3270, 81, 1251, 59, 95094 };
+        ////var result = Result.maximumPerimeterTriangle(stricks);
+        //var result = Result.SwimInWater([[0, 2], [1, 3]]); //new int[] { new int[] { }, new int[] { } } );
 
-        Console.WriteLine(string.Join(" ", result));
+        //Console.WriteLine(string.Join(" ", result));
 
         //var d = new int[10][];
 
@@ -2105,7 +2195,8 @@ internal class Program
         //        return 1;
         //    return a[0].CompareTo(b[0]);
         //});
-
+        var result = Result.MinDifficulty([6, 5, 4, 3, 2, 1], 2);
+        Console.WriteLine(result);
     }
 }
 
