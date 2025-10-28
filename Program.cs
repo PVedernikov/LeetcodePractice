@@ -2170,7 +2170,89 @@ class Result
     }
     #endregion
 
+    // Partition Array for Maximum Sum - LeetCode 1043
+    // Partition DP, Dynamic Programming
+    #region Partition Array for Maximum Sum - LeetCode 1043
+    public static int MaxSumAfterPartitioning(int[] arr, int k)
+    {
+        int[] cache = new int[arr.Length];
+        Array.Fill(cache, -1);
+        return MaxSubsum(0, k, arr, cache);
+    }
 
+    private static int MaxSubsum(int start, int k, int[] arr, int[] cache)
+    {
+        var n = arr.Length;
+        if (start >= n) return 0;
+
+        if (cache[start] >= 0)
+        {
+            return cache[start];
+        }
+
+        var maxElement = 0;
+        var result = 0;
+        for (int i = start; i < n && i < start + k; i++)
+        {
+            maxElement = Math.Max(maxElement, arr[i]);
+            var curSum = maxElement * (i - start + 1);
+
+            result = Math.Max(result, curSum + MaxSubsum(i + 1, k, arr, cache));
+        }
+
+        cache[start] = result;
+        return result;
+    }
+    #endregion
+
+    // Largest Sum of Averages - LeetCode 813
+    // Partition DP, Dynamic Programming
+    // Recursive with Memoization
+    #region Largest Sum of Averages
+    public static double LargestSumOfAverages(int[] nums, int k)
+    {
+        var cache = new Dictionary<(int, int), double>();
+        return LargestSubsum(0, k, nums, cache);
+    }
+
+    private static double LargestSubsum(int start, int k, int[] nums, Dictionary<(int, int), double> cache)
+    {
+        if (cache.ContainsKey((start, k)))
+        {
+            return cache[(start, k)];
+        }
+        var n = nums.Length;
+        if (start < 0 || start >= n || k <= 0) return 0;
+
+        if (k == 1)
+        {
+            double lastSum = 0.0;
+            double lastCount = 0.0;
+            for (int i = start; i < n; i++)
+            {
+                lastSum += nums[i];
+                lastCount += 1.0;
+            }
+            double lastAvg = lastSum / lastCount;
+            cache[(start, k)] = lastAvg;
+            return lastAvg;
+        }
+
+        double sum = 0.0;
+        double count = 0.0;
+        double maxAvg = 0.0;
+        for (int i = start; i < n; i++)
+        {
+            sum += nums[i];
+            count += 1.0;
+            double currentAvg = sum / count;
+            maxAvg = Math.Max(maxAvg, currentAvg + LargestSubsum(i + 1, k - 1, nums, cache));
+        }
+
+        cache[(start, k)] = maxAvg;
+        return maxAvg;
+    }
+    #endregion
 }
 
 internal class Program
@@ -2195,7 +2277,7 @@ internal class Program
         //        return 1;
         //    return a[0].CompareTo(b[0]);
         //});
-        var result = Result.MinDifficulty([6, 5, 4, 3, 2, 1], 2);
+        var result = Result.MaxSumAfterPartitioning([4, 7, 5], 2);
         Console.WriteLine(result);
     }
 }
