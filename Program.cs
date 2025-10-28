@@ -2253,6 +2253,52 @@ class Result
         return maxAvg;
     }
     #endregion
+
+
+    // Largest Sum of Averages - LeetCode 813
+    // Partition DP, Dynamic Programming, Prefix Sums
+    // Recursive with Memoization
+    #region Largest Sum of Averages - Prefix Sums
+    public double LargestSumOfAveragesPrefix(int[] nums, int k)
+    {
+        var cache = new Dictionary<(int, int), double>();
+        var n = nums.Length;
+        var prefix = new int[n + 1];
+        for (var i = 0; i < n; i++)
+        {
+            prefix[i + 1] = prefix[i] + nums[i];
+        }
+        return LargestSubsumPrefix(1, k, prefix, cache);
+    }
+
+    private double LargestSubsumPrefix(int start, int k, int[] prefix, Dictionary<(int, int), double> cache)
+    {
+        if (cache.ContainsKey((start, k)))
+        {
+            return cache[(start, k)];
+        }
+        var n = prefix.Length;
+        if (start >= n) return 0;
+
+        if (k == 1)
+        {
+            double lastAvg = (double)(prefix[n - 1] - prefix[start - 1]) / (double)(n - start);
+            cache[(start, k)] = lastAvg;
+            return lastAvg;
+        }
+
+        double maxAvg = 0.0;
+        for (int i = start; i < n; i++)
+        {
+            double currentAvg = (double)(prefix[i] - prefix[start - 1]) / (double)(i - start + 1);
+            maxAvg = Math.Max(maxAvg, currentAvg + LargestSubsumPrefix(i + 1, k - 1, prefix, cache));
+        }
+
+        cache[(start, k)] = maxAvg;
+        return maxAvg;
+    }
+    #endregion
+
 }
 
 internal class Program
