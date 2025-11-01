@@ -2,6 +2,7 @@
 using System.Net;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace LeetcodePreapare;
 
@@ -2406,6 +2407,49 @@ class Result
         return result;
     }
 
+    // Group Anagrams - LeetCode 49
+    // Frequency Count
+    public IList<IList<string>> GroupAnagrams(string[] strs)
+    {
+        if (strs is null || strs.Length == 0)
+        {
+            return new List<IList<string>>();
+        }
+
+        var n = strs.Length;
+        var groups = new Dictionary<string, List<string>>();
+        for (int i = 0; i < n; i++)
+        {
+            var keyArr = new int[26];
+            for (int j = 0; j < strs[i].Length; j++)
+            {
+                var index = (int)(strs[i][j] - 'a');
+                keyArr[index]++;
+            }
+            var key = string.Join(",", keyArr);
+            if (!groups.ContainsKey(key))
+            {
+                groups[key] = new List<string>();
+            }
+            groups[key].Add(strs[i]);
+        }
+
+        var result = new List<IList<string>>();
+        foreach (var item in groups)
+        {
+            var group = new List<string>();
+            foreach (var str in item.Value)
+            {
+                group.Add(str);
+            }
+            result.Add(group);
+        }
+
+        return result;
+    }
+
+
+
 }
 
 internal class Program
@@ -2450,9 +2494,10 @@ internal class Program
         //Console.WriteLine("Reverse:");
         //Console.WriteLine(headCopy.Reverse().GetString());
 
-        var result = Result.FindShortestCycle(7, [[0, 1], [1, 2], [2, 0], [3, 4], [4, 5], [5, 6], [6, 3]]);
-        Console.WriteLine(result);
+        //var result = Result.FindShortestCycle(7, [[0, 1], [1, 2], [2, 0], [3, 4], [4, 5], [5, 6], [6, 3]]);
+        //Console.WriteLine(result);
 
+        Console.WriteLine((int)('a' - 'b'));
     }
 }
 
