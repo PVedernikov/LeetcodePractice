@@ -2299,6 +2299,74 @@ class Result
     }
     #endregion
 
+
+    // Shortest Cycle in a Graph - LeetCode 2608
+    // BFS, Graph, Adjacency List, Cycle Detection
+    // TODO: подумать как дважды не проверять циклы по часовой и против часовой стрелки
+    public static int FindShortestCycle(int n, int[][] edges)
+    {
+        var conn = new List<int>[n];
+        for (int i = 0; i < n; i++)
+        {
+            conn[i] = new List<int>();
+        }
+
+        foreach (var edge in edges)
+        {
+            conn[edge[0]].Add(edge[1]);
+            conn[edge[1]].Add(edge[0]);
+        }
+
+        var minCycle = int.MaxValue;
+        for (int i = 0; i < n; i++)
+        {
+            var prev = new int[n];
+            var distance = new int[n];
+            for (int j = 0; j < n; j++)
+            {
+                prev[j] = int.MaxValue;
+                distance[j] = int.MaxValue;
+
+                // Альтернативно:
+                // var prev = Enumerable.Repeat(int.MaxValue, n).ToArray();
+                // var distance = Enumerable.Repeat(int.MaxValue, n).ToArray();
+            }
+
+            var queue = new Queue<int>();
+            queue.Enqueue(i);
+            distance[i] = 0;
+
+            while (queue.Count > 0)
+            {
+                var node = queue.Dequeue();
+                foreach (var next in conn[node])
+                {
+                    if (distance[next] == int.MaxValue)
+                    {
+                        // Эту вершину еще не посещали
+                        // Добавляем в очередь
+                        distance[next] = distance[node] + 1;
+                        prev[next] = node;
+                        queue.Enqueue(next);
+                    }
+                    else
+                    {
+                        // Эту вершину уже посещали
+                        // И это не вырожденный цикл, типа 1-2-1
+                        if (prev[node] != next)
+                        {
+                            // До обеих вершин node и next можно дойти из стартовой вершины i, и между ними есть ребро
+                            // Значит найден цикл
+                            minCycle = Math.Min(minCycle, distance[node] + distance[next] + 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        return minCycle == int.MaxValue ? -1 : minCycle;
+    }
+
 }
 
 internal class Program
@@ -2323,8 +2391,29 @@ internal class Program
         //        return 1;
         //    return a[0].CompareTo(b[0]);
         //});
-        var result = Result.MaxSumAfterPartitioning([4, 7, 5], 2);
+        //var result = Result.MaxSumAfterPartitioning([4, 7, 5], 2);
+        //Console.WriteLine(result);
+
+        //var head = new ListNode(0);
+        //var headCopy = new ListNode(0);
+        //for (int i = 5; i > 0; i--)
+        //{
+        //    head.InsertBehindHead(i);
+        //    headCopy.InsertBehindHead(i);
+        //}
+
+        //Console.WriteLine("List:");
+        //Console.WriteLine(head.GetString());
+
+        //Console.WriteLine("ReverseWithDummyHead:");
+        //Console.WriteLine(head.ReverseWithDummyHead().GetString());
+
+        //Console.WriteLine("Reverse:");
+        //Console.WriteLine(headCopy.Reverse().GetString());
+
+        var result = Result.FindShortestCycle(7, [[0, 1], [1, 2], [2, 0], [3, 4], [4, 5], [5, 6], [6, 3]]);
         Console.WriteLine(result);
+
     }
 }
 
