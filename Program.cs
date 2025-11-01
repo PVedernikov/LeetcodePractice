@@ -2351,9 +2351,11 @@ class Result
                     }
                     else
                     {
-                        // Эту вершину уже посещали
-                        // И это не вырожденный цикл, типа 1-2-1
-                        if (prev[node] != next)
+                        // Эту вершину next уже посещали
+                        // prev[node] != next - проверяем, что это не вырожденный цикл, типа 1-2-1
+                        // prev[next] != node - проверяем, что мы уже ранее дошли до next из другой вершины, не из node,
+                        // иначе может снова быть вырожденный цикл
+                        if (prev[node] != next && prev[next] != node)
                         {
                             // До обеих вершин node и next можно дойти из стартовой вершины i, и между ними есть ребро
                             // Значит найден цикл
@@ -2365,6 +2367,43 @@ class Result
         }
 
         return minCycle == int.MaxValue ? -1 : minCycle;
+    }
+
+    // Delete Nodes From Linked List Present in Array - LeetCode 3217
+    // Linked List, HashSet
+    public static ListNode3217 ModifiedList(int[] nums, ListNode3217 head)
+    {
+        var toDelete = new HashSet<int>();
+        for (int i = 0; i < nums.Length; i++)
+        {
+            toDelete.Add(nums[i]);
+        }
+
+        var result = head;
+        while (result is not null && toDelete.Contains(result.val))
+        {
+            result = result.next;
+        }
+
+        if (result is null)
+        {
+            return null;
+        }
+
+        var prev = result;
+        while (prev.next is not null)
+        {
+            if (toDelete.Contains(prev.next.val))
+            {
+                prev.next = prev.next.next;
+            }
+            else
+            {
+                prev = prev.next;
+            }
+        }
+
+        return result;
     }
 
 }
@@ -2415,6 +2454,14 @@ internal class Program
         Console.WriteLine(result);
 
     }
+}
+
+
+public class ListNode3217
+{
+    public int val { get; init; }
+
+    public ListNode3217 next { get; set; }
 }
 
 public class SinglyLinkedListNode
