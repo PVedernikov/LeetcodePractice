@@ -2409,7 +2409,7 @@ class Result
 
     // Group Anagrams - LeetCode 49
     // Frequency Count
-    public IList<IList<string>> GroupAnagrams(string[] strs)
+    public static IList<IList<string>> GroupAnagrams(string[] strs)
     {
         if (strs is null || strs.Length == 0)
         {
