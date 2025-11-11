@@ -152,8 +152,8 @@ public static class LeetCodeBlind75
 
     // #5
     // 133. Clone Graph
-    // DFS, HashMap
-    #region CloneGraph
+    // DFS, BFS, HashMap
+    #region CloneGraph DFS
     public static Node133 CloneGraph(Node133 node)
     {
         if (node is null)
@@ -181,6 +181,43 @@ public static class LeetCodeBlind75
             }
         }
         return newNode;
+    }
+    #endregion
+    #region CloneGraph BFS
+    public static Node133 CloneGraphBFS(Node133 node)
+    {
+        if (node is null)
+        {
+            return null;
+        }
+
+        var cloned = new Dictionary<Node133, Node133>();
+        var queue = new Queue<Node133>();
+        cloned[node] = new Node133(node.val);
+        queue.Enqueue(node);
+
+        while (queue.Count > 0)
+        {
+            var origNode = queue.Dequeue();
+            var newNode = cloned[origNode];
+
+            foreach (var neighbor in origNode.neighbors)
+            {
+                if (!cloned.ContainsKey(neighbor))
+                {
+                    var clonedNeighbor = new Node133(neighbor.val);
+                    cloned[neighbor] = clonedNeighbor;
+                    newNode.neighbors.Add(clonedNeighbor);
+                    queue.Enqueue(neighbor);
+                }
+                else
+                {
+                    newNode.neighbors.Add(cloned[neighbor]);
+                }
+            }
+        }
+
+        return cloned[node];
     }
     #endregion
 }
