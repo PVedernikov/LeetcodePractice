@@ -2496,7 +2496,7 @@ internal class Program
 
         //var result = Result.FindShortestCycle(7, [[0, 1], [1, 2], [2, 0], [3, 4], [4, 5], [5, 6], [6, 3]]);
         //Console.WriteLine(result);
-        var result = LeetCodeBlind75.LengthOfLongestSubstring("aab");
+        var result = LeetCodeBlind75.LongestPalindrome("babad");
         Console.WriteLine(result);
     }
 }

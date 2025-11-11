@@ -110,4 +110,41 @@ public static class LeetCodeBlind75
         return result;
     }
     #endregion
+
+
+    // #4
+    // 5. Longest Palindromic Substring
+    // Given a string s, return the longest palindromic substring in s.
+    // Expand Around Center
+    public static string LongestPalindrome(string s)
+    {
+        if (s.Length <= 1) return s;
+
+        var start = 0;
+        var length = 1;
+        for (int i = 0; i < s.Length; i++)
+        {
+            var l = i;
+            var r = i;
+            while (r < s.Length - 1 && s[i] == s[r + 1])
+            {
+                r++;
+            }
+            i = r; // Пропустить одинаковые символы, мы их рассмотрим в этой иетерации
+
+            while (l > 0 && r < s.Length - 1 && s[l - 1] == s[r + 1])
+            {
+                l--;
+                r++;
+            }
+            var len = r - l + 1;
+            if (len > length)
+            {
+                start = l;
+                length = len;
+            }
+        }
+
+        return s.Substring(start, length);
+    }
 }
