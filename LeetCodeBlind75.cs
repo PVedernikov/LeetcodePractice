@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LeetcodePreapare;
 
-namespace LeetcodePreapare;
-
+// https://leetcode.com/problem-list/r3q9lspc/
 public static class LeetCodeBlind75
 {
     // #1
@@ -59,5 +54,60 @@ public static class LeetCodeBlind75
         return result;
     }
 
+    // #3
+    // 128. Longest Consecutive Sequence
+    // Sliding Window, HashSet
+    // Given a string s, find the length of the longest substring without duplicate characters.
+    #region LengthOfLongestSubstring
+    public static int LengthOfLongestSubstring(string s)
+    {
+        if (s.Length == 0) return 0;
 
+        var left = 0;
+        var right = 1;
+        var result = 1;
+
+        var symbols = new HashSet<char>();
+        symbols.Add(s[left]);
+        while (right < s.Length)
+        {
+            while (right < s.Length && !symbols.Contains(s[right]))
+            {
+                symbols.Add(s[right]);
+                result = Math.Max(result, symbols.Count);
+                right++;
+            }
+
+            symbols.Remove(s[left]);
+            left++;
+            if (left >= right)
+            {
+                right = left + 1;
+            }
+        }
+        return result;
+    }
+
+    public static int LengthOfLongestSubstringClener(string s)
+    {
+        if (s.Length <= 0) return s.Length;
+
+        var left = 0;
+        var result = 0;
+
+        var symbols = new HashSet<char>();
+        for (int right = 0; right < s.Length; right++)
+        {
+            while (symbols.Contains(s[right]))
+            {
+                symbols.Remove(s[left]);
+                left++;
+            }
+
+            symbols.Add(s[right]);
+            result = Math.Max(result, right - left + 1);
+        }
+        return result;
+    }
+    #endregion
 }
