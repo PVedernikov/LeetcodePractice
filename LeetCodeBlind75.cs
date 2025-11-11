@@ -1,4 +1,6 @@
-﻿namespace LeetcodePreapare;
+﻿using System.Xml.Linq;
+
+namespace LeetcodePreapare;
 
 // https://leetcode.com/problem-list/r3q9lspc/
 public static class LeetCodeBlind75
@@ -146,5 +148,63 @@ public static class LeetCodeBlind75
         }
 
         return s.Substring(start, length);
+    }
+
+    // #5
+    // 133. Clone Graph
+    // DFS, HashMap
+    #region CloneGraph
+    public static Node133 CloneGraph(Node133 node)
+    {
+        if (node is null)
+        {
+            return null;
+        }
+        return GetClone(node, new Dictionary<Node133, Node133>());
+    }
+
+    private static Node133 GetClone(Node133 node, Dictionary<Node133, Node133> cloned)
+    {
+        if (cloned.TryGetValue(node, out var clone))
+        {
+            return clone;
+        }
+
+        var newNode = new Node133(node.val, new List<Node133>());
+        cloned[node] = newNode;
+
+        if (node.neighbors is not null)
+        {
+            foreach (var neighbor in node.neighbors)
+            {
+                newNode.neighbors.Add(GetClone(neighbor, cloned));
+            }
+        }
+        return newNode;
+    }
+    #endregion
+}
+
+public class Node133
+{
+    public int val;
+    public IList<Node133> neighbors;
+
+    public Node133()
+    {
+        val = 0;
+        neighbors = new List<Node133>();
+    }
+
+    public Node133(int _val)
+    {
+        val = _val;
+        neighbors = new List<Node133>();
+    }
+
+    public Node133(int _val, List<Node133> _neighbors)
+    {
+        val = _val;
+        neighbors = _neighbors;
     }
 }
