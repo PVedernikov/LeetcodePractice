@@ -220,6 +220,49 @@ public static class LeetCodeBlind75
         return cloned[node];
     }
     #endregion
+
+    // #6
+    // 261. Graph Valid Tree
+    // TODO: buy subscription
+
+    // #7
+    // 647. Palindromic Substrings
+    // Given a string s, return the number of palindromic substrings in it.
+    // Expand Around Center
+    public static int CountSubstrings(string s)
+    {
+        var n = s.Length;
+        if (n <= 1)
+        {
+            return n;
+        }
+
+        var result = 0;
+        for (int i = 0; i < n; i++)
+        {
+            var l = i;
+            var r = i;
+            while (r < n - 1 && s[r] == s[r + 1])
+            {
+                r++;
+            }
+            i = r;
+            var centerCount = r - l + 1;
+
+            // Substrings in a string with length = n formula:
+            // n * (n + 1) / 2
+            result += (centerCount * (centerCount + 1)) / 2;
+
+            while (l > 0 && r < n - 1 && s[l - 1] == s[r + 1])
+            {
+                result++;
+                l--;
+                r++;
+            }
+        }
+
+        return result;
+    }
 }
 
 public class Node133
