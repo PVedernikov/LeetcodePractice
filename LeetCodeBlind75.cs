@@ -263,6 +263,42 @@ public static class LeetCodeBlind75
 
         return result;
     }
+
+    // #8
+    // 11. Container With Most Water
+    // You are given an integer array height of length n.
+    // There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]).
+    // Find two lines that together with the x-axis form a container, such that the container contains the most water.
+    // Two Pointers, Array, Greedy
+    public static int MaxArea(int[] height)
+    {
+        var n = height.Length;
+        if (n <= 1)
+        {
+            return 0;
+        }
+
+        var result = 0;
+        var l = 0;
+        var r = n - 1;
+        while (l < r)
+        {
+            var minHeight = Math.Min(height[l], height[r]);
+            var area = (r - l) * minHeight;
+            result = Math.Max(result, area);
+
+            if (height[l] < height[r])
+            {
+                l++;
+            }
+            else
+            {
+                r--;
+            }
+        }
+
+        return result;
+    }
 }
 
 public class Node133
