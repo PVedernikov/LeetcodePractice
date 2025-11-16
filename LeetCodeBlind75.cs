@@ -349,7 +349,7 @@ public static class LeetCodeBlind75
     // 141. Linked List Cycle
     // Given head, the head of a linked list, determine if the linked list has a cycle in it.
     // Floyd's Tortoise and Hare
-    // Linked List, Cycle Detection
+    // Linked List, Cycle Detection, Fast & Slow Pointers
     public static bool HasCycle(ListNode head)
     {
         var slow = head;
