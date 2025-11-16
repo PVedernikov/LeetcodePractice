@@ -467,6 +467,51 @@ public static class LeetCodeBlind75
             current = next.next;
         }
     }
+
+    // #14
+    // 269. Alien Dictionary
+    // TODO: buy subscription
+
+    // #15
+    // 271. Encode and Decode Strings
+    // TODO: buy subscription
+
+    // #16
+    // 19. Remove Nth Node From End of List
+    // Given the head of a linked list, remove the nth node from the end of the list and return its head.
+    // List, Two Pointers
+    public static ListNode RemoveNthFromEnd(ListNode head, int n)
+    {
+        var firstPointer = head;
+        ListNode secondPointer = null;
+
+        var count = 0;
+        while (firstPointer is not null)
+        {
+            firstPointer = firstPointer.next;
+            count++;
+
+            if (secondPointer is not null)
+            {
+                secondPointer = secondPointer.next;
+            }
+            if (count == n + 1)
+            {
+                secondPointer = head;
+            }
+        }
+
+        if (secondPointer is not null)
+        {
+            secondPointer.next = secondPointer.next.next;
+        }
+        else if (n == count)
+        {
+            return head.next; // Если нужно удалить первый элемент
+        }
+
+        return head;
+    }
 }
 
 public class Node133
