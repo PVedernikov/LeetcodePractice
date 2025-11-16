@@ -304,6 +304,8 @@ public static class LeetCodeBlind75
     // 139. Word Break
     // Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
     // Top-Down DP, Memoization
+
+    #region 139. Word Break
     public static bool WordBreak(string s, IList<string> wordDict)
     {
         return IsValidWordBreak(s, 0, wordDict, new Dictionary<int, bool>());
@@ -341,6 +343,28 @@ public static class LeetCodeBlind75
         }
 
         cache[start] = false;
+        return false;
+    }
+    #endregion
+
+    // #10
+    // 141. Linked List Cycle
+    // Given head, the head of a linked list, determine if the linked list has a cycle in it.
+    // Floyd's Tortoise and Hare
+    // Linked List, Cycle Detection
+    public static bool HasCycle(ListNode head)
+    {
+        var slow = head;
+        var fast = head;
+
+        while (fast is not null && fast.Next is not null)
+        {
+            slow = slow.Next;
+            fast = fast.Next.Next;
+
+            if (slow == fast) return true;
+        }
+
         return false;
     }
 }
