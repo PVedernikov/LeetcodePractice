@@ -430,6 +430,7 @@ public static class LeetCodeBlind75
     // 143. Reorder List
     // You are given the head of a singly linked-list. L0 → L1 → … → Ln - 1 → Ln
     // Reorder the list to be on the following form: L0 → Ln → L1 → L(n - 1) → L2 → L(n - 2) → …
+    // TODO: переписать под память O(1). Идея: найти центр списка (fast & slow указатели), развернуть вторую половину, затем слить две половины
     public static void ReorderList(ListNode head)
     {
         if (head is null) return;
