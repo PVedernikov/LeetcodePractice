@@ -299,6 +299,50 @@ public static class LeetCodeBlind75
 
         return result;
     }
+
+    // #9
+    // 139. Word Break
+    // Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
+    // Top-Down DP, Memoization
+    public static bool WordBreak(string s, IList<string> wordDict)
+    {
+        return IsValidWordBreak(s, 0, wordDict, new Dictionary<int, bool>());
+    }
+
+    private static bool IsValidWordBreak(string s, int start, IList<string> wordDict, Dictionary<int, bool> cache)
+    {
+        var n = s.Length;
+        if (start == n) return true;
+        if (cache.ContainsKey(start)) return cache[start];
+
+        var len = n - start;
+        foreach (var word in wordDict)
+        {
+            if (word.Length > len)
+            {
+                continue;
+            }
+
+            var valid = true;
+            for (int i = 0; i < word.Length; i++)
+            {
+                if (word[i] != s[start + i])
+                {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid && IsValidWordBreak(s, start + word.Length, wordDict, cache))
+            {
+                cache[start] = true;
+                return true;
+            }
+        }
+
+        cache[start] = false;
+        return false;
+    }
 }
 
 public class Node133
