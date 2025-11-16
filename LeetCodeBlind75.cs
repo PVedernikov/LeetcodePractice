@@ -355,10 +355,10 @@ public static class LeetCodeBlind75
         var slow = head;
         var fast = head;
 
-        while (fast is not null && fast.Next is not null)
+        while (fast is not null && fast.next is not null)
         {
-            slow = slow.Next;
-            fast = fast.Next.Next;
+            slow = slow.next;
+            fast = fast.next.next;
 
             if (slow == fast) return true;
         }
@@ -423,6 +423,48 @@ public static class LeetCodeBlind75
             }
         }
         return result;
+    }
+
+
+    // #13
+    // 143. Reorder List
+    // You are given the head of a singly linked-list. L0 → L1 → … → Ln - 1 → Ln
+    // Reorder the list to be on the following form: L0 → Ln → L1 → L(n - 1) → L2 → L(n - 2) → …
+    public static void ReorderList(ListNode head)
+    {
+        if (head is null) return;
+
+        var current = head;
+        var stack = new Stack<ListNode>();
+        while (current is not null)
+        {
+            stack.Push(current);
+            current = current.next;
+        }
+
+        current = head;
+        while (current is not null && stack.Count > 0)
+        {
+            var next = stack.Pop();
+
+            // Два if для четных и нечетных длин списков
+            if (current == next)
+            {
+                current.next = null;
+                break;
+            }
+
+            if (current.next == next)
+            {
+                current.next.next = null;
+                break;
+            }
+
+            var tmp = current.next;
+            current.next = next;
+            next.next = tmp;
+            current = next.next;
+        }
     }
 }
 
