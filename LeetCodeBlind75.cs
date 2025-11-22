@@ -512,6 +512,44 @@ public static class LeetCodeBlind75
 
         return head;
     }
+
+
+    // #?
+    // 572. Subtree of Another Tree
+    // Subtree of Another Tree
+    public static bool IsSubtree(TreeNode root, TreeNode subRoot)
+    {
+        return IsSubSubtree(root, subRoot, false);
+    }
+
+    private static bool IsSubSubtree(TreeNode root, TreeNode subRoot, bool strict)
+    {
+        if (subRoot is null && root is null)
+        {
+            return true;
+        }
+
+        if (subRoot is null || root is null)
+        {
+            return false;
+        }
+
+        if (root.val == subRoot.val)
+        {
+            var isSubtree = IsSubSubtree(root.left, subRoot.left, true)
+                && IsSubSubtree(root.right, subRoot.right, true);
+            if (isSubtree)
+                return true;
+        }
+
+        if (!strict)
+        {
+            return IsSubSubtree(root.left, subRoot, false)
+                || IsSubSubtree(root.right, subRoot, false);
+        }
+
+        return false;
+    }
 }
 
 public class Node133
@@ -537,3 +575,17 @@ public class Node133
         neighbors = _neighbors;
     }
 }
+
+
+public class TreeNode
+{
+    public int val;
+    public TreeNode left;
+    public TreeNode right;
+    public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null)
+    {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+ }
