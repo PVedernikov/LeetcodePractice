@@ -517,6 +517,7 @@ public static class LeetCodeBlind75
     // #?
     // 572. Subtree of Another Tree
     // Subtree of Another Tree
+    #region Subtree of Another Tree
     public static bool IsSubtree(TreeNode root, TreeNode subRoot)
     {
         return IsSubSubtree(root, subRoot, false);
@@ -549,6 +550,41 @@ public static class LeetCodeBlind75
         }
 
         return false;
+    }
+    #endregion
+
+
+    // #?
+    // 242. Valid Anagram
+    // Given two strings s and t, return true if t is an anagram of s, and false otherwise.
+    public static bool IsAnagram(string s, string t)
+    {
+        if (s.Length != t.Length) return false;
+
+        var freq = new Dictionary<char, int>();
+        for (int i = 0; i < s.Length; i++)
+        {
+            if (freq.ContainsKey(s[i]))
+            {
+                freq[s[i]]++;
+            }
+            else
+            {
+                freq[s[i]] = 1;
+            }
+        }
+
+        for (int i = 0; i < t.Length; i++)
+        {
+            if (!freq.ContainsKey(t[i]) || freq[t[i]] <= 0)
+            {
+                return false;
+            }
+
+            freq[t[i]]--;
+        }
+
+        return true;
     }
 }
 
