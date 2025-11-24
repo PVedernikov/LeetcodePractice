@@ -513,6 +513,43 @@ public static class LeetCodeBlind75
         return head;
     }
 
+    // #17
+    // 20. Valid Parentheses
+    // TODO: solved, but redo
+
+    // #18
+    // 21. Merge Two Sorted Lists
+    // TODO: solved, but redo
+
+    // #19
+    // 23. Merge k Sorted Lists
+    // TODO: HARD
+
+    // #20
+    // 152. Maximum Product Subarray
+    // Given an integer array nums, find a subarray that has the largest product, and return the product.
+    // Т.е. вернуть максимальное произведение непрерывной подпоследовательности массива
+    // Трюк в том, что из-за отрицательных чисел нужно хранить и минимальное произведение на текущем шаге
+    // т.к. в случае отричательного числа минимальное произведение может стать максимальным
+    // Kaden's Algorithm but modified to track min product as well
+    public static int MaxProduct(int[] nums)
+    {
+        var result = nums[0];
+        var maxP = nums[0];
+        var minP = nums[0];
+        for (int i = 1; i < nums.Length; i++)
+        {
+            var tmpMax = nums[i] * maxP;
+            var tmpMin = nums[i] * minP;
+            maxP = Math.Max(nums[i], Math.Max(tmpMax, tmpMin));
+            minP = Math.Min(nums[i], Math.Min(tmpMax, tmpMin));
+
+            result = Math.Max(result, maxP);
+        }
+        return result;
+    }
+
+
 
     // #?
     // 572. Subtree of Another Tree
