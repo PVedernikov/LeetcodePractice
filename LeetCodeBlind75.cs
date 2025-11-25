@@ -4,29 +4,8 @@
 public static class LeetCodeBlind75
 {
     // #1
-    // 1. Two Sum
-    // HashSet
-    public static int[] TwoSum(int[] nums, int target)
-    {
-        var expecting = new Dictionary<int, int>();
-
-        for (int i = 0; i < nums.Length; i++)
-        {
-            if (expecting.ContainsKey(nums[i]))
-            {
-                return [expecting[nums[i]], i];
-            }
-            expecting[target - nums[i]] = i;
-        }
-
-        return Array.Empty<int>();
-    }
-
-    // #2
     // 128. Longest Consecutive Sequence
-    // HashSet
     // Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence.
-    // O(n) time
     public static int LongestConsecutive(int[] nums)
     {
         if (nums.Length == 0) return 0;
@@ -54,8 +33,28 @@ public static class LeetCodeBlind75
         return result;
     }
 
+
+    // #2
+    // 1. Two Sum
+    // HashSet
+    public static int[] TwoSum(int[] nums, int target)
+    {
+        var expecting = new Dictionary<int, int>();
+
+        for (int i = 0; i < nums.Length; i++)
+        {
+            if (expecting.ContainsKey(nums[i]))
+            {
+                return [expecting[nums[i]], i];
+            }
+            expecting[target - nums[i]] = i;
+        }
+
+        return Array.Empty<int>();
+    }
+
     // #3
-    // 128. Longest Consecutive Sequence
+    // 3. Longest Substring Without Repeating Characters
     // Sliding Window, HashSet
     // Given a string s, find the length of the longest substring without duplicate characters.
     #region LengthOfLongestSubstring
@@ -302,7 +301,6 @@ public static class LeetCodeBlind75
     // 139. Word Break
     // Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
     // Top-Down DP, Memoization
-
     #region 139. Word Break
     public static bool WordBreak(string s, IList<string> wordDict)
     {
@@ -424,7 +422,6 @@ public static class LeetCodeBlind75
         }
         return result;
     }
-
 
     // #13
     // 143. Reorder List
