@@ -512,7 +512,50 @@ public static class LeetCodeBlind75
 
     // #17
     // 20. Valid Parentheses
-    // TODO: solved, but redo
+    // Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+    // Stack
+    public static bool IsValid(string s)
+    {
+        var opens = new Stack<char>();
+        for (int i = 0; i < s.Length; i++)
+        {
+            if (s[i] == '(' || s[i] == '{' || s[i] == '[')
+            {
+                opens.Push(s[i]);
+                continue;
+            }
+
+            if (s[i] == ')' || s[i] == '}' || s[i] == ']')
+            {
+                if (opens.Count <= 0)
+                {
+                    return false;
+                }
+
+                var open = opens.Pop();
+
+                if (open == '(' && s[i] != ')')
+                {
+                    return false;
+                }
+                if (open == '{' && s[i] != '}')
+                {
+                    return false;
+                }
+                if (open == '[' && s[i] != ']')
+                {
+                    return false;
+                }
+            }
+        }
+
+        if (opens.Count > 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
 
     // #18
     // 21. Merge Two Sorted Lists
