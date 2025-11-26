@@ -546,7 +546,45 @@ public static class LeetCodeBlind75
         return result;
     }
 
+    // #21
+    // 153. Find Minimum in Rotated Sorted Array
+    // Suppose an array of length n sorted in ascending order is rotated between 1 and n times.
+    // Binary Search
+    #region 153. Find Minimum in Rotated Sorted Array
+    // O(log n)
+    public static int FindMin(int[] nums)
+    {
+        var l = 0;
+        var r = nums.Length - 1;
+        while (l < r)
+        {
+            var m = l + (r - l) / 2;
 
+            if (nums[m] < nums[r])
+            {
+                r = m;
+            }
+            else
+            {
+                l = m + 1;
+            }
+        }
+        return nums[l];
+    }
+
+    // O(n)
+    public static int FindMinLinearTime(int[] nums)
+    {
+        for (int i = 0; i < nums.Length - 1; i++)
+        {
+            if (nums[i] > nums[i + 1])
+            {
+                return nums[i + 1];
+            }
+        }
+        return nums[0];
+    }
+    #endregion
 
     // #?
     // 572. Subtree of Another Tree
