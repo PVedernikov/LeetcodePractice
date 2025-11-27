@@ -559,7 +559,51 @@ public static class LeetCodeBlind75
 
     // #18
     // 21. Merge Two Sorted Lists
-    // TODO: solved, but redo
+    // You are given the heads of two sorted linked lists list1 and list2.
+    // Merge the two lists into one sorted list. The list should be made by splicing together the nodes of the first two lists.
+    public static ListNode MergeTwoLists(ListNode list1, ListNode list2)
+    {
+        if (list1 is null && list2 is null)
+        {
+            return null;
+        }
+        if (list1 is null)
+        {
+            return list2;
+        }
+        if (list2 is null)
+        {
+            return list1;
+        }
+
+        var result = list1.val < list2.val
+            ? list1
+            : list2;
+        var curr = new ListNode();
+        while (list1 is not null && list2 is not null)
+        {
+            if (list1.val < list2.val)
+            {
+                curr.next = list1;
+                list1 = list1.next;
+            }
+            else
+            {
+                curr.next = list2;
+                list2 = list2.next;
+            }
+            curr = curr.next;
+        }
+        if (list1 is null)
+        {
+            curr.next = list2;
+        }
+        if (list2 is null)
+        {
+            curr.next = list1;
+        }
+        return result;
+    }
 
     // #19
     // 23. Merge k Sorted Lists

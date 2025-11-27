@@ -20,7 +20,20 @@ public class ListNode
 
     public ListNode(int value) { Value = value; }
 
-    public int Value { get; set; }
+    public int val { get; set; }
+
+    public int Value
+    {
+        get
+        {
+            return val;
+        }
+
+        set
+        {
+            val = value;
+        }
+    }
 
     public ListNode next { get; set; }
 
