@@ -673,6 +673,57 @@ public static class LeetCodeBlind75
     }
     #endregion
 
+    // #22
+    // 33. Search in Rotated Sorted Array
+    // Given the array nums after the possible rotation and an integer target, return the index of target if it is in nums, or -1 if it is not in nums.
+    // Array, Binary Search
+    public static int Search(int[] nums, int target)
+    {
+        var n = nums.Length;
+        var l = 0;
+        var r = n - 1;
+
+        while (l <= r)
+        {
+            var m = l + (r - l) / 2;
+            if (nums[m] == target)
+            {
+                return m;
+            }
+
+            // Если левая часть отсортирована
+            if (nums[l] <= nums[m])
+            {
+                // Проверяем, лежит ли таргет в отсортированной левой части
+                if (nums[l] <= target && nums[m] > target)
+                {
+                    r = m - 1;
+                }
+                // Если нет, ищем в правой части
+                else
+                {
+                    l = m + 1;
+                }
+            }
+            // Иначе правая часть отсортирована, все аналогично
+            else
+            {
+                if (nums[r] >= target && nums[m] < target)
+                {
+                    l = m + 1;
+                }
+                else
+                {
+                    r = m - 1;
+                }
+            }
+        }
+
+        return -1;
+    }
+
+
+
     // #?
     // 572. Subtree of Another Tree
     // Subtree of Another Tree
