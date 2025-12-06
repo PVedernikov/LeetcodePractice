@@ -799,6 +799,48 @@ public static class LeetCodeBlind75
     }
     #endregion
 
+    // #24
+    // 39. Combination Sum
+    // Given an array of distinct integers candidates and a target integer target,
+    // return a list of all unique combinations of candidates where the chosen numbers sum to target.
+    // The same number may be chosen from candidates an unlimited number of times.
+    // Two combinations are unique if the frequency of at least one of the chosen numbers is different.
+    // Backtracking, O(2^n * target)
+    #region 39. Combination Sum
+    public static IList<IList<int>> CombinationSum(int[] candidates, int target)
+    {
+        IList<IList<int>> result = new List<IList<int>>();
+        CSum(0, 0, new List<int>(), candidates, target, result);
+
+        return result;
+    }
+
+    private static void CSum(
+        int i,
+        int currSum,
+        IList<int> comb,
+        int[] candidates,
+        int target,
+        IList<IList<int>> result)
+    {
+        if (currSum == target)
+        {
+            var copyComb = new List<int>(comb);
+            result.Add(copyComb);
+            return;
+        }
+
+        if (i >= candidates.Length || currSum > target) return;
+
+        comb.Add(candidates[i]);
+        var newSum = currSum + candidates[i];
+        CSum(i, currSum + candidates[i], comb, candidates, target, result);
+
+        comb.RemoveAt(comb.Count - 1);
+        CSum(i + 1, currSum, comb, candidates, target, result);
+    }
+    #endregion
+
 
     // #?
     // 572. Subtree of Another Tree
