@@ -679,9 +679,8 @@ public static class LeetCodeBlind75
     // Array, Binary Search
     public static int Search(int[] nums, int target)
     {
-        var n = nums.Length;
         var l = 0;
-        var r = n - 1;
+        var r = nums.Length - 1;
 
         while (l <= r)
         {
@@ -722,6 +721,83 @@ public static class LeetCodeBlind75
         return -1;
     }
 
+    // #23
+    // 417. Pacific Atlantic Water Flow
+    // There is an m x n rectangular island that borders both the Pacific Ocean and Atlantic Ocean.
+    // The Pacific Ocean touches the island's left and top edges, and the Atlantic Ocean touches the island's right and bottom edges.
+    // The island receives a lot of rain, and the rain water can flow to neighboring cells directly north, south, east, and west
+    // if the neighboring cell's height is less than or equal to the current cell's height.
+    // Water can flow from any cell adjacent to an ocean into the ocean.
+    // Return a 2D list of grid coordinates result where result[i] = [ri, ci] denotes that rain water can flow from cell (ri, ci) to both the Pacific and Atlantic oceans.
+    // BFS, O(m * n)
+    #region 417. Pacific Atlantic Water Flow
+    public static IList<IList<int>> PacificAtlantic(int[][] heights)
+    {
+        var m = heights.Length;
+        var n = heights[0].Length;
+
+        IList<IList<int>> result = new List<IList<int>>();
+        var reachP = new bool[m, n];
+        var reachA = new bool[m, n];
+        var queueP = new Queue<(int, int)>();
+        var queueA = new Queue<(int, int)>();
+        var dI = new int[] { -1, 1, 0, 0 };
+        var dJ = new int[] { 0, 0, -1, 1 };
+
+        for (int i = 0; i < m; i++)
+        {
+            queueP.Enqueue((i, 0));
+            queueA.Enqueue((i, n - 1));
+        }
+
+        for (int j = 0; j < n; j++)
+        {
+            queueP.Enqueue((0, j));
+            queueA.Enqueue((m - 1, j));
+        }
+
+        while (queueP.Count > 0)
+        {
+            (int i, int j) = queueP.Dequeue();
+            if (reachP[i, j]) continue;
+            reachP[i, j] = true;
+
+            for (int k = 0; k < 4; k++)
+            {
+                var di = i + dI[k];
+                var dj = j + dJ[k];
+                if (di < 0 || dj < 0 || di >= m || dj >= n) continue;
+                if (heights[i][j] > heights[di][dj]) continue;
+
+                queueP.Enqueue((di, dj));
+            }
+        }
+
+        while (queueA.Count > 0)
+        {
+            (int i, int j) = queueA.Dequeue();
+            if (reachA[i, j]) continue;
+
+            reachA[i, j] = true;
+            if (reachP[i, j])
+            {
+                result.Add(new List<int> { i, j });
+            }
+
+            for (int k = 0; k < 4; k++)
+            {
+                var di = i + dI[k];
+                var dj = j + dJ[k];
+                if (di < 0 || dj < 0 || di >= m || dj >= n) continue;
+                if (heights[i][j] > heights[di][dj]) continue;
+
+                queueA.Enqueue((di, dj));
+            }
+        }
+
+        return result;
+    }
+    #endregion
 
 
     // #?
