@@ -1,4 +1,6 @@
-﻿namespace LeetcodePreapare;
+﻿using System.Collections.Generic;
+
+namespace LeetcodePreapare;
 
 // https://leetcode.com/problem-list/r3q9lspc/
 public static class LeetCodeBlind75
@@ -607,7 +609,82 @@ public static class LeetCodeBlind75
 
     // #19
     // 23. Merge k Sorted Lists
-    // TODO: HARD
+    // You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.
+    // Merge all the linked-lists into one sorted linked-list and return it.
+    // Идея: использовать подход "разделяй и властвуй", рекурсивно сливая попарно списки
+    // Binary Divide and Conquer, Linked List, Merge Sort
+    // O(n log k), где n - общее количество элементов во всех списках, k - количество списков
+
+    #region 23. Merge k Sorted Lists
+    public static ListNode MergeKLists(ListNode[] lists)
+    {
+        var n = lists.Length;
+        if (n == 0) return null;
+        if (n == 1) return lists[0];
+
+        return MergeKLists(lists, 0, lists.Length - 1);
+    }
+
+    private static ListNode MergeKLists(ListNode[] lists, int l, int r)
+    {
+        if (l == r)
+        {
+            return lists[l];
+        }
+
+        ListNode list1 = null;
+        ListNode list2 = null;
+        if (l == r - 1)
+        {
+            list1 = lists[l];
+            list2 = lists[r];
+        }
+        else
+        {
+            var m = l + (r - l) / 2;
+            list1 = MergeKLists(lists, l, m);
+            list2 = MergeKLists(lists, m + 1, r);
+        }
+
+        return MergeTwoListsForMergeKLists(list1, list2);
+    }
+
+    private static ListNode MergeTwoListsForMergeKLists(ListNode list1, ListNode list2)
+    {
+        if (list1 is null && list2 is null) return null;
+        if (list1 is null) return list2;
+        if (list2 is null) return list1;
+
+        var dummy = new ListNode();
+        var cur = dummy;
+        while (list1 is not null && list2 is not null)
+        {
+            if (list1.val < list2.val)
+            {
+                cur.next = list1;
+                list1 = list1.next;
+            }
+            else
+            {
+                cur.next = list2;
+                list2 = list2.next;
+            }
+
+            cur = cur.next;
+        }
+
+        if (list1 is null && list2 is not null)
+        {
+            cur.next = list2;
+        }
+        if (list2 is null && list1 is not null)
+        {
+            cur.next = list1;
+        }
+
+        return dummy.next;
+    }
+    #endregion
 
     // #20
     // 152. Maximum Product Subarray
