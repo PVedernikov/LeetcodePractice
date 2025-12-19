@@ -926,6 +926,49 @@ public static class LeetCodeBlind75
     // - double findMedian() returns the median of all elements so far. Answers within 10-5 of the actual answer will be accepted.
     // implemented in MedianFinder.cs
 
+    // #26
+    // 424. Longest Repeating Character Replacement
+    // Sliding Window
+    // TODO: попробовать другой вариант решения с подсчетом частот символов в окне т.н. "classic solution"
+    // O(n * 26) = O(n) - time complexity
+    // O(1) - memory complexity
+    #region 424. Longest Repeating Character Replacement
+    public static int CharacterReplacement(string s, int k)
+    {
+        var n = s.Length;
+        // Ранний выход, если можно тупо заменить все символы кроме одного
+        if (k >= n - 1) return n;
+
+        var result = 0;
+        for (int i = 0; i < 26; i++)
+        {
+            var currentLetter = (char)('A' + i);
+            var currentMaxLen = 0;
+            var replaces = 0;
+            var r = 0;
+            for (int l = 0; l < n; l++)
+            {
+                while (r < n && (s[r] == currentLetter || replaces < k))
+                {
+                    if (s[r] != currentLetter) replaces++;
+
+                    r++;
+                }
+                currentMaxLen = Math.Max(currentMaxLen, r - l);
+
+                if (s[l] != currentLetter) replaces--;
+            }
+
+            result = Math.Max(result, currentMaxLen);
+
+            if (result == n) // Ранний выход, длиннее уже не может быть
+                break;
+        }
+
+        return result;
+    }
+    #endregion
+
     // #?
     // 572. Subtree of Another Tree
     // Subtree of Another Tree
