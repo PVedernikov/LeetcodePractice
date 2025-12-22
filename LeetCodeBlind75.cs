@@ -969,6 +969,38 @@ public static class LeetCodeBlind75
     }
     #endregion
 
+    // #27
+    // 300. Longest Increasing Subsequence
+    // Given an integer array nums, return the length of the longest strictly increasing subsequence.
+    // DP
+    // O(n^2) time complexity
+    // TODO: implement O(n log n) solution with binary search
+    #region 300. Longest Increasing Subsequence
+    public static int LengthOfLIS(int[] nums)
+    {
+        var n = nums.Length;
+        if (n <= 1) return n;
+
+        var result = 0;
+        var cache = new int[n];
+        for (int i = n - 1; i >= 0; i--)
+        {
+            var currMaxLen = 1;
+            for (int j = i + 1; j < n; j++)
+            {
+                if (nums[j] > nums[i])
+                {
+                    currMaxLen = Math.Max(currMaxLen, 1 + cache[j]);
+                }
+            }
+            cache[i] = currMaxLen;
+            result = Math.Max(result, currMaxLen);
+        }
+
+        return result;
+    }
+    #endregion
+
     // #?
     // 572. Subtree of Another Tree
     // Subtree of Another Tree
