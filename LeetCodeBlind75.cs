@@ -1007,6 +1007,7 @@ public static class LeetCodeBlind75
     // You are given an n x n 2D matrix representing an image, rotate the image by 90 degrees (clockwise).
     // You have to rotate the image in-place, which means you have to modify the input 2D matrix directly. DO NOT allocate another 2D matrix and do the rotation.
     // O(n^2) time complexity
+    #region 48. Rotate Image
     public static void Rotate(int[][] matrix)
     {
         var n = matrix.Length;
@@ -1030,8 +1031,52 @@ public static class LeetCodeBlind75
             }
         }
     }
+    #endregion
 
+    // #29
+    // 49. Group Anagrams
+    // Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+    // Frequency Count as Hash Key
+    #region 49. Group Anagrams
+    public static IList<IList<string>> GroupAnagrams(string[] strs)
+    {
+        if (strs is null || strs.Length == 0)
+        {
+            return new List<IList<string>>();
+        }
 
+        var n = strs.Length;
+        var groups = new Dictionary<string, List<string>>();
+        for (int i = 0; i < n; i++)
+        {
+            var keyArr = new int[26];
+            for (int j = 0; j < strs[i].Length; j++)
+            {
+                var index = (int)(strs[i][j] - 'a');
+                keyArr[index]++;
+            }
+            var key = string.Join(",", keyArr);
+            if (!groups.ContainsKey(key))
+            {
+                groups[key] = new List<string>();
+            }
+            groups[key].Add(strs[i]);
+        }
+
+        var result = new List<IList<string>>();
+        foreach (var item in groups)
+        {
+            var group = new List<string>();
+            foreach (var str in item.Value)
+            {
+                group.Add(str);
+            }
+            result.Add(group);
+        }
+
+        return result;
+    }
+    #endregion
 
     // #?
     // 572. Subtree of Another Tree
