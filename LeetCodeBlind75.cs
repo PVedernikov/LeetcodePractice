@@ -1017,11 +1017,11 @@ public static class LeetCodeBlind75
         {
             for (int j = i; j < n - i - 1; j++)
             {
-                // Для понимания, какие элементы меняются местами
-                // var t = new int[] { i, j };
-                // var l = new int[] { n - 1 - j, i };
-                // var r = new int[] { j, n - 1 - i };
-                // var b = new int[] { n - 1 - i, n - 1 - j };
+                // Для понимания, какие элементы меняются местами    ---t-->
+                // var t = new int[] { i, j };                      ^       | 
+                // var l = new int[] { n - 1 - j, i };             l|       |r
+                // var r = new int[] { j, n - 1 - i };              |       v
+                // var b = new int[] { n - 1 - i, n - 1 - j };       <--b---
 
                 var tmp = matrix[i][j];
                 matrix[i][j] = matrix[n - 1 - j][i];
