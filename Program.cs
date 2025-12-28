@@ -2496,8 +2496,13 @@ internal class Program
 
         //var result = Result.FindShortestCycle(7, [[0, 1], [1, 2], [2, 0], [3, 4], [4, 5], [5, 6], [6, 3]]);
         //Console.WriteLine(result);
-        var result = LeetCodeBlind75.LongestPalindrome("babad");
-        Console.WriteLine(result);
+        //var result = LeetCodeBlind75.LongestPalindrome("babad");
+
+        LeetCodeBlind75.Rotate([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
+
+        //LeetCodeBlind75.Rotate([[5, 1, 9, 11], [2, 4, 8, 10], [13, 3, 6, 7], [15, 14, 12, 16]]);
+
+        //Console.WriteLine(result);
     }
 }
 
