@@ -1198,6 +1198,62 @@ public static class LeetCodeBlind75
 
     #endregion
 
+    // #33
+    // 55. Jump Game
+    // You are given an integer array nums. You are initially positioned at the array's first index,
+    // and each element in the array represents your maximum jump length at that position.
+    // Return true if you can reach the last index, or false otherwise.
+    #region 55. Jump Game
+
+    // Greedy
+    // O(n) time complexity
+    public static bool CanJump(int[] nums)
+    {
+        var n = nums.Length;
+        if (n <= 1) return true;
+
+        var maxIndex = 0;
+
+        for (int i = 0; i <= maxIndex; i++)
+        {
+            maxIndex = Math.Max(maxIndex, i + nums[i]);
+            if (maxIndex >= n - 1) return true;
+        }
+
+        return false;
+    }
+
+    // DP + Memoization
+    // O(n^2) time complexity
+    // NOT OPTIMAL
+    public static bool CanJumpDP(int[] nums)
+    {
+        var n = nums.Length;
+        return CanJumpDP(nums, 0, n, new Dictionary<int, bool>());
+    }
+
+    private static bool CanJumpDP(int[] nums, int i, int n, Dictionary<int, bool> cache)
+    {
+        if (cache.ContainsKey(i)) return cache[i];
+
+        if (i >= n - 1 || i + nums[i] >= n - 1)
+        {
+            cache[i] = true;
+            return true;
+        }
+
+        var result = false;
+        var lastIndex = Math.Min(n - 1, i + nums[i]);
+        for (int j = i + 1; j <= lastIndex; j++)
+        {
+            result = result || CanJumpDP(nums, j, n, cache);
+        }
+
+        cache[i] = result;
+        return result;
+    }
+    #endregion
+
     // #?
     // 572. Subtree of Another Tree
     // Subtree of Another Tree
