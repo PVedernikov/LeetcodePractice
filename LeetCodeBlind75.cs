@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LeetcodePreapare;
 
@@ -1254,7 +1255,11 @@ public static class LeetCodeBlind75
     }
     #endregion
 
-    // #?
+    // #34
+
+    // #35
+
+    // #36
     // 572. Subtree of Another Tree
     // Subtree of Another Tree
     #region Subtree of Another Tree
@@ -1290,6 +1295,67 @@ public static class LeetCodeBlind75
         }
 
         return false;
+    }
+    #endregion
+
+    // #37
+
+    // #38
+
+    // #39
+
+    // #40
+
+    // #41
+    // 322. Coin Change
+    // You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.
+    // Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return -1.
+    // You may assume that you have an infinite number of each kind of coin.
+    // DP
+    #region 322. Coin Change
+    // 2D DP
+    // NOT OPTIMAL FOR MEMORY
+    // TODO: implement 1D DP solution, replace int.MaxValue with something to avoid unnecessary comparisons
+    public static int CoinChange2D_DP(int[] coins, int amount)
+    {
+        if (amount == 0) return 0;
+        var n = coins.Length;
+        if (n == 0) return -1;
+
+        var dp = new int[amount, n];
+
+        for (int a = 0; a < amount; a++)
+        {
+            for (int c = 0; c < n; c++)
+            {
+                if (coins[c] > a + 1)
+                {
+                    dp[a, c] = c > 0
+                        ? dp[a, c - 1]
+                        : int.MaxValue;
+                }
+                else if (coins[c] == a + 1)
+                {
+                    dp[a, c] = 1;
+                }
+                else // coins[c] < a + 1
+                {
+                    var prevAmountPlusCoin = dp[a - coins[c], c] < int.MaxValue
+                        ? dp[a - coins[c], c] + 1
+                        : int.MaxValue;
+                    var sameAmountNoCoin = c > 0
+                        ? dp[a, c - 1]
+                        : int.MaxValue;
+
+                    dp[a, c] = Math.Min(prevAmountPlusCoin, sameAmountNoCoin);
+                }
+
+            }
+        }
+
+        return dp[amount - 1, n - 1] < int.MaxValue
+            ? dp[amount - 1, n - 1]
+            : -1;
     }
     #endregion
 
