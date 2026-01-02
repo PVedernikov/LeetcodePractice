@@ -1106,7 +1106,7 @@ public static class LeetCodeBlind75
     // Given an m x n matrix, return all elements of the matrix in spiral order.
     // O(m * n) time complexity
     #region 54. Spiral Matrix
-    public static IList<int> SpiralOrder(int[][] matrix)
+    public static IList<int> SpiralOrder_usingStep(int[][] matrix)
     {
         var result = new List<int>();
         if (matrix.Length == 0) return result;
@@ -1141,6 +1141,59 @@ public static class LeetCodeBlind75
 
         return result;
     }
+
+    // 54. Spiral Matrix using boundaries: top left right bottom
+    // Makes it more readable
+    public static IList<int> SpiralOrder(int[][] matrix)
+    {
+        var result = new List<int>();
+        if (matrix.Length == 0) return result;
+        if (matrix[0].Length == 0) return result;
+        var m = matrix.Length;
+        var n = matrix[0].Length;
+        var top = 0;
+        var left = 0;
+        var right = n - 1;
+        var bottom = m - 1;
+        while (top <= bottom && left <= right)
+        {
+            // top
+            for (int j = left; j <= right; j++)
+            {
+                result.Add(matrix[top][j]);
+            }
+            top++;
+
+            // right
+            for (int i = top; i <= bottom; i++)
+            {
+                result.Add(matrix[i][right]);
+            }
+            right--;
+
+            // bottom
+            if (top <= bottom)
+            {
+                for (int j = right; j >= left; j--)
+                {
+                    result.Add(matrix[bottom][j]);
+                }
+                bottom--;
+            }
+            // left
+            if (left <= right)
+            {
+                for (int i = bottom; i >= top; i--)
+                {
+                    result.Add(matrix[i][left]);
+                }
+                left++;
+            }
+        }
+
+        return result;
+    }
+
     #endregion
 
     // #?
