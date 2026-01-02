@@ -1078,6 +1078,71 @@ public static class LeetCodeBlind75
     }
     #endregion
 
+    // #30
+    // 435. Non-overlapping Intervals
+
+
+
+    // #31
+    // 53. Maximum Subarray
+    // Given an integer array nums, find the subarray with the largest sum, and return its sum.
+    // Kadane’s Algorithm
+    // O(n) time complexity
+    public static int MaxSubArray(int[] nums)
+    {
+        var maxSum = nums[0];
+        var currentSum = nums[0];
+        for (var i = 1; i < nums.Length; i++)
+        {
+            currentSum = Math.Max(nums[i], currentSum + nums[i]);
+            maxSum = Math.Max(currentSum, maxSum);
+        }
+
+        return maxSum;
+    }
+
+    // #32
+    // 54. Spiral Matrix
+    // Given an m x n matrix, return all elements of the matrix in spiral order.
+    // O(m * n) time complexity
+    #region 54. Spiral Matrix
+    public static IList<int> SpiralOrder(int[][] matrix)
+    {
+        var result = new List<int>();
+        if (matrix.Length == 0) return result;
+        if (matrix[0].Length == 0) return result;
+        var m = matrix.Length;
+        var n = matrix[0].Length;
+        var minMN = Math.Min(m, n);
+        var stepLimit = minMN / 2 + minMN % 2;
+        for (int step = 0; step < stepLimit; step++)
+        {
+            // top
+            for (int j = step; j < n - step; j++)
+            {
+                result.Add(matrix[step][j]);
+            }
+            // right
+            for (int i = step + 1; i < m - step; i++)
+            {
+                result.Add(matrix[i][n - step - 1]);
+            }
+            // bottom
+            for (int j = n - step - 2; j > step && (m - step - 1) > step; j--)
+            {
+                result.Add(matrix[m - step - 1][j]);
+            }
+            // left
+            for (int i = m - step - 1; i > step && (n - step - 1) > step; i--)
+            {
+                result.Add(matrix[i][step]);
+            }
+        }
+
+        return result;
+    }
+    #endregion
+
     // #?
     // 572. Subtree of Another Tree
     // Subtree of Another Tree
