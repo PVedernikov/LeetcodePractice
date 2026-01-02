@@ -1357,6 +1357,40 @@ public static class LeetCodeBlind75
             ? dp[amount - 1, n - 1]
             : -1;
     }
+
+    // 1D DP
+    public static int CoinChange(int[] coins, int amount)
+    {
+        if (amount == 0) return 0;
+        var n = coins.Length;
+        if (n == 0) return -1;
+        var maxValue = int.MaxValue / 2;
+
+        var dp = new int[amount];
+        for (int a = 0; a < amount; a++)
+        {
+            dp[a] = maxValue;
+        }
+
+        for (int a = 0; a < amount; a++)
+        {
+            for (int c = 0; c < n; c++)
+            {
+                if (coins[c] == a + 1)
+                {
+                    dp[a] = 1;
+                }
+                else if (coins[c] < a + 1)
+                {
+                    dp[a] = Math.Min(dp[a - coins[c]] + 1, dp[a]);
+                }
+            }
+        }
+
+        return dp[amount - 1] < maxValue
+            ? dp[amount - 1]
+            : -1;
+    }
     #endregion
 
 
