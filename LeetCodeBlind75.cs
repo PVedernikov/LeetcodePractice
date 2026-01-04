@@ -1350,7 +1350,101 @@ public static class LeetCodeBlind75
     #endregion
 
     // #35
+    // 57. Insert Interval
+    // You are given an array of non-overlapping intervals intervals where intervals[i] = [starti, endi]
+    // represent the start and the end of the i-th interval and intervals is sorted in ascending order by starti.
+    // You are also given an interval newInterval = [start, end] that represents the start and end of another interval.
+    // Insert newInterval into intervals such that intervals is still sorted in ascending order by starti
+    // and intervals still does not have any overlapping intervals (merge overlapping intervals if necessary).
+    // Return intervals after the insertion.
+    #region 57. Insert Interval
+    // First attempt: one loop
+    public static int[][] InsertOneLoop(int[][] intervals, int[] newInterval)
+    {
+        var n = intervals.Length;
+        if (n == 0)
+        {
+            return new[] { newInterval };
+        }
 
+        var result = new List<int[]>();
+        var inserted = false;
+        for (int i = 0; i < n; i++)
+        {
+            if (inserted)
+            {
+                result.Add(intervals[i]);
+                continue;
+            }
+
+            if (intervals[i][1] < newInterval[0])
+            {
+                result.Add(intervals[i]);
+                continue;
+            }
+
+            if (intervals[i][0] > newInterval[1])
+            {
+                inserted = true;
+                result.Add(newInterval);
+                result.Add(intervals[i]);
+                continue;
+            }
+
+            // overlapping
+            if (intervals[i][0] <= newInterval[1] && intervals[i][1] >= newInterval[0])
+            {
+                newInterval[0] = Math.Min(newInterval[0], intervals[i][0]);
+                newInterval[1] = Math.Max(newInterval[1], intervals[i][1]);
+            }
+        }
+
+        if (!inserted)
+        {
+            result.Add(newInterval);
+        }
+
+        return result.ToArray();
+    }
+
+    // Second attempt: three loops, more readable
+    public static int[][] Insert(int[][] intervals, int[] newInterval)
+    {
+        var n = intervals.Length;
+        if (n == 0)
+        {
+            return new[] { newInterval };
+        }
+
+        var result = new List<int[]>();
+        var i = 0;
+        // add all intervals that are strictly before
+        while (i < n && intervals[i][1] < newInterval[0])
+        {
+            result.Add(intervals[i]);
+            i++;
+        }
+
+        // merge if there are any overlapping intervals
+        while (i < n && intervals[i][0] <= newInterval[1] && intervals[i][1] >= newInterval[0])
+        {
+            newInterval[0] = Math.Min(newInterval[0], intervals[i][0]);
+            newInterval[1] = Math.Max(newInterval[1], intervals[i][1]);
+            i++;
+        }
+        result.Add(newInterval);
+
+        // add all intervals that are strictly after
+        while (i < n)
+        {
+            result.Add(intervals[i]);
+            i++;
+        }
+
+        return result.ToArray();
+    }
+    #endregion
+    
     // #36
     // 572. Subtree of Another Tree
     // Subtree of Another Tree
