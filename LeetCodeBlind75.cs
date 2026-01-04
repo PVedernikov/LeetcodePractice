@@ -1081,8 +1081,67 @@ public static class LeetCodeBlind75
 
     // #30
     // 435. Non-overlapping Intervals
-    // TODO
+    // Given an array of intervals intervals where intervals[i] = [starti, endi],
+    // return the minimum number of intervals you need to remove to make the rest of the intervals non-overlapping.
+    // Note that intervals which only touch at a point are non-overlapping. For example, [1, 2] and [2, 3] are non-overlapping.
+    // Greedy, Sort
+    // 0(n log n) time complexity because of sorting
+    #region 435. Non-overlapping Intervals
 
+    // Option 1: sort by start time
+    public static int EraseOverlapIntervals(int[][] intervals)
+    {
+        var result = 0;
+
+        // sort by interval start time
+        // var sortedIntervals = intervals
+        //     .OrderBy(x => x[0])
+        //     .ToArray();
+
+        // sort by interval start time
+        Array.Sort(intervals, (a, b) => a[0].CompareTo(b[0]));
+
+        var currentEndTime = int.MinValue;
+        foreach (var interval in intervals)
+        {
+            if (currentEndTime <= interval[0])
+            {
+                currentEndTime = interval[1];
+            }
+            else
+            {
+                result++;
+                currentEndTime = Math.Min(interval[1], currentEndTime);
+            }
+        }
+
+        return result;
+    }
+
+    // Option 2: sort by end time
+    public static int EraseOverlapIntervals1(int[][] intervals)
+    {
+        var result = 0;
+        var n = intervals.Length;
+        // sort by interval end time
+        Array.Sort(intervals, (a, b) => a[1].CompareTo(b[1]));
+
+        var prevTime = int.MinValue;
+        foreach (var interval in intervals)
+        {
+            if (prevTime <= interval[0])
+            {
+                prevTime = interval[1];
+            }
+            else
+            {
+                result++;
+            }
+        }
+
+        return result;
+    }
+    #endregion
 
     // #31
     // 53. Maximum Subarray
