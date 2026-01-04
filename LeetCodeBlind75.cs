@@ -1315,6 +1315,39 @@ public static class LeetCodeBlind75
     #endregion
 
     // #34
+    // 56. Merge Intervals
+    // Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals,
+    // and return an array of the non-overlapping intervals that cover all the intervals in the input.
+    // Greedy, Sort
+    // O(n log n) time complexity because of sorting
+    #region 56. Merge Intervals
+    public static int[][] Merge(int[][] intervals)
+    {
+        var n = intervals.Length;
+        if (n <= 1) return intervals;
+
+        var result = new List<int[]>();
+        
+        // sort by interval start time
+        Array.Sort(intervals, (a, b) => a[0].CompareTo(b[0]));
+
+        var prevInterval = intervals[0]; // as an option, create a copy to avoid mutating input array
+        for (int i = 1; i < n; i++)
+        {
+            if (prevInterval[1] < intervals[i][0])
+            {
+                result.Add(prevInterval);
+                prevInterval = intervals[i]; // as an option, create a copy to avoid mutating input array
+            }
+            else
+            {
+                prevInterval[1] = Math.Max(prevInterval[1], intervals[i][1]);
+            }
+        }
+        result.Add(prevInterval);
+        return result.ToArray();
+    }
+    #endregion
 
     // #35
 
