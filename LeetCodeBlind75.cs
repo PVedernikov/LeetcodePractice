@@ -1722,6 +1722,60 @@ public static class LeetCodeBlind75
     }
     #endregion
 
+    // #45
+    // 200. Number of Islands
+    // Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.
+    // An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically.
+    // You may assume all four edges of the grid are all surrounded by water.
+    // DFS
+    // O(m * n) time complexity
+    // O(m * n) space complexity because of stack
+    // Идея: находим '1', увеличиваем счетчик островов, заливаем весь остров (DFS) меняя '1' на 'i', чтобы не считать его повторно
+
+    #region 200. Number of Islands
+
+    public static int NumIslands(char[][] grid)
+    {
+        var m = grid.Length;
+        var n = grid[0].Length;
+        var dI = new[] { -1, 1, 0, 0 };
+        var dJ = new[] { 0, 0, -1, 1 };
+        var result = 0;
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (grid[i][j] == '1')
+                {
+                    result++;
+
+                    var stack = new Stack<(int, int)>();
+                    grid[i][j] = 'i';
+                    stack.Push((i, j));
+                    while (stack.Count > 0)
+                    {
+                        (int ii, int jj) = stack.Pop();
+                        for (int k = 0; k < 4; k++)
+                        {
+                            var iid = ii + dI[k];
+                            var jjd = jj + dJ[k];
+
+                            if (iid >= 0 && iid < m && jjd >= 0 && jjd < n && grid[iid][jjd] == '1')
+                            {
+                                grid[iid][jjd] = 'i';
+                                stack.Push((iid, jjd));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    #endregion
+
     // #?
     // 242. Valid Anagram
     // Given two strings s and t, return true if t is an anagram of s, and false otherwise.
