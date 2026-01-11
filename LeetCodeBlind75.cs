@@ -1776,6 +1776,120 @@ public static class LeetCodeBlind75
 
     #endregion
 
+    // #46
+    // 73. Set Matrix Zeroes
+    // Given an m x n integer matrix matrix, if an element is 0, set its entire row and column to 0's.
+    // You must do it in place.
+    // O(m * n) time complexity
+    #region 73. Set Matrix Zeroes
+
+    // First attempt: O(m + n) space complexity
+    public static void SetZeroesOmn(int[][] matrix)
+    {
+        var m = matrix.Length;
+        var n = matrix[0].Length;
+
+        var rows = new bool[m];
+        var cols = new bool[n];
+
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (matrix[i][j] == 0)
+                {
+                    rows[i] = true;
+                    cols[j] = true;
+                }
+            }
+        }
+
+        for (int i = 0; i < m; i++)
+        {
+            if (rows[i])
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+
+        for (int j = 0; j < n; j++)
+        {
+            if (cols[j])
+            {
+                for (int i = 0; i < m; i++)
+                {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+    }
+
+    // Second attempt: O(1) space complexity
+    // Идея: использовать нулевую строку и нулевой столбец для хранения информации о том, какие строки и столбцы нужно обнулить
+    // Важно: отдельно хранить флаг x0 для нулевой строки, так как matrix[0][0] кодирует нулевой столбец
+    public static void SetZeroes(int[][] matrix)
+    {
+        var m = matrix.Length;
+        var n = matrix[0].Length;
+        var x0 = false;
+        // Отдельно обрабатываем нулевую строку
+        for (int j = 0; j < n; j++)
+        {
+            if (matrix[0][j] == 0)
+            {
+                x0 = true;
+                break;
+            }
+        }
+        // Заполнияем информацию о том, какие строки и столбцы нужно обнулить
+        for (int i = 1; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (matrix[i][j] == 0)
+                {
+                    matrix[i][0] = 0;
+                    matrix[0][j] = 0;
+                }
+            }
+        }
+        // Обнуляем строки, начиная с первой (нулевую обработаем отдельно, чтоб не запортачить флаги для обнуления столбцов)
+        for (int i = 1; i < m; i++)
+        {
+            if (matrix[i][0] == 0)
+            {
+                for (int j = 1; j < n; j++)
+                {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        // Обнуляем столбцы
+        for (int j = 0; j < n; j++)
+        {
+            if (matrix[0][j] == 0)
+            {
+                for (int i = 1; i < m; i++)
+                {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        // Обнуляем нулевую строку, если нужно
+        if (x0)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                matrix[0][j] = 0;
+            }
+        }
+    }
+
+    #endregion
+
     // #?
     // 242. Valid Anagram
     // Given two strings s and t, return true if t is an anagram of s, and false otherwise.
