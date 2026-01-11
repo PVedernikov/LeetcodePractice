@@ -1547,6 +1547,7 @@ public static class LeetCodeBlind75
     }
 
     #endregion
+ 
     // #38
 
     // #39
@@ -1569,7 +1570,6 @@ public static class LeetCodeBlind75
     #region 322. Coin Change
     // 2D DP
     // NOT OPTIMAL FOR MEMORY
-    // TODO: implement 1D DP solution, replace int.MaxValue with something to avoid unnecessary comparisons
     public static int CoinChange2D_DP(int[] coins, int amount)
     {
         if (amount == 0) return 0;
@@ -1647,6 +1647,80 @@ public static class LeetCodeBlind75
     }
     #endregion
 
+    // #42
+    // 323. Number of Connected Components in an Undirected Graph
+    // TODO: buy subscription
+
+    // #43
+    // 70. Climbing Stairs
+    // You are climbing a staircase. It takes n steps to reach the top.
+    // Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+    // Fibonacci-like DP
+    // O(n) time complexity
+    #region 70. Climbing Stairs
+    public static int ClimbStairs(int n)
+    {
+        if (n <= 3) return n;
+
+        var prev1 = 3;
+        var prev2 = 2;
+        var result = 0;
+        for (int i = 4; i <= n; i++)
+        {
+            result = prev2 + prev1;
+            prev2 = prev1;
+            prev1 = result;
+        }
+        return result;
+    }
+    #endregion
+
+    // #44
+    // 198. House Robber
+    // You are a professional robber planning to rob houses along a street.
+    // Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them
+    // is that adjacent (соседние) houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
+    // Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
+    // DP + Memoization
+    #region 198. House Robber, recursive
+    // O(n) time complexity
+    // O(n) space complexity
+    public static int RobRecursive(int[] nums)
+    {
+        return RobRecursive(nums, 0, new Dictionary<int, int>());
+    }
+
+    private static int RobRecursive(int[] nums, int i, Dictionary<int, int> cache)
+    {
+        var n = nums.Length;
+        if (i >= n) return 0;
+        if (i == n - 1) return nums[n - 1];
+        if (cache.ContainsKey(i)) return cache[i];
+
+        var result = Math.Max(RobRecursive(nums, i + 1, cache), nums[i] + RobRecursive(nums, i + 2, cache));
+        cache[i] = result;
+        return result;
+    }
+    #endregion
+    
+    #region 198. House Robber, iterative
+    // O(n) time complexity
+    // O(1) space complexity
+    public static int Rob(int[] nums)
+    {
+        var result = 0;
+        var prevEx = 0;
+        var prevIn = 0;
+        for (int i = 0; i < nums.Length; i++)
+        {
+            result = Math.Max(nums[i] + prevIn, prevEx);
+            prevIn = prevEx;
+            prevEx = result;
+        }
+
+        return result;
+    }
+    #endregion
 
     // #?
     // 242. Valid Anagram
