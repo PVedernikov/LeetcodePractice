@@ -1890,6 +1890,86 @@ public static class LeetCodeBlind75
 
     #endregion
 
+    // #47
+    // TODO
+    #region 
+    #endregion
+
+    // #48
+    // 206. Reverse Linked List
+    // Given the head of a singly linked list, reverse the list, and return the reversed list.
+    // O(n) time complexity
+    // Идея: вставка за временную голову
+    #region 206. Reverse Linked List
+    public static ListNode ReverseList(ListNode head)
+    {
+        var tmpHead = new ListNode();
+
+        while (head != null)
+        {
+            var h = head.next;
+            head.next = tmpHead.next;
+            tmpHead.next = head;
+            head = h;
+        }
+
+        return tmpHead.next;
+    }
+    #endregion
+
+    // #49
+    // 79. Word Search
+    // Given an m x n grid of characters board and a string word, return true if word exists in the grid.
+    // The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring.
+    // The same letter cell may not be used more than once.
+    // DFS + Backtracking
+    // O(m * n * 4^L) time complexity, where L is the length of the word
+    #region 79. Word Search
+
+    public static bool Exist(char[][] board, string word)
+    {
+        var m = board.Length;
+        var n = board[0].Length;
+        var visited = new bool[m, n];
+        var di = new int[] { -1, 1, 0, 0 };
+        var dj = new int[] { 0, 0, -1, 1 };
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (WordExists(i, j, 0, board, word, visited, di, dj))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static bool WordExists(int i, int j, int c, char[][] board, string word, bool[,] visited, int[] dirI, int[] dirJ)
+    {
+        if (c >= word.Length) return true;
+        if (i < 0 || i >= board.Length || j < 0 || j >= board[0].Length) return false;
+        if (visited[i, j]) return false;
+        if (board[i][j] != word[c]) return false;
+        visited[i, j] = true;
+
+        for (int d = 0; d < 4; d++)
+        {
+            var di = i + dirI[d];
+            var dj = j + dirJ[d];
+            if (WordExists(di, dj, c + 1, board, word, visited, dirI, dirJ))
+            {
+                return true;
+            }
+        }
+        visited[i, j] = false;
+        return false;
+    }
+
+    #endregion
+
     // #?
     // 242. Valid Anagram
     // Given two strings s and t, return true if t is an anagram of s, and false otherwise.
