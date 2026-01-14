@@ -1964,7 +1964,8 @@ public static class LeetCodeBlind75
                 return true;
             }
         }
-        visited[i, j] = false;
+        // Важный момент бэктрекинга - если этот путь не подходит, снимаем отметку посещения, чтобы не пересекаться с другими путями
+        visited[i, j] = false; 
         return false;
     }
 
