@@ -1971,6 +1971,71 @@ public static class LeetCodeBlind75
 
     #endregion
 
+    // #50
+    // 207. Course Schedule
+    // There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1.
+    // You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai.
+    // For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
+    // Return true if you can finish all courses. Otherwise, return false.
+    // DFS
+    #region 207. Course Schedule
+
+    public static bool CanFinish(int numCourses, int[][] prerequisites)
+    {
+        var conn = new List<int>[numCourses];
+        for (int i = 0; i < numCourses; i++)
+        {
+            conn[i] = new List<int>();
+        }
+
+        foreach (var edge in prerequisites)
+        {
+            conn[edge[0]].Add(edge[1]);
+        }
+
+        var canFinish = new Dictionary<int, bool>();
+        for (int i = 0; i < numCourses; i++)
+        {
+            if (!CanFinish(i, conn, canFinish, new bool[numCourses]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool CanFinish(int i, List<int>[] conn, Dictionary<int, bool> canFinish, bool[] visited)
+    {
+        if (canFinish.ContainsKey(i)) return canFinish[i];
+        if (conn[i].Count == 0)
+        {
+            canFinish[i] = true;
+            return true;
+        }
+        if (visited[i])
+        {
+            canFinish[i] = false;
+            return false;
+        }
+
+        visited[i] = true;
+
+        foreach (int j in conn[i])
+        {
+            if (CanFinish(j, conn, canFinish, visited) == false)
+            {
+                canFinish[i] = false;
+                return false;
+            }
+        }
+
+        canFinish[i] = true;
+        return true;
+    }
+    #endregion
+
+
     // #?
     // 242. Valid Anagram
     // Given two strings s and t, return true if t is an anagram of s, and false otherwise.
