@@ -1891,8 +1891,9 @@ public static class LeetCodeBlind75
     #endregion
 
     // #47
-    // TODO
-    #region 
+    // 76. Minimum Window Substring
+    // TODO, HARD
+    #region 76. Minimum Window Substring
     #endregion
 
     // #48
@@ -1980,7 +1981,7 @@ public static class LeetCodeBlind75
     // DFS
     // NOT OPTIMAL
     // TODO: идея верная, но надо подумать как оптимизировать
-    // TOTO: реализовать BFS
+    // TODO: реализовать BFS
     #region 207. Course Schedule
 
     public static bool CanFinish(int numCourses, int[][] prerequisites)
