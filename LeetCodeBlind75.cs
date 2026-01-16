@@ -1978,6 +1978,9 @@ public static class LeetCodeBlind75
     // For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
     // Return true if you can finish all courses. Otherwise, return false.
     // DFS
+    // NOT OPTIMAL
+    // TODO: идея верная, но надо подумать как оптимизировать
+    // TOTO: реализовать BFS
     #region 207. Course Schedule
 
     public static bool CanFinish(int numCourses, int[][] prerequisites)
