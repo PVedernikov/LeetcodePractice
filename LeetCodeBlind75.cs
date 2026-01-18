@@ -2043,7 +2043,7 @@ public static class LeetCodeBlind75
 
     // #52
     // 338. Counting Bits
-    // TODO: inplement. Expected solution: DP with O(n) time complexity
+    // TODO: implement. Expected solution: DP with O(n) time complexity
 
     // #53
     // 211. Design Add and Search Words Data Structure
