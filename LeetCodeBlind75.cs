@@ -1979,8 +1979,6 @@ public static class LeetCodeBlind75
     // For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
     // Return true if you can finish all courses. Otherwise, return false.
     // DFS
-    // NOT OPTIMAL
-    // TODO: идея верная, но надо подумать как оптимизировать
     // TODO: реализовать BFS
     #region 207. Course Schedule
 
@@ -1997,10 +1995,10 @@ public static class LeetCodeBlind75
             conn[edge[0]].Add(edge[1]);
         }
 
-        var canFinish = new Dictionary<int, bool>();
+        var canFinish = new int[numCourses]; // 0 - not processed, 1 - visited, 2 - can be finished
         for (int i = 0; i < numCourses; i++)
         {
-            if (!CanFinish(i, conn, canFinish, new bool[numCourses]))
+            if (!CanFinish(i, conn, canFinish))
             {
                 return false;
             }
@@ -2009,32 +2007,24 @@ public static class LeetCodeBlind75
         return true;
     }
 
-    private static bool CanFinish(int i, List<int>[] conn, Dictionary<int, bool> canFinish, bool[] visited)
+    private static bool CanFinish(int i, List<int>[] conn, int[] canFinish)
     {
-        if (canFinish.ContainsKey(i)) return canFinish[i];
-        if (conn[i].Count == 0)
+        if (canFinish[i] == 2) return true;
+        if (canFinish[i] == 1)
         {
-            canFinish[i] = true;
-            return true;
-        }
-        if (visited[i])
-        {
-            canFinish[i] = false;
             return false;
         }
 
-        visited[i] = true;
-
+        canFinish[i] = 1;
         foreach (int j in conn[i])
         {
-            if (CanFinish(j, conn, canFinish, visited) == false)
+            if (CanFinish(j, conn, canFinish) == false)
             {
-                canFinish[i] = false;
                 return false;
             }
         }
 
-        canFinish[i] = true;
+        canFinish[i] = 2;
         return true;
     }
     #endregion
