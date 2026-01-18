@@ -2055,6 +2055,74 @@ public static class LeetCodeBlind75
     //   word may contain dots '.' where dots can be matched with any letter.
     // implemented in WordDictionary.cs
 
+    // #54
+    // 212. Word Search II
+    // TODO, HARD
+    #region 212. Word Search II
+    #endregion
+
+    // #55
+    // 213. House Robber II
+    // You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed.
+    // All houses at this place are arranged in a circle. That means the first house is the neighbor of the last one.
+    // Meanwhile, adjacent houses have a security system connected, and it will automatically contact the police
+    // if two adjacent houses were broken into on the same night.
+    // Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
+    // Hint 1: Since House[1] and House[n] are adjacent, they cannot be robbed together. Therefore, the problem becomes to rob either House[1]-House[n-1] or House[2]-House[n],
+    // depending on which choice offers more money. Now the problem has degenerated to the House Robber, which is already been solved.
+    // DP + Memoization, iterative, fibonacci-like
+    #region 213. House Robber II
+    public static int Rob2(int[] nums)
+    {
+        var n = nums.Length;
+        if (n == 1) return nums[0];
+
+        var prevIn = 0;
+        var prevEx = 0;
+        var result0 = 0;
+        // robbing 0th house, but not robbing last house
+        for (int i = 0; i < n - 1; i++)
+        {
+            result0 = Math.Max(prevIn + nums[i], prevEx);
+            prevIn = prevEx;
+            prevEx = result0;
+        }
+
+        prevIn = 0;
+        prevEx = 0;
+        var resultN = 0;
+        // robbing last house, but not robbing 0th house
+        for (int i = 1; i < n; i++)
+        {
+            resultN = Math.Max(prevIn + nums[i], prevEx);
+            prevIn = prevEx;
+            prevEx = resultN;
+        }
+
+        return Math.Max(result0, resultN);
+    }
+    #endregion
+
+    // #56
+    // 
+    #region
+    #endregion
+
+    // #57
+    // 
+    #region
+    #endregion
+
+    // #58
+    // 
+    #region
+    #endregion
+
+    // #59
+    // 
+    #region
+    #endregion
+
     // #?
     // 242. Valid Anagram
     // Given two strings s and t, return true if t is an anagram of s, and false otherwise.
