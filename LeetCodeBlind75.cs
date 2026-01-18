@@ -37,7 +37,6 @@ public static class LeetCodeBlind75
         return result;
     }
 
-
     // #2
     // 1. Two Sum
     // HashSet
@@ -114,7 +113,6 @@ public static class LeetCodeBlind75
     }
     #endregion
 
-
     // #4
     // 5. Longest Palindromic Substring
     // Given a string s, return the longest palindromic substring in s.
@@ -153,6 +151,9 @@ public static class LeetCodeBlind75
 
     // #5
     // 133. Clone Graph
+    // Given a reference of a node in a connected undirected graph.
+    // Return a deep copy (clone) of the graph.
+    // Each node in the graph contains a value (int) and a list (List[Node]) of its neighbors.
     // DFS, BFS, HashMap
     #region CloneGraph DFS
     public static Node133 CloneGraph(Node133 node)
@@ -1549,8 +1550,10 @@ public static class LeetCodeBlind75
     #endregion
  
     // #38
-
+    // TODO
+    
     // #39
+    // TODO
 
     // #40
     // 449. Serialize and Deserialize BST
@@ -2028,7 +2031,6 @@ public static class LeetCodeBlind75
         return true;
     }
     #endregion
-
 
     // #51
     // 208. Implement Trie (Prefix Tree)
