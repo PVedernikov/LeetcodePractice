@@ -2070,7 +2070,7 @@ public static class LeetCodeBlind75
     // Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
     // Hint 1: Since House[1] and House[n] are adjacent, they cannot be robbed together. Therefore, the problem becomes to rob either House[1]-House[n-1] or House[2]-House[n],
     // depending on which choice offers more money. Now the problem has degenerated to the House Robber, which is already been solved.
-    // DP + Memoization, iterative, fibonacci-like
+    // DP + Memoization, iterative
     #region 213. House Robber II
     public static int Rob2(int[] nums)
     {
