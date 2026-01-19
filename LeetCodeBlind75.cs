@@ -2165,8 +2165,9 @@ public static class LeetCodeBlind75
             }
         }
 
-        cache[i] = NumDecodings(s, i + 1, cache);
-        return cache[i];
+        var res = NumDecodings(s, i + 1, cache);
+        cache[i] = res;
+        return res;
     }
     #endregion
 
