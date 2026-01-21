@@ -2179,8 +2179,56 @@ public static class LeetCodeBlind75
     #endregion
 
     // #58
-    // 
-    #region
+    // 347. Top K Frequent Elements
+    // Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.
+    // Bucket sort
+    // O(n) time complexity
+    // O(n) space complexity
+    #region 347. Top K Frequent Elements
+    public static int[] TopKFrequent(int[] nums, int k)
+    {
+        // O(n)
+        var freqInit = new Dictionary<int, int>();
+        for (int i = 0; i < nums.Length; i++)
+        {
+            if (!freqInit.ContainsKey(nums[i]))
+            {
+                freqInit[nums[i]] = 1;
+            }
+            else
+            {
+                freqInit[nums[i]]++;
+            }
+        }
+
+        // O(n)
+        var freq = new Dictionary<int, List<int>>();
+        foreach ((var key, var val) in freqInit)
+        {
+            if (!freq.ContainsKey(val))
+            {
+                freq[val] = new List<int>();
+            }
+            freq[val].Add(key);
+        }
+
+        // O(n), несмотря на вложенный цикл, так как суммарно мы пройдемся по всем элементам не более одного раза
+        var result = new List<int>();
+        for (int i = nums.Length; i > 0; i--)
+        {
+            if (freq.ContainsKey(i))
+            {
+                for (int j = 0; j < freq[i].Count && k > 0; j++)
+                {
+                    result.Add(freq[i][j]);
+                    k--;
+                }
+            }
+        }
+
+        // O(k)
+        return result.ToArray();
+    }
     #endregion
 
     // #59
