@@ -2236,9 +2236,10 @@ public static class LeetCodeBlind75
     #region
     #endregion
 
-    // #?
+    // #71
     // 242. Valid Anagram
     // Given two strings s and t, return true if t is an anagram of s, and false otherwise.
+    #region 242. Valid Anagram
     public static bool IsAnagram(string s, string t)
     {
         if (s.Length != t.Length) return false;
@@ -2268,6 +2269,7 @@ public static class LeetCodeBlind75
 
         return true;
     }
+    #endregion
 }
 
 public class Node133
