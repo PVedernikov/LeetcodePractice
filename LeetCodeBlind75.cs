@@ -2236,6 +2236,73 @@ public static class LeetCodeBlind75
     #region
     #endregion
 
+    // #60
+    // 98. Validate Binary Search Tree
+    // Given the root of a binary tree, determine if it is a valid binary search tree (BST).
+    // A valid BST is defined as follows:
+    // - The left subtree of a node contains only nodes with keys strictly less than the node's key.
+    // - The right subtree of a node contains only nodes with keys strictly greater than the node's key.
+    // - Both the left and right subtrees must also be binary search trees.
+    #region 98. Validate Binary Search Tree
+    public static bool IsValidBST(TreeNode root, long min = long.MinValue, long max = long.MaxValue)
+    {
+        if (root is null) return true;
+        if (root.val <= min || root.val >= max) return false;
+
+        return IsValidBST(root.left, min, root.val) && IsValidBST(root.right, root.val, max);
+    }
+    #endregion
+
+    // #61
+    // 
+    #region
+    #endregion
+
+    // #62
+    // 
+    #region
+    #endregion
+
+    // #63
+    // 
+    #region
+    #endregion
+
+    // #64
+    // 
+    #region
+    #endregion
+
+    // #65
+    // 
+    #region
+    #endregion
+
+    // #66
+    // 
+    #region
+    #endregion
+
+    // #67
+    // 
+    #region
+    #endregion
+
+    // #68
+    // 
+    #region
+    #endregion
+
+    // #69
+    // 
+    #region
+    #endregion
+
+    // #70
+    // 
+    #region
+    #endregion
+
     // #71
     // 242. Valid Anagram
     // Given two strings s and t, return true if t is an anagram of s, and false otherwise.
@@ -2269,6 +2336,31 @@ public static class LeetCodeBlind75
 
         return true;
     }
+    #endregion
+
+    // #72
+    // 
+    #region
+    #endregion
+
+    // #73
+    // 
+    #region
+    #endregion
+
+    // #74
+    // 
+    #region
+    #endregion
+
+    // #75
+    // 
+    #region
+    #endregion
+
+    // #76
+    // 
+    #region
     #endregion
 }
 
