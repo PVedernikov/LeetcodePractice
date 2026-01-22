@@ -2244,7 +2244,7 @@ public static class LeetCodeBlind75
     // - The right subtree of a node contains only nodes with keys strictly greater than the node's key.
     // - Both the left and right subtrees must also be binary search trees.
     #region 98. Validate Binary Search Tree
-    public static bool IsValidBST(TreeNode root, long min = long.MinValue, long max = long.MaxValue)
+    public static bool IsValidBST(TreeNode root, long min = long.MinValue, long max = long.MaxValue) // long because root.val can be int.MinValue or int.MaxValue and its a valid value
     {
         if (root is null) return true;
         if (root.val <= min || root.val >= max) return false;
