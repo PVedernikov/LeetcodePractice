@@ -2315,8 +2315,43 @@ public static class LeetCodeBlind75
     #endregion
 
     // #64
-    // 
+    // 102. Binary Tree Level Order Traversal
+    // Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).
+    // Обойти дерево по уровням
+    // BFS
+    // O(n) time complexity
     #region
+    public static IList<IList<int>> LevelOrder(TreeNode root)
+    {
+        var result = new List<IList<int>>();
+        if (root is null) return result;
+
+        var queue = new Queue<TreeNode>();
+        queue.Enqueue(root);
+        while (queue.Count > 0)
+        {
+            var n = queue.Count;
+            var levelResult = new List<int>();
+            while (n > 0)
+            {
+                var node = queue.Dequeue();
+
+                levelResult.Add(node.val);
+                if (node.left is not null)
+                {
+                    queue.Enqueue(node.left);
+                }
+                if (node.right is not null)
+                {
+                    queue.Enqueue(node.right);
+                }
+                n--;
+            }
+
+            result.Add(levelResult);
+        }
+        return result;
+    }
     #endregion
 
     // #65
