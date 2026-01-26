@@ -2232,8 +2232,9 @@ public static class LeetCodeBlind75
     #endregion
 
     // #59
-    // 
-    #region
+    // 253. Meeting Rooms II
+    // TODO: buy subscription
+    #region 253. Meeting Rooms II
     #endregion
 
     // #60
@@ -2254,13 +2255,32 @@ public static class LeetCodeBlind75
     #endregion
 
     // #61
-    // 
-    #region
+    // 226. Invert Binary Tree
+    // Given the root of a binary tree, invert the tree, and return its root.
+    #region 226. Invert Binary Tree
+    public static TreeNode InvertTree(TreeNode root)
+    {
+        if (root is null) return null;
+
+        var tmp = root.left;
+        root.left = InvertTree(root.right);
+        root.right = InvertTree(tmp);
+        return root;
+    }
     #endregion
 
     // #62
-    // 
-    #region
+    // 100. Same Tree
+    // Given the roots of two binary trees p and q, write a function to check if they are the same or not.
+    // Two binary trees are considered the same if they are structurally identical, and the nodes have the same value.
+    #region 100. Same Tree
+    public static bool IsSameTree(TreeNode p, TreeNode q)
+    {
+        if (p is null && q is null) return true;
+        if (p is null || q is null) return false;
+        if (p.val != q.val) return false;
+        return IsSameTree(p.left, q.left) && IsSameTree(p.right, q.right);
+    }
     #endregion
 
     // #63
