@@ -2355,8 +2355,55 @@ public static class LeetCodeBlind75
     #endregion
 
     // #65
-    // 
-    #region
+    // 230. Kth Smallest Element in a BST
+    // Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.
+    // O(h + k) time complexity, where h is the height of the tree, O(n) in the worst case
+    // O(h) space complexity because of stack, O(n) in the worst case
+    // Обход в глубину с помощью стека (итеративный in-order traversal): Левый - Корень - Правый
+    #region 230. Kth Smallest Element in a BST
+    public static int KthSmallest(TreeNode root, int k)
+    {
+        var stack = new Stack<TreeNode>();
+        var counter = k;
+        var current = root;
+        while (current is not null || stack.Count > 0)
+        {
+            while (current is not null)
+            {
+                stack.Push(current);
+                current = current.left;
+            }
+
+            current = stack.Pop();
+            counter--;
+            if (counter == 0) return current.val;
+            current = current.right;
+        }
+
+        return -1; // this line should never be reached if k is valid, just to satisfy compiler
+    }
+
+    // Рекурсивный отбход с max heap - не оптимальный по памяти
+    // public int KthSmallest(TreeNode root, int k, PriorityQueue<int, int> maxHeap = null)
+    // {
+    //     if (maxHeap is null)
+    //     {
+    //         maxHeap = new PriorityQueue<int, int>();
+    //     }
+
+    //     if (root is null) return -1;
+
+    //     var leftResult = KthSmallest(root.left, k, maxHeap);
+    //     if (leftResult >= 0) return leftResult;
+
+    //     if (maxHeap.Count == k - 1)
+    //     {
+    //         return root.val;
+    //     }
+
+    //     maxHeap.Enqueue(root.val, -root.val);
+    //     return KthSmallest(root.right, k, maxHeap);
+    // }
     #endregion
 
     // #66
