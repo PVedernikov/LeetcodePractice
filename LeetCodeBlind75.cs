@@ -2448,8 +2448,64 @@ public static class LeetCodeBlind75
     #endregion
 
     // #70
-    // 
-    #region
+    // 238. Product of Array Except Self
+    // Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i].
+    // The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
+    // You must write an algorithm that runs in O(n) time and without using the division operation.
+    // Follow up: Can you solve the problem in O(1) extra space complexity? (The output array does not count as extra space for space complexity analysis.)
+    // Каждый элемент результата равен произведению всех элементов, кроме себя самого
+    // Prefix and Suffix products
+    // O(n) time complexity
+    // O(1) space complexity
+    #region 238. Product of Array Except Self
+    // Идея: использовать result как массив префиксных произведений со смещением на 1, а суффиксное произведение накапливать в отдельной переменной
+    public static int[] ProductExceptSelf(int[] nums)
+    {
+        var n = nums.Length;
+        var result = new int[n];
+        result[0] = 1;
+        for (int i = 1; i < n; i++)
+        {
+            result[i] = result[i - 1] * nums[i - 1];
+        }
+
+        var suffix = 1;
+        for (int i = n - 1; i >= 0; i--)
+        {
+            result[i] = result[i] * suffix;
+            suffix *= nums[i];
+        }
+
+        return result;
+    }
+
+    // First attempt: using extra space for prefix and suffix arrays
+    // NOT OPTIMAL FOR MEMORY
+    // O(n) space complexity
+    public static int[] ProductExceptSelfPrefixSuffix(int[] nums)
+    {
+        var n = nums.Length;
+        var prefix = new int[n];
+        var suffix = new int[n];
+        var result = new int[n];
+        prefix[0] = nums[0];
+        suffix[n - 1] = nums[n - 1];
+        for (int i = 1; i < n; i++)
+        {
+            prefix[i] = prefix[i - 1] * nums[i];
+            suffix[n - 1 - i] = suffix[n - i] * nums[n - 1 - i];
+        }
+
+        for (int i = 0; i < n; i++)
+        {
+            var pref = i > 0 ? prefix[i - 1] : 1;
+            var suff = i < n - 1 ? suffix[i + 1] : 1;
+            result[i] = pref * suff;
+        }
+
+        return result;
+    }
+
     #endregion
 
     // #71
