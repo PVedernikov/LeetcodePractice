@@ -2458,7 +2458,8 @@ public static class LeetCodeBlind75
     // O(n) time complexity
     // O(1) space complexity
     #region 238. Product of Array Except Self
-    // Идея: использовать result как массив префиксных произведений со смещением на 1, а суффиксное произведение накапливать в отдельной переменной
+    // Идея: использовать result как массив префиксных произведений со смещением на 1 (для удобства, чтоб не проверять if (i > 0)),
+    // а суффиксное произведение накапливать в отдельной переменной
     public static int[] ProductExceptSelf(int[] nums)
     {
         var n = nums.Length;
