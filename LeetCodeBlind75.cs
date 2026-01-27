@@ -2106,8 +2106,22 @@ public static class LeetCodeBlind75
     #endregion
 
     // #56
-    // 
-    #region
+    // 217. Contains Duplicate
+    // Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.
+    #region 217. Contains Duplicate
+    public static bool ContainsDuplicate(int[] nums)
+    {
+        var hash = new HashSet<int>();
+        var n = nums.Length;
+
+        for (int i = 0; i < n; i++)
+        {
+            // HashSet.Add method returns false if the item was already present
+            if (!hash.Add(nums[i])) return true;
+        }
+
+        return false;
+    }
     #endregion
 
     // #57
