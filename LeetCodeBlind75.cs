@@ -2551,7 +2551,7 @@ public static class LeetCodeBlind75
         if (root == null || root == p || root == q) return root; // дошли до конца или нашли p или q
         var resL = LowestCommonAncestor(root.left, p, q); // Ищем в левом поддереве. Результат - либо p, либо q, либо LCA, либо null
         var resR = LowestCommonAncestor(root.right, p, q); // Ищем в правом поддереве. Результат - либо p, либо q, либо LCA, либо null
-        if (resL != null && resR != null) return root; // в левом поддереве что-то нашли и в правом поддереве что-то нашли, значит p и q в разных поддеревьях, значит root общий предок
+        if (resL is not null && resR is not null) return root; // в левом поддереве что-то нашли и в правом поддереве что-то нашли, значит p и q в разных поддеревьях, значит root общий предок
         return resL is null ? resR : resL; // результат либо в левом, либо в правом поддереве
     }
     #endregion
