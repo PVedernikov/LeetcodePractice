@@ -1575,6 +1575,7 @@ public static class LeetCodeBlind75
     // Bit Manipulation
     // O(n) time complexity where n is number of bits (32) in fact it's O(1)
     #region 191. Number of 1 Bits
+    // My solution
     public static int HammingWeight(int n)
     {
         var result = 0;
@@ -1587,6 +1588,22 @@ public static class LeetCodeBlind75
         }
 
         return result;
+    }
+
+    // Bit Manipulation Trick
+    // Идея: n & (n - 1) сбрасывает (устанавливает в 0) самый младший установленный бит в n
+    // n       = 1011000
+    // n - 1   = 1010111
+    // n&(n-1) = 1010000
+    public static int HammingWeightTrick(int n)
+    {
+        int count = 0;
+        while (n != 0)
+        {
+            n &= (n - 1); 
+            count++;
+        }
+        return count;
     }
     #endregion
 
