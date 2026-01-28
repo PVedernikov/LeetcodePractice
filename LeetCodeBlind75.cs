@@ -2497,6 +2497,7 @@ public static class LeetCodeBlind75
     // (where we allow a node to be a descendant of itself).”
     // O(h) time complexity, where h is the height of the tree
     #region 235. Lowest Common Ancestor of a Binary Search Tree
+
     // recursive
     public static TreeNode LowestCommonAncestor_BST(TreeNode root, TreeNode p, TreeNode q)
     {
@@ -2531,7 +2532,7 @@ public static class LeetCodeBlind75
             }
         }
 
-        return root;
+        return root; // this line should never be reached if p and q are valid, just to satisfy compiler
     }
     #endregion
 
