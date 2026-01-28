@@ -1570,7 +1570,25 @@ public static class LeetCodeBlind75
     #endregion
 
     // #39
-    // TODO
+    // 191. Number of 1 Bits
+    // Given a positive integer n, write a function that returns the number of set bits in its binary representation (also known as the Hamming weight).
+    // Bit Manipulation
+    // O(n) time complexity where n is number of bits (32) in fact it's O(1)
+    #region 191. Number of 1 Bits
+    public static int HammingWeight(int n)
+    {
+        var result = 0;
+        for (int i = 0; i < 32; i++)
+        {
+            if (((1 << i) & n) > 0)
+            {
+                result++;
+            }
+        }
+
+        return result;
+    }
+    #endregion
 
     // #40
     // 449. Serialize and Deserialize BST
