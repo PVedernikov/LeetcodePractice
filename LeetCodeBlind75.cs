@@ -2490,8 +2490,49 @@ public static class LeetCodeBlind75
     #endregion
 
     // #68
-    // 
-    #region
+    // 235. Lowest Common Ancestor of a Binary Search Tree
+    // Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST.
+    // According to the definition of LCA on Wikipedia:
+    // “The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants
+    // (where we allow a node to be a descendant of itself).”
+    // O(h) time complexity, where h is the height of the tree
+    #region 235. Lowest Common Ancestor of a Binary Search Tree
+    // recursive
+    public static TreeNode LowestCommonAncestor_BST(TreeNode root, TreeNode p, TreeNode q)
+    {
+        var l = p.val < q.val ? p.val : q.val;
+        var r = p.val < q.val ? q.val : p.val;
+
+        if (r < root.val) return LowestCommonAncestor_BST(root.left, p, q);
+        if (l > root.val) return LowestCommonAncestor_BST(root.right, p, q);
+        return root;
+    }
+
+    // iterative
+    public static TreeNode LowestCommonAncestor_BST_Iterative(TreeNode root, TreeNode p, TreeNode q)
+    {
+        var l = p.val < q.val ? p.val : q.val;
+        var r = p.val < q.val ? q.val : p.val;
+        var curr = root;
+
+        while (curr is not null)
+        {
+            if (r < curr.val)
+            {
+                curr = curr.left;
+            }
+            else if (l > curr.val)
+            {
+                curr = curr.right;
+            }
+            else
+            {
+                return curr;
+            }
+        }
+
+        return root;
+    }
     #endregion
 
     // #69
