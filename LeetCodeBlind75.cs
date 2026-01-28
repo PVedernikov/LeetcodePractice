@@ -2495,6 +2495,7 @@ public static class LeetCodeBlind75
     // According to the definition of LCA on Wikipedia:
     // “The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants
     // (where we allow a node to be a descendant of itself).”
+    // BST, Binary Search Tree
     // O(h) time complexity, where h is the height of the tree
     #region 235. Lowest Common Ancestor of a Binary Search Tree
 
@@ -2537,8 +2538,22 @@ public static class LeetCodeBlind75
     #endregion
 
     // #69
-    // 
-    #region
+    // 236. Lowest Common Ancestor of a Binary Tree
+    // Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.
+    // According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes p and q as the lowest node in T
+    // that has both p and q as descendants (where we allow a node to be a descendant of itself).”
+    // DFS, tree recursion
+    // O(n) time complexity
+    // Идея: возвращаем что нашли: либо p, либо q, либо LCA из каждого поддерева. Либо null, если ничего не нашли.
+    #region 236. Lowest Common Ancestor of a Binary Tree
+    public static TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q)
+    {
+        if (root == null || root == p || root == q) return root; // дошли до конца или нашли p или q
+        var resL = LowestCommonAncestor(root.left, p, q); // Ищем в левом поддереве. Результат - либо p, либо q, либо LCA, либо null
+        var resR = LowestCommonAncestor(root.right, p, q); // Ищем в правом поддереве. Результат - либо p, либо q, либо LCA, либо null
+        if (resL != null && resR != null) return root; // в левом поддереве что-то нашли и в правом поддереве что-то нашли, значит p и q в разных поддеревьях, значит root общий предок
+        return resL is null ? resR : resL; // результат либо в левом, либо в правом поддереве
+    }
     #endregion
 
     // #70
