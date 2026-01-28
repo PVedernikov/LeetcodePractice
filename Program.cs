@@ -937,7 +937,7 @@ class Result
         }
 
         var ancestor = root;
-        while (ancestor != null)
+        while (ancestor is not null)
         {
             if (a <= ancestor.Value && ancestor.Value <= b)
             {

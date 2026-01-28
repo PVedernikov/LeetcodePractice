@@ -1506,7 +1506,7 @@ public static class LeetCodeBlind75
         if (m == 2) return n;
 
         var key = (Math.Min(m, n), Math.Max(m, n));
-        if (cache == null)
+        if (cache is null)
         {
             cache = new Dictionary<(int, int), int>();
         }
@@ -1961,7 +1961,7 @@ public static class LeetCodeBlind75
     {
         var tmpHead = new ListNode();
 
-        while (head != null)
+        while (head is not null)
         {
             var h = head.next;
             head.next = tmpHead.next;
@@ -2548,7 +2548,7 @@ public static class LeetCodeBlind75
     #region 236. Lowest Common Ancestor of a Binary Tree
     public static TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q)
     {
-        if (root == null || root == p || root == q) return root; // дошли до конца или нашли p или q
+        if (root is null || root == p || root == q) return root; // дошли до конца или нашли p или q
         var resL = LowestCommonAncestor(root.left, p, q); // Ищем в левом поддереве. Результат - либо p, либо q, либо LCA, либо null
         var resR = LowestCommonAncestor(root.right, p, q); // Ищем в правом поддереве. Результат - либо p, либо q, либо LCA, либо null
         if (resL is not null && resR is not null) return root; // в левом поддереве что-то нашли и в правом поддереве что-то нашли, значит p и q в разных поддеревьях, значит root общий предок
