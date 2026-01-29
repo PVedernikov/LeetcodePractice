@@ -2729,8 +2729,54 @@ public static class LeetCodeBlind75
     #endregion
 
     // #76
-    // 
-    #region
+    // 125. Valid Palindrome
+    // A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters,
+    // it reads the same forward and backward.
+    // Alphanumeric characters include letters and numbers.
+    // Given a string s, return true if it is a palindrome, or false otherwise.
+    #region 125. Valid Palindrome
+
+    public static bool IsPalindrome(string s)
+    {
+        var l = 0;
+        var r = s.Length - 1;
+        while (l < r)
+        {
+            if (!IsValid125(s[l]))
+            {
+                l++;
+                continue;
+            }
+
+            if (!IsValid125(s[r]))
+            {
+                r--;
+                continue;
+            }
+
+            var cl = ToLower125(s[l]);
+            var cr = ToLower125(s[r]);
+            if (cl != cr) return false;
+            l++;
+            r--;
+        }
+
+        return true;
+    }
+
+    private static bool IsValid125(char c)
+    {
+        return (c >= '0' && c <= '9')
+            || (c >= 'a' && c <= 'z')
+            || (c >= 'A' && c <= 'Z');
+    }
+
+    private static char ToLower125(char c)
+    {
+        return (c >= 'A' && c <= 'Z')
+            ? (char)(c - 'A' + 'a')
+            : c;
+    }
     #endregion
 }
 
