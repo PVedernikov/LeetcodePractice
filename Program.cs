@@ -2502,12 +2502,10 @@ internal class Program
 
         //LeetCodeBlind75.Rotate([[5, 1, 9, 11], [2, 4, 8, 10], [13, 3, 6, 7], [15, 14, 12, 16]]);
 
-        Console.WriteLine(Convert.ToString(43261596, 2));
-        Console.WriteLine(Convert.ToString(268435454, 2));
-        Console.WriteLine(Convert.ToString(int.MinValue, 2));
-        Console.WriteLine(Convert.ToString((int.MinValue >> 3), 2));
-        Console.WriteLine(Convert.ToString((1 << 31), 2));
-        Console.WriteLine(Convert.ToString((1 << 31) >> 3, 2));
+        Console.WriteLine(' ' + Convert.ToString(20, 2));
+        Console.WriteLine(' ' + Convert.ToString(30, 2));
+        Console.WriteLine(Convert.ToString(34, 2));
+        Console.WriteLine(Convert.ToString(50, 2));
     }
 }
 

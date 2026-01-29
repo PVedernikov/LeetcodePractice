@@ -2654,8 +2654,46 @@ public static class LeetCodeBlind75
     #endregion
 
     // #72
-    // 
-    #region
+    // 371. Sum of Two Integers
+    // Given two integers a and b, return the sum of the two integers without using the operators + and -.
+    // Bit manipulation, bitwise operations
+    #region 371. Sum of Two Integers
+
+    // My solution, first attempt
+    // Идея: складываем побитово, учитывая перенос
+    public static int GetSum(int a, int b)
+    {
+        var result = 0;
+        var prevBit = 0;
+        for (int i = 0; i < 32; i++)
+        {
+            var mask = (1 << i);
+            var bitA = a & mask;
+            var bitB = b & mask;
+            var bitSum = (bitA ^ bitB) ^ prevBit; // XOR
+            prevBit = ((bitA & bitB) > 0 || (bitA & prevBit) > 0 || (prevBit & bitB) > 0)
+                ? mask << 1
+                : 0;
+            result |= bitSum;
+        }
+        return result;
+    }
+
+    // Vectorized solution using bitwise operations
+    // Идея: складываем сразу всё без учета переноса с помощью XOR, а перенос вычисляем с помощью AND и сдвигаем влево
+    // XOR дает сумму без учета переноса 1 ^ 1 = 0, 1 ^ 0 = 1, 0 ^ 0 = 0 - то есть как в обычном сложении, но теряется единица переноса
+    // Дальше складываем результат с переносом, вычисляем новый перенос, и повторяем пока перенос не станет равен нулю, т.е. все перенесенные единицы учтены
+    public static int GetSumVectorized(int a, int b)
+    {
+        while (b != 0)
+        {
+            var sum = a ^ b; // Складываем без учета переноса
+            var carry = (a & b) << 1; // Вычисляем перенос и сдвигаем его влево, т.к. перенос идет на следующий разряд
+            a = sum;
+            b = carry;
+        }
+        return a;
+    }
     #endregion
 
     // #73
