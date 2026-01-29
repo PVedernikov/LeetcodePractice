@@ -2485,7 +2485,7 @@ public static class LeetCodeBlind75
     #endregion
 
     // #67
-    // 
+    // TODO
     #region
     #endregion
 
@@ -2697,7 +2697,8 @@ public static class LeetCodeBlind75
     #endregion
 
     // #73
-    // 
+    // 252. Meeting Rooms
+    // TODO: buy subscription
     #region
     #endregion
 
@@ -2724,8 +2725,9 @@ public static class LeetCodeBlind75
     #endregion
 
     // #75
-    // 
-    #region
+    // 124. Binary Tree Maximum Path Sum
+    // TODO, HARD
+    #region 124. Binary Tree Maximum Path Sum
     #endregion
 
     // #76
@@ -2734,6 +2736,7 @@ public static class LeetCodeBlind75
     // it reads the same forward and backward.
     // Alphanumeric characters include letters and numbers.
     // Given a string s, return true if it is a palindrome, or false otherwise.
+    // Two Pointers
     #region 125. Valid Palindrome
 
     public static bool IsPalindrome(string s)
