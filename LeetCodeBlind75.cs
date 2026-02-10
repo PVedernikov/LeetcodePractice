@@ -10,6 +10,7 @@ public static class LeetCodeBlind75
     // #1
     // 128. Longest Consecutive Sequence
     // Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence.
+    #region 128. Longest Consecutive Sequence
     public static int LongestConsecutive(int[] nums)
     {
         if (nums.Length == 0) return 0;
@@ -36,10 +37,12 @@ public static class LeetCodeBlind75
 
         return result;
     }
+    #endregion
 
     // #2
     // 1. Two Sum
     // HashSet
+    #region 1. Two Sum
     public static int[] TwoSum(int[] nums, int target)
     {
         var expecting = new Dictionary<int, int>();
@@ -55,6 +58,7 @@ public static class LeetCodeBlind75
 
         return Array.Empty<int>();
     }
+    #endregion
 
     // #3
     // 3. Longest Substring Without Repeating Characters
@@ -2485,8 +2489,62 @@ public static class LeetCodeBlind75
     #endregion
 
     // #67
-    // TODO
-    #region
+    // 105. Construct Binary Tree from Preorder and Inorder Traversal
+    // Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree and inorder is the inorder traversal of the same tree,
+    // construct and return the binary tree.
+    // То есть: даны два массива обхода дерева: прямой (корень - левый - правый) и симметричный (левый - корень - правый), без указания где листья.
+    // Нужно восстановить дерево.
+    // Идея: в прямом обходе первый элемент - это корень. Находим его в симметричном обходе, что дает нам размер левого и правого поддерева.
+    // Зная размеры, рекурсивно восстанавливаем левое и правое поддерево, передавая соответствующие части массивов обходов.
+    // Используем Span'ы чтобы избежать лишних аллокаций и удобно разрезать массив.
+    // 
+    // Далее неочевидный ход: запоминаем индексы всех элементов из inorder в словаре, чтобы избавиться от IndexOf на каждом шаге
+    // + передаем offset, чтобы по исходному индексу понять какая у нас длина левого поддерева
+    // Получается так: preorder всегда хранит корень, левое поддерево, правое поддерево. Длина левого поддерева - это индекс корня в inorder минус offset.
+    // Тогда правое поддерево - это все, что после левого поддерева и корня в preorder.
+    //
+    // O(n) time complexity, так как каждый элемент дерева мы обрабатываем один раз
+    #region 105. Construct Binary Tree from Preorder and Inorder Traversal
+    public static TreeNode BuildTree(int[] preorder, int[] inorder)
+    {
+        var cache = new Dictionary<int, int>();
+        for (int i = 0; i < inorder.Length; i++)
+        {
+            cache[inorder[i]] = i;
+        }
+        return BuildSubtree(preorder.AsSpan(), cache, 0);
+    }
+
+    private static TreeNode BuildSubtree(ReadOnlySpan<int> preorder, Dictionary<int, int> cache, int offset)
+    {
+        if (preorder.Length <= 0) return null;
+        var root = preorder[0]; // Первый элемент всегда корень
+        var leftSize = cache[root] - offset; // Размер левого поддерева
+        var result = new TreeNode(root);
+        result.left = BuildSubtree(preorder.Slice(1, leftSize), cache, offset); // Срез от 1 до leftSize - это левое поддерево
+        result.right = BuildSubtree(preorder.Slice(leftSize + 1), cache, offset + leftSize + 1); // Slice до конца, т.к. все что осталось в preorder - это правое поддерево
+        return result;
+    }
+
+    #region решение без словаря, с IndexOf, O(n^2) time complexity
+    // Просто чтобы не забыть суть решения 
+    public static TreeNode BuildTreeOn2(int[] preorder, int[] inorder)
+    {
+        return BuildSubtreeOn2(preorder.AsSpan(), inorder.AsSpan());
+    }
+
+    private static TreeNode BuildSubtreeOn2(Span<int> preorder, Span<int> inorder)
+    {
+        if (preorder.Length <= 0) return null;
+        var root = preorder[0];
+        var leftSize = inorder.IndexOf(root); // Вот от этого нам нужно было избавиться, так как он делает сложность O(n^2)
+        var result = new TreeNode(root);
+        result.left = BuildSubtreeOn2(preorder.Slice(1, leftSize), inorder.Slice(0, leftSize));
+        result.right = BuildSubtreeOn2(preorder.Slice(leftSize + 1), inorder.Slice(leftSize + 1)); // Slice до конца, так что второй параметр не нужен
+        return result;
+    }
+    #endregion
+
     #endregion
 
     // #68
