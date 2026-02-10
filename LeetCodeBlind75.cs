@@ -1951,8 +1951,86 @@ public static class LeetCodeBlind75
 
     // #47
     // 76. Minimum Window Substring
-    // TODO, HARD
+    // HARD
+    // Given two strings s and t of lengths m and n respectively, return the minimum window substring of s
+    // such that every character in t (including duplicates) is included in the window.
+    // If there is no such substring, return the empty string "".
+    // Sliding Window + HashMap
+    // O(m + n) time complexity
+    // Идея: Используем скользящее окно. Основная проблема - это оптимизация проверки валидности строки в окне
+    // Считаем частоты символов в окне (только тех, что есть в t), если частота текущего символа в окне становится СТРОГО равной его частоте в t,
+    // то увеличиваем счетчик charsFound, который показывает, сколько уникальных символов из t мы уже нашли в окне в нужном количестве
+    // charsNeeded - количество уникальных символов в строке t
+    // charsFound - количество верно найденных уникальных символов в текущем окне
+    // charsFound обновляется строго когда частота найденного символа в окне становится равной его частоте в строке t
+    // Это гарантирует нам, что когда charsFound == charsNeeded, мы действительно нашли окно, содержащее все символы строки t
     #region 76. Minimum Window Substring
+    public static string MinWindow(string s, string t)
+    {
+        var m = s.Length;
+        var n = t.Length;
+        if (n > m || n == 0 || m == 0) return string.Empty;
+
+        var tFreq = new Dictionary<char, int>();
+        var sFreq = new Dictionary<char, int>();
+        var charsFound = 0;
+        var charsNeeded = 0;
+        for (int i = 0; i < n; i++)
+        {
+            if (!tFreq.ContainsKey(t[i]))
+            {
+                tFreq[t[i]] = 1;
+                charsNeeded++;
+            }
+            else
+            {
+                tFreq[t[i]]++;
+            }
+            sFreq[t[i]] = 0;
+        }
+
+        var resultI = 0;
+        var resultLen = int.MaxValue;
+        var l = 0;
+
+        for (int i = 0; i < m; i++)
+        {
+            if (tFreq.TryGetValue(s[i], out var tVal))
+            {
+                sFreq[s[i]]++;
+                if (sFreq[s[i]] == tVal)
+                {
+                    charsFound++;
+                }
+            }
+
+            while (charsFound == charsNeeded && l <= i)
+            {
+                var candidateLen = i - l + 1;
+                if (candidateLen < resultLen)
+                {
+                    resultI = l;
+                    resultLen = candidateLen;
+                }
+
+                if (tFreq.TryGetValue(s[l], out var tlVal))
+                {
+                    sFreq[s[l]]--;
+                    if (sFreq[s[l]] < tlVal)
+                    {
+                        charsFound--;
+                    }
+                }
+
+                l++;
+            }
+        }
+
+        if (resultLen < int.MaxValue)
+            return s.Substring(resultI, resultLen);
+
+        return string.Empty;
+    }
     #endregion
 
     // #48
