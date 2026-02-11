@@ -436,8 +436,54 @@ public static class LeetCodeBlind75
     // 143. Reorder List
     // You are given the head of a singly linked-list. L0 → L1 → … → Ln - 1 → Ln
     // Reorder the list to be on the following form: L0 → Ln → L1 → L(n - 1) → L2 → L(n - 2) → …
-    // TODO: переписать под память O(1). Идея: найти центр списка (fast & slow указатели), развернуть вторую половину, затем слить две половины
+    #region 143. Reorder List
+    // O(n) time complexity, O(1) memory complexity
+    // Идея: найти центр списка (fast & slow указатели), развернуть вторую половину, затем слить две половины
     public static void ReorderList(ListNode head)
+    {
+        if (head is null || head.next is null) return;
+
+        // 1. Find the middle of the list with fast & slow pointers
+        var slow = head;
+        var fast = head.next;
+        while (fast is not null && fast.next is not null)
+        {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        // slow is the middle of the list now, slow.next is next half
+        // 2. Reverse the second half of the list
+        var dummyHead = new ListNode();
+        var current = slow.next;
+        slow.next = null;
+        while (current is not null)
+        {
+            var tail = dummyHead.next;
+            dummyHead.next = current;
+            current = current.next;
+            dummyHead.next.next = tail;
+        }
+
+        // 3. Merge two halves
+        var top = head;
+        var bottom = dummyHead.next;
+        while (bottom is not null)
+        {
+            var tmp = top.next;
+            top.next = bottom;
+            bottom = bottom.next;
+            top.next.next = tmp;
+            top = tmp;
+        }
+    }
+
+    // O(n) time complexity, O(n) memory complexity
+    // Идея: положить все элементы в стек, затем проходясь по списку, вставлять элементы из стека между элементами списка пока не дойдем до середины списка
+    // Середина определяется по совпадению текущего элемента и элемента на вершине стека (для нечетного количества элементов)
+    // или по совпадению следующего элемента и элемента на вершине стека (для четного количества элементов)
+    // НЕ ОПТИМАЛЬНО ПО ПАМЯТИ
+    public static void ReorderListOn(ListNode head)
     {
         if (head is null) return;
 
@@ -473,6 +519,7 @@ public static class LeetCodeBlind75
             current = next.next;
         }
     }
+    #endregion
 
     // #14
     // 269. Alien Dictionary
