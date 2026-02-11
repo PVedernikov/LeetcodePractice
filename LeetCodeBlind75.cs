@@ -2338,26 +2338,30 @@ public static class LeetCodeBlind75
         if (i == n - 1) return 1;
         if (s[i] == '1')
         {
-            if (s[i + 1] == '0')
+            if (s[i + 1] == '0') // если 10, то мы не можем декодировать 1 и 0 по отдельности, поэтому идем сразу на i + 2
             {
                 cache[i] = NumDecodings(s, i + 2, cache);
                 return cache[i];
             }
+            // Иначе, если 11 - 19, то мы можем декодировать 1 и следующий символ по отдельности, а также вместе как число от 10 до 19
             cache[i] = NumDecodings(s, i + 2, cache) + NumDecodings(s, i + 1, cache);
             return cache[i];
         }
         if (s[i] == '2')
         {
+            // Если от 21 до 26, то мы можем декодировать 2 и следующий символ по отдельности, а также вместе как число от 20 до 26
             if (s[i + 1] >= '1' && s[i + 1] <= '6')
             {
                 cache[i] = NumDecodings(s, i + 2, cache) + NumDecodings(s, i + 1, cache);
                 return cache[i];
             }
+            // Если 20, то мы не можем декодировать 2 и 0 по отдельности, поэтому идем сразу на i + 2
             if (s[i + 1] == '0')
             {
                 cache[i] = NumDecodings(s, i + 2, cache);
                 return cache[i];
             }
+            // Иначе только один вариант декодирования - 2, нечего вычислять, идем дальше
         }
 
         var res = NumDecodings(s, i + 1, cache);
