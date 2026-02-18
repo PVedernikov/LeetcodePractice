@@ -2913,8 +2913,45 @@ public static class LeetCodeBlind75
 
     // #75
     // 124. Binary Tree Maximum Path Sum
-    // TODO, HARD
+    // HARD
+    // A path in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them.
+    // A node can only appear in the sequence at most once. Note that the path does not need to pass through the root.
+    // The path sum of a path is the sum of the node's values in the path.
+    // Given the root of a binary tree, return the maximum path sum of any non-empty path.
+    // DFS
+    // O(n) time complexity
+    //
+    // Пояснение: путь не модет ветвиться, это должна быть одна линия
+    // Идея: идеи рекурсивно. Возвращаем наверх максимум саб-пути через этот узел (root + Math.Max(left, right))
+    // Отдельно высчитываем полный путь конкретно для этого узла (root + left + right), обновляем глобальный максимум
+    // 
+    // Потенциально опасное место: int.MinValue/4 в качестве -INFINITY. TODO: подумать, как это обойти.
     #region 124. Binary Tree Maximum Path Sum
+    // First attempt
+    public static int MaxPathSum(TreeNode root)
+    {
+        //if (root is null) return 0; // The number of nodes in the tree is in the range [1, 3 * 104].
+        int _maxPathSum = int.MinValue / 4;
+        MaxSubPathSum(root);
+        return _maxPathSum;
+
+        int MaxSubPathSum(TreeNode root)
+        {
+            if (root is null)
+            {
+                return int.MinValue / 4;
+            }
+
+            var leftSum = MaxSubPathSum(root.left);
+            var rightSum = MaxSubPathSum(root.right);
+
+            var maxSubSum = Math.Max(leftSum, rightSum);
+            var result = Math.Max(root.val, root.val + maxSubSum);
+            _maxPathSum = Math.Max(_maxPathSum, result);
+            _maxPathSum = Math.Max(_maxPathSum, root.val + leftSum + rightSum);
+            return result;
+        }
+    }
     #endregion
 
     // #76
