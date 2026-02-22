@@ -2226,7 +2226,37 @@ public static class LeetCodeBlind75
 
     // #52
     // 338. Counting Bits
-    // TODO: implement. Expected solution: DP with O(n) time complexity
+    // Given an integer n, return an array ans of length n + 1 such that for each i (0 <= i <= n), ans[i] is the number of 1's in the binary representation of i.
+    // DP
+    // O(n) time complexity
+    // Идея: вычитать из числа i степень двойки pow2 (максимальная степень, которая меньше i).
+    // Фактически мы убираем старшую единицу, оставшееся число уже должно быть посчитано.
+    // Соответственно берем result[i] = 1 + result[i - pow2]. По ходу обновляем pow2.
+    #region 338. Counting Bits
+
+    public static int[] CountBits(int n)
+    {
+        var result = new int[n + 1];
+        var pow2 = 1;
+        var nextPow2 = 2;
+        for (int i = 1; i <= n; i++)
+        {
+            if (i == nextPow2)
+            {
+                result[i] = 1;
+                pow2 = nextPow2;
+                nextPow2 *= 2;
+            }
+            else
+            {
+                result[i] = 1 + result[i - pow2];
+            }
+        }
+
+        return result;
+    }
+    
+    #endregion
 
     // #53
     // 211. Design Add and Search Words Data Structure
