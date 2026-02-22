@@ -2240,8 +2240,158 @@ public static class LeetCodeBlind75
 
     // #54
     // 212. Word Search II
-    // TODO, HARD
+    // HARD
+    // Given an m x n board of characters and a list of strings words, return all words on the board.
+    // Each word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring.
+    // The same letter cell may not be used more than once in a word.
+    // DFS + Trie
+    // Идея: построить Trie для слов из списка words, затем для каждой ячейки на доске запустить DFS
+    // В процессе DFS мы будем спускаться по Trie, если текущая ячейка соответствует символу в Trie, то продолжаем спускаться,
+    // если достигли конца слова в Trie, то добавляем его в результат и удаляем из Trie, чтобы не находить его повторно
+    //
+    // O(m * n * 3^L) time complexity, где L - средняя длина слова в списке words, так как в худшем случае мы можем проверить все возможные пути на доске для каждого слова
+    // 3^L, а не 4^L, потому что назад нельзя, board[i][j] = '#' (visited) зарежет путь назад
     #region 212. Word Search II
+    public static IList<string> FindWords(char[][] board, string[] words)
+    {
+        var m = board.Length;
+        var n = board[0].Length;
+        var trie = new Trie212();
+        var result = new List<string>();
+
+        var dirI = new[] { -1, 1, 0, 0 };
+        var dirJ = new[] { 0, 0, -1, 1 };
+
+        for (int i = 0; i < words.Length; i++)
+        {
+            trie.Insert(words[i]);
+        }
+
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                var node = trie.GetNode(board[i][j]);
+                if (node is null) continue;
+                DFS(i, j, board, result, node, m, n, dirI, dirJ);
+            }
+        }
+        return result;
+    }
+
+    private static void DFS(
+        int i, int j,
+        char[][] board,
+        IList<string> result,
+        Trie212 node,
+        int m, int n, int[] dirI, int[] dirJ)
+    {
+        var ch = board[i][j];
+        board[i][j] = '#'; // visited
+
+        if (node.IsWordEnd)
+        {
+            result.Add(node.Word);
+            node.RemoveWord();
+        }
+
+        for (int d = 0; d < 4; d++)
+        {
+            var di = i + dirI[d];
+            var dj = j + dirJ[d];
+            if (di < 0 || dj < 0 || di >= m || dj >= n)
+                continue;
+
+            if (board[di][dj] == '#') // visited, skip this
+                continue;
+
+            var nextNode = node.GetNode(board[di][dj]);
+            if (nextNode is null)
+                continue;
+
+            DFS(di, dj, board, result, nextNode, m, n, dirI, dirJ);
+        }
+
+        board[i][j] = ch; // restore, not visited anymore
+    }
+
+    public class Trie212
+    {
+        private bool _isWordEnd;
+        private Trie212[] _nodes;
+        private Trie212 _parent;
+        private int _index;
+        private string _word = string.Empty;
+        private int _childrenCount = 0;
+
+        public string Word { get { return _word; } }
+        public bool IsWordEnd { get { return _isWordEnd; } }
+        public int ChildrenCount { get { return _childrenCount; } }
+
+        public Trie212()
+        {
+            _nodes = new Trie212[26];
+        }
+
+        public void Insert(string word)
+        {
+            var n = word.Length;
+            var current = this;
+            for (int i = 0; i < n; i++)
+            {
+                var index = GetIndex(word[i]);
+                if (current._nodes[index] is null)
+                {
+                    current._nodes[index] = new Trie212();
+                    current._childrenCount++;
+                    current._nodes[index]._parent = current;
+                    current._nodes[index]._index = index;
+                }
+                if (i == n - 1)
+                {
+                    current._nodes[index]._isWordEnd = true;
+                    current._nodes[index]._word = word;
+                }
+                current = current._nodes[index];
+            }
+        }
+
+        public void RemoveWord()
+        {
+            if (!_isWordEnd)
+                return;
+
+            _isWordEnd = false;
+
+            if (_childrenCount == 0 && _parent is not null)
+            {
+                _parent.RemoveAt(_index);
+            }
+        }
+
+        private void RemoveAt(int index)
+        {
+            if (index < 0 || index >= 26) return;
+
+            if (_nodes[index] is not null)
+            {
+                _nodes[index] = null;
+                _childrenCount--;
+            }
+
+            if (_childrenCount == 0 && !_isWordEnd && _parent is not null)
+            {
+                _parent.RemoveAt(_index);
+            }
+        }
+
+        public Trie212 GetNode(char c)
+        {
+            return _nodes[GetIndex(c)];
+        }
+
+        private int GetIndex(char c) => (int)(c - 'a');
+    }
     #endregion
 
     // #55
