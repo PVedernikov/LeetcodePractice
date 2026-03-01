@@ -1844,7 +1844,49 @@ public static class LeetCodeBlind75
 
     // #42
     // 323. Number of Connected Components in an Undirected Graph
-    // TODO: buy subscription
+    // You have a graph of n nodes. You are given an integer n and an array edges
+    // where edges[i] = [ai, bi] indicates that there is an edge between ai and bi in the graph.
+    // Return the number of connected components in the graph.
+    // DFS
+    // O(n + m) time complexity where n is number of nodes and m is number of edges
+    #region 323. Number of Connected Components in an Undirected Graph
+    public static int CountComponents(int n, int[][] edges)
+    {
+        var adj = new List<int>[n];
+        for (int i = 0; i < n; i++)
+        {
+            adj[i] = new List<int>();
+        }
+
+        for (int i = 0; i < edges.Length; i++)
+        {
+            adj[edges[i][0]].Add(edges[i][1]);
+            adj[edges[i][1]].Add(edges[i][0]);
+        }
+
+        var result = 0;
+        var visited = new bool[n];
+        var stack = new Stack<int>();
+        for (int i = 0; i < n; i++)
+        {
+            if (visited[i]) continue;
+            stack.Push(i);
+            result++;
+            while (stack.Count > 0)
+            {
+                var j = stack.Pop();
+                if (visited[j]) continue;
+                visited[j] = true;
+                foreach (var k in adj[j])
+                {
+                    stack.Push(k);
+                }
+            }
+        }
+
+        return result;
+    }
+    #endregion
 
     // #43
     // 70. Climbing Stairs
