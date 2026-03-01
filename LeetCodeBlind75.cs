@@ -229,7 +229,96 @@ public static class LeetCodeBlind75
 
     // #6
     // 261. Graph Valid Tree
-    // TODO: buy subscription
+    // You have a graph of n nodes labeled from 0 to n - 1. You are given an integer n and a list of edges
+    // where edges[i] = [ai, bi] indicates that there is an undirected edge between nodes ai and bi in the graph.
+    // Return true if the edges of the given graph make up a valid tree, and false otherwise.
+    // 
+    // According to the definition of tree on Wikipedia: “a tree is an undirected graph in which any two vertices are connected by exactly one path.
+    // In other words, any connected graph without simple cycles is a tree.”
+    // DFS
+    // O(n + m) time complexity, O(n + m) space complexity, where n - number of vertices, m - number of edges
+    #region 261. Graph Valid Tree
+    // My first solution
+    // Идея: обходим граф в глубину, проверяя на циклы через visited
+    // Кроме того считаем количество посещенных вершин, в конце проверяем, что мы посетили все вершины, т.е. граф связный, и при этом не нашли циклов, значит это дерево
+    public static bool ValidTree(int n, int[][] edges)
+    {
+        if (edges.Length != n - 1) return false; // If it's tree, it must have exactly n - 1 edges
+
+        var adj = new List<int>[n];
+        for (int i = 0; i < n; i++)
+        {
+            adj[i] = new List<int>();
+        }
+
+        for (int i = 0; i < edges.Length; i++)
+        {
+            adj[edges[i][0]].Add(edges[i][1]);
+            adj[edges[i][1]].Add(edges[i][0]);
+        }
+
+        var visited = new bool[n];
+        var visitedCount = 0;
+        var stack = new Stack<(int, int)>();
+        stack.Push((0, -1));
+        while (stack.Count > 0)
+        {
+            (var i, var parent) = stack.Pop();
+            if (visited[i]) return false;
+            visited[i] = true;
+            visitedCount++;
+            foreach (var j in adj[i])
+            {
+                if (j != parent)
+                {
+                    stack.Push((j, i));
+                }
+            }
+        }
+
+        return visitedCount == n; // visited all vertices, so graph is connected, and we didn't find cycles, so it's a tree
+    }
+
+    // Другой вариант
+    // Идея и отличие от первого: мы не проверяем циклы при обходе графа, т.к. если количество ребер правильное n-1,
+    // то циклы невозможны, при условии что граф связный, а мы проверяем связность в конце, через visitedCount == n (то есть мы посетили ровно n вершин)
+    // Если бы в графе был цикл, это значит, что граф не связанный, то мы бы тогда посетили меньше вершин, потому что не попали бы в какую-то часть графа,
+    // которая не связана с остальными вершинами
+    public static bool ValidTree_1(int n, int[][] edges)
+    {
+        if (edges.Length != n - 1) return false; // If it's tree, it must have exactly n - 1 edges
+
+        var adj = new List<int>[n];
+        for (int i = 0; i < n; i++)
+        {
+            adj[i] = new List<int>();
+        }
+
+        for (int i = 0; i < edges.Length; i++)
+        {
+            adj[edges[i][0]].Add(edges[i][1]);
+            adj[edges[i][1]].Add(edges[i][0]);
+        }
+
+        var visited = new bool[n];
+        var visitedCount = 0;
+        var stack = new Stack<int>();
+        stack.Push((0));
+        while (stack.Count > 0)
+        {
+            var i = stack.Pop();
+            if (visited[i]) continue;
+            visited[i] = true;
+            visitedCount++;
+            foreach (var j in adj[i])
+            {
+                stack.Push(j);
+            }
+        }
+
+        return visitedCount == n; // visited all vertices, so graph is connected
+    }
+    #endregion
 
     // #7
     // 647. Palindromic Substrings
