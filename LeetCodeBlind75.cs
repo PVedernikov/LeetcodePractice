@@ -3196,8 +3196,19 @@ public static class LeetCodeBlind75
 
     // #73
     // 252. Meeting Rooms
-    // TODO: buy subscription
-    #region
+    // Given an array of meeting time intervals where intervals[i] = [starti, endi], determine if a person could attend all meetings.
+    #region 252. Meeting Rooms
+    public static bool CanAttendMeetings(int[][] intervals)
+    {
+        Array.Sort(intervals, (a, b) => a[0].CompareTo(b[0]));
+        for (int i = 1; i < intervals.Length; i++)
+        {
+            if (intervals[i][0] < intervals[i - 1][1])
+                return false;
+        }
+
+        return true;
+    }
     #endregion
 
     // #74
