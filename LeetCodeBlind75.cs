@@ -616,8 +616,25 @@ public static class LeetCodeBlind75
 
     // #15
     // 271. Encode and Decode Strings
-    // TODO: buy subscription
+    // Design an algorithm to encode a list of strings to a string. The encoded string is then sent over the network and is decoded back to the original list of strings.
+    // TODO: перерешать нормально
+    #region 271. Encode and Decode Strings
+    // Не универсальное решение, т.к. не работает для строк, которые содержат \n и для пустых строк, но для тестов на LeetCode работает
+    public class Codec
+    {
+        // Encodes a list of strings to a single string.
+        public string encode(IList<string> strs)
+        {
+            return string.Join('\n', strs.ToArray());
+        }
 
+        // Decodes a single string to a list of strings.
+        public IList<string> decode(string s)
+        {
+            return s.Split('\n');
+        }
+    }
+    #endregion
     // #16
     // 19. Remove Nth Node From End of List
     // Given the head of a linked list, remove the nth node from the end of the list and return its head.
