@@ -2800,8 +2800,29 @@ public static class LeetCodeBlind75
 
     // #59
     // 253. Meeting Rooms II
-    // TODO: buy subscription
+    // Given an array of meeting time intervals intervals where intervals[i] = [starti, endi], return the minimum number of conference rooms required.
+    // Greedy + Min Heap
+    // O(n log n) time complexity, O(n) space complexity
+    // TODO: реализовать решение с сортировкой по началу и концам встреч, без использования кучи
     #region 253. Meeting Rooms II
+    public static int MinMeetingRooms(int[][] intervals)
+    {
+        Array.Sort(intervals, (a, b) => a[0].CompareTo(b[0]));
+        var result = 0;
+        var rooms = new PriorityQueue<int, int>();
+        for (int i = 0; i < intervals.Length; i++)
+        {
+            while (rooms.Count > 0 && rooms.Peek() <= intervals[i][0])
+            {
+                rooms.Dequeue();
+            }
+
+            rooms.Enqueue(intervals[i][1], intervals[i][1]);
+            result = Math.Max(result, rooms.Count);
+        }
+
+        return result;
+    }
     #endregion
 
     // #60
