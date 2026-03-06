@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LeetcodePreapare;
@@ -619,8 +620,47 @@ public static class LeetCodeBlind75
     // Design an algorithm to encode a list of strings to a string. The encoded string is then sent over the network and is decoded back to the original list of strings.
     // TODO: перерешать нормально (учесть пустые строки)
     #region 271. Encode and Decode Strings
-    // Не универсальное решение, т.к. не работает для строк, которые содержат '\n', но для тестов на LeetCode работает
     public class Codec
+    {
+        // Encodes a list of strings to a single string.
+        public string encode(IList<string> strs)
+        {
+            var builder = new StringBuilder();
+            foreach (var str in strs)
+            {
+                builder.Append(str.Length);
+                builder.Append(':');
+                builder.Append(str);
+            }
+            return builder.ToString();
+        }
+
+        // Decodes a single string to a list of strings.
+        public IList<string> decode(string s)
+        {
+            var n = s.Length;
+            var result = new List<string>();
+            var i = 0;
+            while (i < n)
+            {
+                var length = 0;
+                while (i < n && s[i] != ':')
+                {
+                    var d = (int)(s[i] - '0');
+                    length = length * 10 + d;
+                    i++;
+                }
+                i++;
+                result.Add(s.Substring(i, length));
+                i += length;
+            }
+
+            return result;
+        }
+    }
+
+    // Не универсальное решение, т.к. не работает для строк, которые содержат '\n', но для тестов на LeetCode работает
+    public class CodecGimmick
     {
         // Encodes a list of strings to a single string.
         public string encode(IList<string> strs)
