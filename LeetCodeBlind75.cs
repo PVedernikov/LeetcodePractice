@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -1893,6 +1894,7 @@ public static class LeetCodeBlind75
     // You need to ensure that a binary search tree can be serialized to a string, and this string can be deserialized to the original tree structure.
     // The encoded string should be as compact as possible.
     // implemented in Codec.cs
+    // TODO: implement a more compact solution using pre-order traversal without nulls, and deserialization using bounds
 
     // #41
     // 322. Coin Change
@@ -3484,6 +3486,74 @@ public static class LeetCodeBlind75
         return (c >= 'A' && c <= 'Z')
             ? (char)(c - 'A' + 'a')
             : c;
+    }
+    #endregion
+
+    // Blind 75 list https://leetcode.com/problem-list/oizxjoit/
+    // #77 
+    // 297. Serialize and Deserialize Binary Tree
+    // Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer,
+    // or transmitted across a network connection link to be reconstructed later in the same or another computer environment.
+    // Design an algorithm to serialize and deserialize a binary tree. There is no restriction on how your serialization/deserialization algorithm should work.
+    // You just need to ensure that a binary tree can be serialized to a string and this string can be deserialized to the original tree structure.
+    // Clarification: The input/output format is the same as how LeetCode serializes a binary tree.
+    // You do not necessarily need to follow this format, so please be creative and come up with different approaches yourself.
+    #region 297. Serialize and Deserialize Binary Tree
+    public class Codec297
+    {
+        // Encodes a tree to a single string.
+        public string serialize(TreeNode root)
+        {
+            var queue = new Queue<TreeNode>();
+            queue.Enqueue(root);
+            var result = new List<string>();
+            while (queue.Count > 0)
+            {
+                var node = queue.Dequeue();
+                if (node is null)
+                {
+                    result.Add("#");
+                    continue;
+                }
+
+                result.Add(node.val.ToString());
+                queue.Enqueue(node.left);
+                queue.Enqueue(node.right);
+            }
+
+            return string.Join(',', result);
+        }
+
+        // Decodes your encoded data to tree.
+        public TreeNode deserialize(string data)
+        {
+
+            var values = data.Split(',');
+            if (values[0] == "#") return null;
+
+            var root = new TreeNode(int.Parse(values[0]));
+            var queue = new Queue<TreeNode>();
+            queue.Enqueue(root);
+            var i = 0;
+            while (queue.Count > 0)
+            {
+                var node = queue.Dequeue();
+                i++;
+                if (values[i] != "#")
+                {
+                    node.left = new TreeNode(int.Parse(values[i]));
+                    queue.Enqueue(node.left);
+                }
+                i++;
+                if (values[i] != "#")
+                {
+                    node.right = new TreeNode(int.Parse(values[i]));
+                    queue.Enqueue(node.right);
+                }
+            }
+
+            return root;
+        }
     }
     #endregion
 }
