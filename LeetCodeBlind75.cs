@@ -613,8 +613,90 @@ public static class LeetCodeBlind75
 
     // #14
     // 269. Alien Dictionary
-    // TODO: buy subscription
+    // There is a new alien language that uses the English alphabet. However, the order of the letters is unknown to you.
+    // You are given a list of strings words from the alien language's dictionary. Now it is claimed that the strings in words are sorted lexicographically by the rules of this new language.
+    // If this claim is incorrect, and the given arrangement of string in words cannot correspond to any order of letters, return "".
+    // Otherwise, return a string of the unique letters in the new alien language sorted in lexicographically increasing order by the new language's rules. If there are multiple solutions, return any of them.
+    // 
+    // Topological Sort, DFS, Graph
+    #region 269. Alien Dictionary
 
+    public static string AlienOrder(string[] words)
+    {
+        var n = words.Length;
+        if (n == 0) return string.Empty;
+
+        var adj = new Dictionary<char, HashSet<char>>();
+        for (int i = 0; i < n; i++)
+        {
+            var len = words[i].Length;
+            for (int k = 0; k < len; k++)
+            {
+                if (!adj.ContainsKey(words[i][k]))
+                {
+                    adj[words[i][k]] = new HashSet<char>();
+                }
+            }
+        }
+
+        for (int i = 1; i < n; i++)
+        {
+            var word1 = words[i - 1];
+            var word2 = words[i];
+            var len1 = word1.Length;
+            var len2 = word2.Length;
+            var len = Math.Min(len1, len2);
+            for (int k = 0; k < len; k++)
+            {
+                if (word1[k] == word2[k])
+                {
+                    if (k == len - 1 && len1 > len2)
+                        return string.Empty;
+
+                    continue;
+                }
+
+                adj[word1[k]].Add(word2[k]);
+                break;
+            }
+        }
+
+        var result = new List<char>();
+        var visited = new Dictionary<char, bool>(); // False - visited, in the path, True - visited, not in the path
+        foreach ((var k, var v) in adj)
+        {
+            var res = AlienOrderDFS(k, adj, visited, result);
+            if (!res)
+            {
+                return string.Empty;
+            }
+        }
+ 
+        result.Reverse(); // собрали результат в обратном порядке, т.к. мы добавляем символы в результат после обработки всех их соседей
+        return new string(result.ToArray());
+    }
+
+    // TODO: разобраться почему это работает
+    private static bool AlienOrderDFS(char c, Dictionary<char, HashSet<char>> adj, Dictionary<char, bool> visited, List<char> result)
+    {
+        if (visited.ContainsKey(c)) // уже обрабатывается либо в текущем пути
+            return visited[c]; // если true, значит уже обработались, если false, значит мы в текущем пути, нашли цикл
+
+        visited[c] = false; // отмечаем, что символ у нас как бы в текушем пути
+        foreach (var c1 in adj[c])
+        {
+            var res = AlienOrderDFS(c1, adj, visited, result);
+            if (!res)
+            {
+                return false; // нашли цикл где-то в глубине, значит нет решения
+            }
+        }
+
+        visited[c] = true; // убираем из текущего пути, отмечаем, что символ обработан
+        result.Add(c); // добавляем символ в результат, он будет в конце, т.к. мы добавляем его после обработки всех его соседей
+        return true; // все ОК
+    }
+    #endregion
     // #15
     // 271. Encode and Decode Strings
     // Design an algorithm to encode a list of strings to a string. The encoded string is then sent over the network and is decoded back to the original list of strings.
