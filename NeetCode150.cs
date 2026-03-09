@@ -12,7 +12,7 @@ public class NeetCode150
     public int DiameterOfBinaryTree(TreeNode root)
     {
         if (root is null) return 0;
-        int result = 0;
+        var result = 0;
         DiameterOfBinaryTreeDFS(root);
         return result;
 
@@ -23,7 +23,7 @@ public class NeetCode150
             var rightResult = DiameterOfBinaryTreeDFS(root.right);
 
             result = Math.Max(result, leftResult + rightResult);
-            return Math.Max(leftResult + 1, rightResult + 1);
+            return 1 + Math.Max(leftResult, rightResult);
         }
     }
     #endregion
