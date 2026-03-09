@@ -2,6 +2,34 @@
 
 public class NeetCode150
 {
+    // Trees
+    #region Trees
+    // 543. Diameter of Binary Tree
+    // Given the root of a binary tree, return the length of the diameter of the tree.
+    // The diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root.
+    // The length of a path between two nodes is represented by the number of edges between them.
+    #region 543. Diameter of Binary Tree
+    public int DiameterOfBinaryTree(TreeNode root)
+    {
+        if (root is null) return 0;
+        int result = 0;
+        DiameterOfBinaryTreeDFS(root);
+        return result;
+
+        int DiameterOfBinaryTreeDFS(TreeNode root)
+        {
+            if (root is null) return 0;
+            var leftResult = DiameterOfBinaryTreeDFS(root.left);
+            var rightResult = DiameterOfBinaryTreeDFS(root.right);
+
+            result = Math.Max(result, leftResult + rightResult);
+            return Math.Max(leftResult + 1, rightResult + 1);
+        }
+    }
+    #endregion
+
+    #endregion
+
     // Backtracking
     #region Backtracking
     // 78. Subsets
