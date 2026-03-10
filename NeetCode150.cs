@@ -2,7 +2,6 @@
 
 public class NeetCode150
 {
-    // Trees
     #region Trees
     // 543. Diameter of Binary Tree
     // Given the root of a binary tree, return the length of the diameter of the tree.
@@ -88,7 +87,7 @@ public class NeetCode150
     }
     #endregion
     #endregion
-    // Backtracking
+
     #region Backtracking
     // 78. Subsets
     // Given an integer array nums of unique elements, return all possible subsets (the power set).
