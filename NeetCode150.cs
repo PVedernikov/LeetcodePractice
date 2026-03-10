@@ -65,7 +65,30 @@ public class NeetCode150
 
     #endregion
 
+    #region 1-D Dynamic Programming
+    
+    // 746. Min Cost Climbing Stairs
+    // You are given an integer array cost where cost[i] is the cost of ith step on a staircase. Once you pay the cost, you can either climb one or two steps.
+    // You can either start from the step with index 0, or the step with index 1.
+    // Return the minimum cost to reach the top of the floor.
+    #region 746. Min Cost Climbing Stairs
+    public int MinCostClimbingStairs(int[] cost)
+    {
+        var n = cost.Length;
+        var min0 = cost[0];
+        var min1 = cost[1];
+        for (int i = 2; i < n; i++)
+        {
+            var minI = cost[i] + Math.Min(min0, min1);
+            var tmp = min1;
+            min1 = minI;
+            min0 = tmp;
+        }
 
+        return Math.Min(min0, min1);
+    }
+    #endregion
+    #endregion
     // Backtracking
     #region Backtracking
     // 78. Subsets
