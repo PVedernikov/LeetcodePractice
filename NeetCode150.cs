@@ -64,30 +64,6 @@ public class NeetCode150
 
     #endregion
 
-    #region 1-D Dynamic Programming
-
-    // 746. Min Cost Climbing Stairs
-    // You are given an integer array cost where cost[i] is the cost of ith step on a staircase. Once you pay the cost, you can either climb one or two steps.
-    // You can either start from the step with index 0, or the step with index 1.
-    // Return the minimum cost to reach the top of the floor.
-    #region 746. Min Cost Climbing Stairs
-    public int MinCostClimbingStairs(int[] cost)
-    {
-        var n = cost.Length;
-        var min0 = cost[0];
-        var min1 = cost[1];
-        for (int i = 2; i < n; i++)
-        {
-            var minI = cost[i] + Math.Min(min0, min1);
-            min0 = min1;
-            min1 = minI;
-        }
-
-        return Math.Min(min0, min1);
-    }
-    #endregion
-    #endregion
-
     #region Backtracking
     // 78. Subsets
     // Given an integer array nums of unique elements, return all possible subsets (the power set).
@@ -115,5 +91,66 @@ public class NeetCode150
     }
     #endregion
 
+    #endregion
+
+    #region 1-D Dynamic Programming
+
+    // 746. Min Cost Climbing Stairs
+    // You are given an integer array cost where cost[i] is the cost of ith step on a staircase. Once you pay the cost, you can either climb one or two steps.
+    // You can either start from the step with index 0, or the step with index 1.
+    // Return the minimum cost to reach the top of the floor.
+    #region 746. Min Cost Climbing Stairs
+    public int MinCostClimbingStairs(int[] cost)
+    {
+        var n = cost.Length;
+        var min0 = cost[0];
+        var min1 = cost[1];
+        for (int i = 2; i < n; i++)
+        {
+            var minI = cost[i] + Math.Min(min0, min1);
+            min0 = min1;
+            min1 = minI;
+        }
+
+        return Math.Min(min0, min1);
+    }
+    #endregion
+    #endregion
+
+    #region 2-D Dynamic Programming
+
+    // 518. Coin Change II
+    // You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.
+    // Return the number of combinations that make up that amount. If that amount of money cannot be made up by any combination of the coins, return 0.
+    // You may assume that you have an infinite number of each kind of coin.
+    // The answer is guaranteed to fit into a signed 32-bit integer.
+    #region 518. Coin Change II
+    public int Change(int amount, int[] coins)
+    {
+        var n = coins.Length;
+        var dp = new int[n + 1, amount + 1];
+        for (int i = 1; i <= n; i++)
+        {
+            dp[i, 0] = 1;
+        }
+
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= amount; j++)
+            {
+                if (coins[i - 1] > j)
+                {
+                    dp[i, j] = dp[i - 1, j];
+                }
+                else
+                {
+                    dp[i, j] = dp[i, j - coins[i - 1]] + dp[i - 1, j];
+                }
+            }
+        }
+
+        return dp[n, amount];
+    }
+    #endregion
     #endregion
 }
