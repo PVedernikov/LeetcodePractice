@@ -26,10 +26,29 @@ public class NeetCode150
         }
     }
     #endregion
+    
+    // 1448. Count Good Nodes in Binary Tree
+    // Given a binary tree root, a node X in the tree is named good if in the path from root to X there are no nodes with a value greater than X.
+    // Return the number of good nodes in the binary tree.
+    #region 1448. Count Good Nodes in Binary Tree
+    public int GoodNodes(TreeNode root)
+    {
+        return GoodNodesDFS(root, int.MinValue);
+    }
+
+    private int GoodNodesDFS(TreeNode root, int max)
+    {
+        if (root is null) return 0;
+        var currMax = Math.Max(max, root.val);
+        var result = GoodNodesDFS(root.left, currMax) + GoodNodesDFS(root.right, currMax);
+        if (root.val >= max) result++;
+        return result;
+    }
+    #endregion
     #endregion
 
     #region Heap / Priority Queue
-    
+
     // 1046. Last Stone Weight
     // You are given an array of integers stones where stones[i] is the weight of the ith stone.
     // We are playing a game with the stones. On each turn, we choose the heaviest two stones and smash them together.
