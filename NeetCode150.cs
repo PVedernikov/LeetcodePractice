@@ -110,6 +110,46 @@ public class NeetCode150
     }
     #endregion
 
+    // 17. Letter Combinations of a Phone Number
+    // Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.
+    // A mapping of digits to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
+    #region 17. Letter Combinations of a Phone Number
+    public IList<string> LetterCombinations(string digits)
+    {
+        var n = digits.Length;
+        var chars = new Dictionary<char, string>
+        {
+            { '2', "abc" }, { '3', "def" }, { '4', "ghi" }, { '5', "jkl" },
+            { '6', "mno" }, { '7', "pqrs" }, { '8', "tuv" }, { '9', "wxyz" },
+        };
+
+        var queue = new Queue<string>();
+        queue.Enqueue(string.Empty);
+        for (int i = 0; i < n; i++)
+        {
+            var qCount = queue.Count;
+            while (qCount > 0)
+            {
+                var currStr = queue.Dequeue();
+                for (int j = 0; j < chars[digits[i]].Length; j++)
+                {
+                    queue.Enqueue(currStr + chars[digits[i]][j]);
+                }
+                qCount--;
+            }
+        }
+
+        var result = new List<string>();
+        while (queue.Count > 0)
+        {
+            result.Add(queue.Dequeue());
+        }
+
+        return result;
+    }
+    #endregion
+
+
     #endregion
 
     #region 1-D Dynamic Programming
