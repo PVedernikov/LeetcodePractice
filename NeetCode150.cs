@@ -110,6 +110,48 @@ public class NeetCode150
     }
     #endregion
 
+    // 22. Generate Parentheses
+    // Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+    // Input: n = 3
+    // Output: ["((()))","(()())","(())()","()(())","()()()"]
+    // TODO: рассмотреть классический случай и решить нормально
+    #region 22. Generate Parentheses
+    public IList<string> GenerateParenthesis(int n)
+    {
+        return GenerateParenthesisDFS(n, new Dictionary<int, HashSet<string>>()).ToList();
+    }
+
+    public HashSet<string> GenerateParenthesisDFS(int n, Dictionary<int, HashSet<string>> cache)
+    {
+        if (n < 1) return [""];
+        if (n == 1) return ["()"];
+
+        if (cache is not null && cache.ContainsKey(n))
+        {
+            return cache[n];
+        }
+
+        var result = new HashSet<string>();
+
+        for (int i = 0; i < n; i++)
+        {
+            var sl = GenerateParenthesisDFS(i, cache);
+            var sr = GenerateParenthesisDFS(n - i - 1, cache);
+            foreach (var strl in sl)
+            {
+                foreach (var strr in sr)
+                {
+                    result.Add($"{strl}({strr})");
+                }
+            }
+        }
+
+        cache[n] = result;
+        return result;
+    }
+    #endregion
+
+
     // 17. Letter Combinations of a Phone Number
     // Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.
     // A mapping of digits to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
