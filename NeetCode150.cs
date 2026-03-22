@@ -84,6 +84,7 @@ public class NeetCode150
     #endregion
 
     #region Backtracking
+    
     // 78. Subsets
     // Given an integer array nums of unique elements, return all possible subsets (the power set).
     // The solution set must not contain duplicate subsets. Return the solution in any order.
@@ -109,6 +110,50 @@ public class NeetCode150
         return result;
     }
     #endregion
+
+    // 90. Subsets II
+    // Given an integer array nums that may contain duplicates, return all possible subsets (the power set).
+    // The solution set must not contain duplicate subsets. Return the solution in any order.
+    // Идея: для каждого повторяющегося элемента добавляем его в уже существующие варианты, которые были созданы на предыдущем шаге, и добавляем эти новые варианты в результат.
+    // TODO: переписать на каноничное решение: Если число новое, расширяем ВСЕ подмножества. Если дубликат, расширяем только "свежие" подмножества, т.е. только те, которые были добавлены на предыдущем шаге
+    #region 90. Subsets II
+    public IList<IList<int>> SubsetsWithDup(int[] nums)
+    {
+        var result = new List<IList<int>>();
+        result.Add(new List<int>());
+        Array.Sort(nums);
+        var i = 0;
+        while (i < nums.Length)
+        {
+            var index = i;
+            var newSubsets = new List<IList<int>>();
+            var newSubset = new List<int>();
+            // Формируем все варианты из повторяющихся элементов, например [2], [2, 2], [2, 2, 2] и т.д.
+            while (i < nums.Length && nums[index] == nums[i])
+            {
+                newSubset.Add(nums[i]);
+                newSubsets.Add(new List<int>(newSubset));
+                i++;
+            }
+
+            var tmp = new List<IList<int>>();
+            foreach (var res in result)
+            {
+                foreach (var sub in newSubsets)
+                {
+                    var newRes = new List<int>(res);
+                    newRes.AddRange(sub);
+                    tmp.Add(newRes);
+                }
+            }
+
+            result.AddRange(tmp);
+        }
+
+        return result;
+    }
+    #endregion
+
     // 39. Combination Sum
     // Given an array of distinct integers candidates and a target integer target,
     // return a list of all unique combinations of candidates where the chosen numbers sum to target.
@@ -197,6 +242,7 @@ public class NeetCode150
         }
     }
     #endregion
+    
     // 22. Generate Parentheses
     // Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
     // Input: n = 3
