@@ -2,6 +2,67 @@
 
 public class NeetCode150
 {
+    #region Arrays & Hashing
+
+    // 36. Valid Sudoku
+    // Determine if a 9 x 9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
+    // 1. Each row must contain the digits 1-9 without repetition.
+    // 2. Each column must contain the digits 1-9 without repetition.
+    // 3. Each of the nine 3 x 3 sub-boxes of the grid must contain the digits 1-9 without repetition.
+    // Note:
+    // A Sudoku board (partially filled) could be valid but is not necessarily solvable.
+    // Only the filled cells need to be validated according to the mentioned rules.
+    #region 36. Valid Sudoku
+    public bool IsValidSudoku(char[][] board)
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            var seen = new bool[9];
+            for (int j = 0; j < 9; j++)
+            {
+                if (board[i][j] == '.') continue;
+                var num = (int)(board[i][j] - '1');
+                if (seen[num]) return false;
+                seen[num] = true;
+            }
+        }
+
+        for (int i = 0; i < 9; i++)
+        {
+            var seen = new bool[9];
+            for (int j = 0; j < 9; j++)
+            {
+                if (board[j][i] == '.') continue;
+                var num = (int)(board[j][i] - '1');
+                if (seen[num]) return false;
+                seen[num] = true;
+            }
+        }
+
+        for (int si = 0; si <= 6; si += 3)
+        {
+            for (int sj = 0; sj <= 6; sj += 3)
+            {
+                var seen = new bool[9];
+                for (int i = si; i < si + 3; i++)
+                {
+                    for (int j = sj; j < sj + 3; j++)
+                    {
+                        if (board[i][j] == '.') continue;
+                        var num = (int)(board[i][j] - '1');
+                        if (seen[num]) return false;
+                        seen[num] = true;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+    #endregion
+
+    #endregion
+
     #region Trees
     // 543. Diameter of Binary Tree
     // Given the root of a binary tree, return the length of the diameter of the tree.
@@ -415,5 +476,29 @@ public class NeetCode150
         return dp[n, amount];
     }
     #endregion
+    #endregion
+
+    #region Math & Geometry
+
+    // 50. Pow(x, n)
+    // Implement pow(x, n), which calculates x raised to the power n (i.e., x^n).
+    // Идея: как бинарный поиск, если n четное, то x^n = (x^2)^(n/2), если n нечетное, то x^n = x * (x^2)^(n/2)
+    #region 50. Pow(x, n)
+    public double MyPow(double x, int n)
+    {
+        if (n == 0) return 1;
+        if (n == 1) return x;
+        if (n == -1) return 1.0 / x;
+
+        var result = MyPow(x, n / 2);
+        result *= result;
+        var odd = n % 2;
+        if (odd == 1) result *= x;
+        if (odd == -1) result /= x;
+
+        return result;
+    }
+    #endregion
+
     #endregion
 }
