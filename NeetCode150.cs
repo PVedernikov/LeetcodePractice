@@ -500,5 +500,90 @@ public class NeetCode150
     }
     #endregion
 
+    // 43. Multiply Strings
+    // Given two non-negative integers num1 and num2 represented as strings, return the product of num1 and num2, also represented as a string.
+    // Note: You must not use any built-in BigInteger library or convert the inputs to integer directly.
+    #region 43. Multiply Strings
+    public string Multiply(string num1, string num2)
+    {
+        var n1 = num1.Length;
+        var n2 = num2.Length;
+        var nm1 = new int[n1];
+        var nm2 = new int[n2];
+        var rn = n1 + n2;
+        var res = new int[rn];
+        for (int i = 0; i < n1; i++)
+        {
+            nm1[n1 - i - 1] = num1[i] - '0';
+        }
+
+        for (int i = 0; i < n2; i++)
+        {
+            nm2[n2 - i - 1] = num2[i] - '0';
+        }
+
+        for (int i = 0; i < n2; i++)
+        {
+            var r = Mul43(nm1, n1, nm2[i]);
+            Add43(res, r, i);
+        }
+
+        // From here just construct the result
+        // Skip leading zeroes
+        var zeroesCount = 0;
+        while (zeroesCount < rn && res[rn - zeroesCount - 1] == 0)
+        {
+            zeroesCount++;
+        }
+        if (zeroesCount == rn) return "0";
+
+        var resultLength = rn - zeroesCount;
+        var result = new char[resultLength];
+        for (int i = 0; i < resultLength; i++)
+        {
+            // Reverse digits
+            result[resultLength - i - 1] = (char)('0' + res[i]);
+        }
+
+        return new string(result);
+    }
+
+    private void Add43(int[] result, int[] num, int shift)
+    {
+        var n = num.Length;
+        var carry = 0;
+        for (int i = 0; i < n; i++)
+        {
+            var res = result[i + shift] + num[i] + carry;
+            result[i + shift] = res % 10;
+            carry = res / 10;
+        }
+
+        var ii = n + shift;
+        while (carry > 0 && ii < result.Length)
+        {
+            var res = result[ii] + carry;
+            result[ii] = res % 10;
+            carry = res / 10;
+            ii++;
+        }
+    }
+
+    private int[] Mul43(int[] num, int n, int x)
+    {
+        var result = new int[n + 1];
+        var carry = 0;
+        for (int i = 0; i < n; i++)
+        {
+            var res = num[i] * x + carry;
+            result[i] = res % 10;
+            carry = res / 10;
+        }
+
+        result[n] = carry;
+        return result;
+    }
+    #endregion
+
     #endregion
 }
