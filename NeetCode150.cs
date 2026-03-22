@@ -242,7 +242,36 @@ public class NeetCode150
         }
     }
     #endregion
-    
+
+    // 46. Permutations
+    // Given an array nums of distinct integers, return all the possible permutations. You can return the answer in any order.
+    // Вывести все перестановки массива.
+    // Идея: для каждого элемента вставляем его во все возможные позиции уже существующих перестановок, например для [1, 2] и элемента 3 получаем [3, 1, 2], [1, 3, 2], [1, 2, 3]
+    #region 46. Permutations
+    public IList<IList<int>> Permute(int[] nums)
+    {
+        var n = nums.Length;
+        var result = new List<IList<int>>();
+        result.Add(new List<int>());
+        for (int i = 0; i < n; i++)
+        {
+            var res = new List<IList<int>>();
+            foreach (var mut in result)
+            {
+                for (int j = 0; j <= mut.Count; j++)
+                {
+                    var newMut = new List<int>(mut);
+                    newMut.Insert(j, nums[i]);
+                    res.Add(newMut);
+                }
+            }
+            result = res;
+        }
+
+        return result;
+    }
+    #endregion
+
     // 22. Generate Parentheses
     // Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
     // Input: n = 3
