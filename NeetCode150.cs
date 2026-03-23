@@ -478,6 +478,44 @@ public class NeetCode150
     #endregion
     #endregion
 
+    #region Greedy
+
+    // 45. Jump Game II
+    // You are given a 0-indexed array of integers nums of length n. You are initially positioned at index 0.
+    // Each element nums[i] represents the maximum length of a forward jump from index i.
+    // In other words, if you are at index i, you can jump to any index (i + j) where:
+    // 0 <= j <= nums[i] and
+    // i + j < n
+    #region 45. Jump Game II
+    
+    // DP solution
+    // NOT OPTIMAL
+    // O(n^2) time complexity
+    public int JumpDP(int[] nums)
+    {
+        var n = nums.Length;
+        var dp = new int[n];
+
+        for (int i = 1; i < n; i++)
+        {
+            dp[i] = int.MaxValue;
+        }
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 1; j <= nums[i]; j++)
+            {
+                if (i + j >= n) break;
+                dp[i + j] = Math.Min(dp[i + j], dp[i] + 1);
+            }
+        }
+
+        return dp[n - 1];
+    }
+    #endregion
+
+    #endregion
+
     #region Math & Geometry
 
     // 50. Pow(x, n)
