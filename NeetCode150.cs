@@ -261,6 +261,52 @@ public class NeetCode150
 
     #region Heap / Priority Queue
 
+    // 703. Kth Largest Element in a Stream
+    // You are part of a university admissions office and need to keep track of the kth highest test score from applicants in real-time.
+    // This helps to determine cut-off marks for interviews and admissions dynamically as new applicants submit their scores.
+    // You are tasked to implement a class which, for a given integer k, maintains a stream of test scores and continuously returns the kth highest test score after a new score has been submitted.
+    // More specifically, we are looking for the kth highest score in the sorted list of all scores.
+    // Implement the KthLargest class:
+    // - KthLargest(int k, int[] nums) Initializes the object with the integer k and the stream of test scores nums.
+    // - int add(int val) Adds a new test score val to the stream and returns the element representing the kth largest element in the pool of test scores so far.
+    #region 703. Kth Largest Element in a Stream
+    public class KthLargest
+    {
+        private int _k;
+        private PriorityQueue<int, int> _minQueue;
+        public KthLargest(int k, int[] nums)
+        {
+            _k = k;
+            _minQueue = new PriorityQueue<int, int>();
+            for (int i = 0; i < nums.Length; i++)
+            {
+                Add(nums[i]);
+            }
+        }
+
+        public int Add(int val)
+        {
+            if (_minQueue.Count < _k)
+            {
+                _minQueue.Enqueue(val, val);
+            }
+            else if (_minQueue.Peek() < val)
+            {
+                _minQueue.Dequeue();
+                _minQueue.Enqueue(val, val);
+            }
+
+            return _minQueue.Peek();
+        }
+    }
+
+    /**
+     * Your KthLargest object will be instantiated and called as such:
+     * KthLargest obj = new KthLargest(k, nums);
+     * int param_1 = obj.Add(val);
+     */
+    #endregion
+
     // 1046. Last Stone Weight
     // You are given an array of integers stones where stones[i] is the weight of the ith stone.
     // We are playing a game with the stones. On each turn, we choose the heaviest two stones and smash them together.
