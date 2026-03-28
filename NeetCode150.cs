@@ -212,6 +212,60 @@ public class NeetCode150
     }
     #endregion
 
+    // 74. Search a 2D Matrix
+    // You are given an m x n integer matrix matrix with the following two properties:
+    // - Each row is sorted in non-decreasing order.
+    // - The first integer of each row is greater than the last integer of the previous row.
+    // Given an integer target, return true if target is in matrix or false otherwise.
+    // You must write a solution in O(log(m * n)) time complexity.
+    #region 74. Search a 2D Matrix
+    public bool SearchMatrix(int[][] matrix, int target)
+    {
+        var m = matrix.Length;
+        var n = matrix[0].Length;
+        var t = 0;
+        var b = m - 1;
+        var row = -1;
+        while (t <= b)
+        {
+            var mid = (b + t) / 2;
+            if (target >= matrix[mid][0] && target <= matrix[mid][n - 1])
+            {
+                row = mid;
+                break;
+            }
+            if (target < matrix[mid][0])
+            {
+                b = mid - 1;
+            }
+            else
+            {
+                t = mid + 1;
+            }
+        }
+
+        if (row == -1) return false; // ранний выход, если не нашли строку, в которой может находиться искомое число 
+
+        var l = 0;
+        var r = n - 1;
+        while (l <= r)
+        {
+            var mid = (r + l) / 2;
+            if (target == matrix[row][mid]) return true;
+            if (target < matrix[row][mid])
+            {
+                r = mid - 1;
+            }
+            else
+            {
+                l = mid + 1;
+            }
+        }
+
+        return false;
+    }
+    #endregion
+
     #endregion
 
     #region Trees
