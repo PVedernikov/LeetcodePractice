@@ -195,7 +195,7 @@ public class NeetCode150
         var r = nums.Length - 1;
         while (l <= r)
         {
-            // l + (r - l) / 2 = l + r/2 - l/2 = l(1 - 1/2) + r/2 = l/2 + r/2 = (l + r) / 2
+            // l + (r - l)/2 = l + r/2 - l/2 = l(1 - 1/2) + r/2 = l/2 + r/2 = (l + r) / 2
             var mid = (r + l) / 2; // same as l + (r - l) / 2;
             if (target == nums[mid]) return mid;
             if (target < nums[mid])
