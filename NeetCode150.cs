@@ -594,7 +594,57 @@ public class NeetCode150
         return dp[n, amount];
     }
     #endregion
+
+    // 72. Edit Distance
+    // Given two strings word1 and word2, return the minimum number of operations required to convert word1 to word2.
+    // You have the following three operations permitted on a word:
+    // - Insert a character
+    // - Delete a character
+    // - Replace a character
+    #region 72. Edit Distance
+    public int MinDistance(string word1, string word2)
+    {
+        var n1 = word1.Length;
+        var n2 = word2.Length;
+        if (n2 == 0) return n1;
+        if (n1 == 0) return n2;
+
+        var dp = new int[n1 + 1, n2 + 1];
+        for (int i = 1; i <= n1; i++)
+        {
+            dp[i, 0] = i;
+        }
+        for (int j = 1; j <= n2; j++)
+        {
+            dp[0, j] = j;
+        }
+
+        for (int i = 1; i <= n1; i++)
+        {
+            for (int j = 1; j <= n2; j++)
+            {
+                if (word1[i - 1] == word2[j - 1])
+                {
+                    dp[i, j] = dp[i - 1, j - 1]; // nothing to do
+                }
+                else
+                {
+                    int insert = dp[i, j - 1];
+                    int delete = dp[i - 1, j];
+                    int replace = dp[i - 1, j - 1];
+
+                    dp[i, j] = Math.Min(replace, Math.Min(insert, delete)) + 1;
+                }
+            }
+        }
+
+        return dp[n1, n2];
+    }
     #endregion
+
+    #endregion
+
+
 
     #region Greedy
 
@@ -630,6 +680,29 @@ public class NeetCode150
     // i + j < n
     // Return the minimum number of jumps to reach index n - 1. The test cases are generated such that you can reach index n - 1.
     #region 45. Jump Game II
+
+    // Greedy solution
+    // O(n) time complexity
+    public int Jump(int[] nums)
+    {
+        var n = nums.Length;
+        var maxDistance = 0;
+        var start = 0;
+        var result = 0;
+        while (maxDistance < n - 1)
+        {
+            var maxFromThisLevel = maxDistance;
+            for (int i = start; i <= maxDistance; i++)
+            {
+                maxFromThisLevel = Math.Max(maxFromThisLevel, i + nums[i]);
+            }
+            start = maxDistance + 1;
+            maxDistance = maxFromThisLevel;
+            result++;
+        }
+
+        return result;
+    }
 
     // DP solution
     // NOT OPTIMAL
