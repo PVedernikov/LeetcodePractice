@@ -63,6 +63,124 @@ public class NeetCode150
 
     #endregion
 
+    #region Sliding Window
+
+    // 567. Permutation in String
+    // You are given two strings s1 and s2.
+    // Return true if s2 contains a permutation of s1, or false otherwise. That means if a permutation of s1 exists as a substring of s2, then return true.
+    // Both strings only contain lowercase letters.
+    // Note: Permutation is anagram, so using sliding window and counting frequencies
+    #region 567. Permutation in String
+
+    // Array
+    public bool CheckInclusion(string s1, string s2)
+    {
+        var n1 = s1.Length;
+        var n2 = s2.Length;
+
+        if (n1 > n2) return false;
+
+        var f1 = new int[26];
+        var f2 = new int[26];
+        var required = 0;
+        for (int i = 0; i < n1; i++)
+        {
+            var c = s1[i] - 'a';
+            if (f1[c] == 0) required++;
+
+            f1[c]++;
+        }
+
+        var l = 0;
+        var r = 0;
+        var matched = 0;
+        while (r < n2)
+        {
+            var c = s2[r] - 'a';
+            if (f2[c] == f1[c]) matched--;
+            f2[c]++;
+            if (f2[c] == f1[c]) matched++;
+            r++;
+
+            if (r - l > n1)
+            {
+                var cl = s2[l] - 'a';
+                if (f2[cl] == f1[cl]) matched--;
+                f2[cl]--;
+                if (f2[cl] == f1[cl]) matched++;
+                l++;
+            }
+
+            if (matched == required) return true;
+        }
+
+        return false;
+    }
+
+    // Dictionary - same thing, but a little slower because dictinary needs to calculate hash for each key
+    public bool CheckInclusionD(string s1, string s2)
+    {
+        var n1 = s1.Length;
+        var n2 = s2.Length;
+
+        if (n1 > n2) return false;
+
+        var f1 = new Dictionary<char, int>();
+        var f2 = new Dictionary<char, int>();
+        var s1Symbols = 0;
+        for (int i = 0; i < n1; i++)
+        {
+            if (!f1.ContainsKey(s1[i]))
+            {
+                f1[s1[i]] = 1;
+                f2[s1[i]] = 0;
+                s1Symbols++;
+            }
+            else
+            {
+                f1[s1[i]]++;
+            }
+        }
+
+        var l = 0;
+        var r = 0;
+        var matched = 0;
+        while (r < n2)
+        {
+            if (f2.ContainsKey(s2[r]))
+            {
+                if (f2[s2[r]] == f1[s2[r]]) matched--;
+
+                f2[s2[r]]++;
+
+                if (f2[s2[r]] == f1[s2[r]]) matched++;
+            }
+
+            if (matched == s1Symbols) return true;
+            r++;
+
+            if (r - l >= n1)
+            {
+                if (f2.ContainsKey(s2[l]))
+                {
+                    if (f2[s2[l]] == f1[s2[l]]) matched--;
+
+                    f2[s2[l]]--;
+
+                    if (f2[s2[l]] == f1[s2[l]]) matched++;
+                }
+
+                l++;
+            }
+        }
+
+        return false;
+    }
+    #endregion
+
+
+    #endregion
+
     #region Trees
     // 543. Diameter of Binary Tree
     // Given the root of a binary tree, return the length of the diameter of the tree.
