@@ -181,6 +181,116 @@ public class NeetCode150
 
     #endregion
 
+    #region Stack
+
+    // 155. Min Stack
+    // Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+    // Implement the MinStack class:
+    // - MinStack() initializes the stack object.
+    // - void push(int val) pushes the element val onto the stack.
+    // - void pop() removes the element on the top of the stack.
+    // - int top() gets the top element of the stack.
+    // - int getMin() retrieves the minimum element in the stack.
+    // You must implement a solution with O(1) time complexity for each function.
+    #region 155. Min Stack
+    public class MinStack
+    {
+        private MinStackNode _node;
+
+        public MinStack() { }
+
+        public void Push(int val)
+        {
+            var newNode = new MinStackNode();
+            newNode.Value = val;
+            newNode.Prev = _node;
+            newNode.Min = _node is not null && _node.Min < val
+                ? _node.Min
+                : val;
+            _node = newNode;
+        }
+
+        public void Pop()
+        {
+            if (_node is not null)
+            {
+                _node = _node.Prev;
+            }
+        }
+
+        public int Top()
+        {
+            return _node is not null ? _node.Value : int.MinValue; // not necessary, could just return _node.Value because LeetCode guarantees valid inputs
+        }
+
+        public int GetMin()
+        {
+            return _node is not null ? _node.Min : int.MinValue; // not necessary, could just return _node.Value because LeetCode guarantees valid inputs
+        }
+
+        class MinStackNode
+        {
+            public MinStackNode Prev { get; set; }
+
+            public int Value { get; set; }
+
+            public int Min { get; set; }
+        }
+    }
+    #endregion
+
+    // 150. Evaluate Reverse Polish Notation
+    // You are given an array of strings tokens that represents an arithmetic expression in a Reverse Polish Notation.
+    // Evaluate the expression. Return an integer that represents the value of the expression.
+    // Note that:
+    // - The valid operators are '+', '-', '*', and '/'.
+    // - Each operand may be an integer or another expression.
+    // - The division between two integers always truncates toward zero.
+    // - There will not be any division by zero.
+    // - The input represents a valid arithmetic expression in a reverse polish notation.
+    // - The answer and all the intermediate calculations can be represented in a 32-bit integer.
+    #region 150. Evaluate Reverse Polish Notation
+    public int EvalRPN(string[] tokens)
+    {
+        var stack = new Stack<int>();
+
+        for (int i = 0; i < tokens.Length; i++)
+        {
+            if (tokens[i] == "+")
+            {
+                var b = stack.Pop();
+                var a = stack.Pop();
+                stack.Push(a + b);
+                continue;
+            }
+            if (tokens[i] == "-")
+            {
+                var b = stack.Pop();
+                var a = stack.Pop();
+                stack.Push(a - b);
+                continue;
+            }
+            if (tokens[i] == "*")
+            {
+                var b = stack.Pop();
+                var a = stack.Pop();
+                stack.Push(a * b);
+                continue;
+            }
+            if (tokens[i] == "/")
+            {
+                var b = stack.Pop();
+                var a = stack.Pop();
+                stack.Push(a / b);
+                continue;
+            }
+            stack.Push(int.Parse(tokens[i]));
+        }
+        return stack.Pop();
+    }
+    #endregion
+
+    #endregion
 
     #region Binary Search
 
@@ -393,10 +503,16 @@ public class NeetCode150
     }
     #endregion
 
+    // 621. Task Scheduler
+    #region 621. Task Scheduler
+    // TODO 
+
+    #endregion
+
     #endregion
 
     #region Backtracking
-    
+
     // 78. Subsets
     // Given an integer array nums of unique elements, return all possible subsets (the power set).
     // The solution set must not contain duplicate subsets. Return the solution in any order.
