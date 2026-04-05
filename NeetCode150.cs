@@ -741,6 +741,57 @@ public class NeetCode150
     }
     #endregion
 
+    // 131. Palindrome Partitioning
+    // Given a string s, partition s such that every substring of the partition is a palindrome. Return all possible palindrome partitioning of s.
+    // Example 1:
+    // Input: s = "aab"
+    // Output: [["a", "a", "b"],["aa", "b"]]
+    #region 131. Palindrome Partitioning
+    public IList<IList<string>> Partition(string s)
+    {
+        var n = s.Length;
+        var result = new List<IList<string>>();
+        var stack = new Stack<string>();
+
+        DFS(0);
+        return result;
+
+        void DFS(int i)
+        {
+            if (i > n - 1)
+            {
+                var part = new List<string>(stack);
+                part.Reverse();
+                result.Add(part);
+                return;
+            }
+
+            for (int j = i; j < n; j++)
+            {
+                var isPalindrome = true; // TODO: подумать как оптимизировать проверку на палиндром
+                var ii = i;
+                var jj = j;
+                while (ii < jj)
+                {
+                    if (s[ii] != s[jj])
+                    {
+                        isPalindrome = false;
+                        break;
+                    }
+                    ii++;
+                    jj--;
+                }
+
+                if (isPalindrome)
+                {
+                    stack.Push(s.Substring(i, j - i + 1));
+                    DFS(j + 1);
+                    stack.Pop();
+                }
+            }
+        }
+    }
+    #endregion
 
     // 17. Letter Combinations of a Phone Number
     // Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.
