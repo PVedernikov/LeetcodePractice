@@ -895,6 +895,48 @@ public class NeetCode150
     }
     #endregion
 
+    // 97. Interleaving String
+    // Given strings s1, s2, and s3, find whether s3 is formed by an interleaving of s1 and s2.
+    // An interleaving of two strings s and t is a configuration where s and t are divided into n and m substrings respectively, such that:
+    // - s = s1 + s2 + ... + sn
+    // - t = t1 + t2 + ... + tm
+    // - |n - m| <= 1
+    // - The interleaving is s1 + t1 + s2 + t2 + s3 + t3 + ... or t1 + s1 + t2 + s2 + t3 + s3 + ...
+    // Note: a + b is the concatenation of strings a and b.
+    #region 97. Interleaving String
+    public bool IsInterleave(string s1, string s2, string s3)
+    {
+        var n1 = s1.Length;
+        var n2 = s2.Length;
+        var n3 = s3.Length;
+        if (n3 != n1 + n2) return false;
+
+        var dp = new bool[n1 + 1, n2 + 1];
+        dp[0, 0] = true;
+        for (int i = 1; i <= n1; i++)
+        {
+            if (s1[i - 1] != s3[i - 1]) break;
+            dp[i, 0] = true;
+        }
+        for (int j = 1; j <= n2; j++)
+        {
+            if (s2[j - 1] != s3[j - 1]) break;
+            dp[0, j] = true;
+        }
+
+        for (int i = 1; i <= n1; i++)
+        {
+            for (int j = 1; j <= n2; j++)
+            {
+                dp[i, j] = (s1[i - 1] == s3[i + j - 1] && dp[i - 1, j])
+                    || (s2[j - 1] == s3[i + j - 1] && dp[i, j - 1]);
+            }
+        }
+
+        return dp[n1, n2];
+    }
+    #endregion
+
     // 72. Edit Distance
     // Given two strings word1 and word2, return the minimum number of operations required to convert word1 to word2.
     // You have the following three operations permitted on a word:
