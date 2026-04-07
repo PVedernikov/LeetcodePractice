@@ -378,6 +378,122 @@ public class NeetCode150
 
     #endregion
 
+    #region Linked List
+
+    // 146. LRU Cache
+    // Design a data structure that follows the constraints of a Least Recently Used (LRU) cache.
+    // Implement the LRUCache class:
+    // - LRUCache(int capacity) Initialize the LRU cache with positive size capacity.
+    // - int get(int key) Return the value of the key if the key exists, otherwise return -1.
+    // - void put(int key, int value) Update the value of the key if the key exists. Otherwise, add the key-value pair to the cache.
+    //   If the number of keys exceeds the capacity from this operation, evict the least recently used key.
+    // The functions get and put must each run in O(1) average time complexity.
+    // TODO: переписать на каноничное решение, с dummy head и tail, чтобы не проверять на null и не делать лишних проверок в методах Remove и Insert
+    // TODO: перепичать для capacity = 0
+    #region 146. LRU Cache
+    public class LRUCache
+    {
+        private int _capacity = 0;
+        private Dictionary<int, Node> _nodes;
+        private Node _head;
+
+        public LRUCache(int capacity)
+        {
+            _capacity = capacity;
+            _nodes = new Dictionary<int, Node>();
+        }
+
+        public int Get(int key)
+        {
+            if (_nodes.ContainsKey(key))
+            {
+                var node = _nodes[key];
+                Remove(node);
+                Insert(node);
+                return _nodes[key].Val;
+            }
+
+            return -1;
+        }
+
+        public void Put(int key, int value)
+        {
+            Node node;
+            if (!_nodes.ContainsKey(key))
+            {
+                node = new Node();
+                node.Key = key;
+                _nodes[key] = node;
+            }
+            else
+            {
+                node = _nodes[key];
+                Remove(node);
+            }
+
+            node.Val = value;
+            Insert(node);
+
+            if (_nodes.Count > _capacity)
+            {
+                var last = _head.Prev;
+                _nodes.Remove(last.Key);
+                last.Prev.Next = _head;
+                _head.Prev = last.Prev;
+            }
+        }
+        private void Remove(Node node)
+        {
+            if (node == _head)
+            {
+                return;
+            }
+
+            node.Prev.Next = node.Next;
+            node.Next.Prev = node.Prev;
+        }
+
+        private void Insert(Node node)
+        {
+            if (node == _head)
+            {
+                return;
+            }
+
+            if (_head is null)
+            {
+                _head = node;
+                _head.Next = _head;
+                _head.Prev = _head;
+            }
+            else
+            {
+                node.Next = _head;
+                node.Prev = _head.Prev;
+                _head.Prev.Next = node;
+                _head.Prev = node;
+                _head = node;
+            }
+        }
+
+        class Node
+        {
+            public int Val { get; set; }
+            public int Key { get; set; }
+            public Node Next { get; set; }
+            public Node Prev { get; set; }
+        }
+    }
+
+    /**
+     * Your LRUCache object will be instantiated and called as such:
+     * LRUCache obj = new LRUCache(capacity);
+     * int param_1 = obj.Get(key);
+     * obj.Put(key,value);
+     */
+    #endregion
+    #endregion
+
     #region Trees
     // 543. Diameter of Binary Tree
     // Given the root of a binary tree, return the length of the diameter of the tree.
