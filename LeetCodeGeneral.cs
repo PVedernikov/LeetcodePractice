@@ -34,4 +34,36 @@ public class LeetCodeGeneral
         return result;
     }
     #endregion
+
+
+    // 28. Find the Index of the First Occurrence in a String
+    // Given two strings needle and haystack, return the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.
+    // TODO: implement KMP algorithm
+    #region 28. Find the Index of the First Occurrence in a String
+    // Broot force solution
+    public int StrStr(string haystack, string needle)
+    {
+        var n1 = haystack.Length;
+        var n2 = needle.Length;
+
+        if (n1 < n2) return -1;
+
+        for (int i = 0; i < n1; i++)
+        {
+            var valid = true;
+            for (int j = 0; j < n2; j++)
+            {
+                if (i + j >= n1 || haystack[i + j] != needle[j])
+                {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid) return i;
+        }
+
+        return -1;
+    }
+    #endregion
 }
