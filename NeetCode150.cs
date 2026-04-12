@@ -1188,6 +1188,69 @@ public class NeetCode150
     }
     #endregion
 
+    // 134. Gas Station
+    // There are n gas stations along a circular route, where the amount of gas at the ith station is gas[i].
+    // You have a car with an unlimited gas tank and it costs cost[i] of gas to travel from the ith station to its next (i + 1)th station.
+    // You begin the journey with an empty tank at one of the gas stations.
+    // Given two integer arrays gas and cost, return the starting gas station's index if you can travel around the circuit once in the clockwise direction,
+    // otherwise return -1. If there exists a solution, it is guaranteed to be unique.
+    #region 134. Gas Station
+    public int CanCompleteCircuit(int[] gas, int[] cost)
+    {
+        var n = gas.Length;
+        var totalGas = 0;
+        var totalCost = 0;
+        for (int i = 0; i < n; i++)
+        {
+            totalGas += gas[i];
+            totalCost += cost[i];
+        }
+        if (totalCost > totalGas) return -1;
+
+        var tank = 0;
+        var start = -1;
+        for (int i = 0; i < n; i++)
+        {
+            tank += gas[i] - cost[i];
+            if (tank < 0)
+            {
+                tank = 0;
+                start = -1;
+            }
+            else if (start < 0)
+            {
+                start = i;
+            }
+        }
+
+        return start;
+    }
+
+    // public int CanCompleteCircuit(int[] gas, int[] cost)
+    // {
+    //     var n = gas.Length;
+    //     for (int start = 0; start < n; start++)
+    //     {
+    //         if (gas[start] < cost[start])
+    //             continue;
+
+    //         var i = start;
+    //         var tank = gas[start];
+    //         while (true)
+    //         {
+    //             tank -= cost[i];
+    //             i = (i + 1) % n;
+    //             if (tank < 0)
+    //                 break;
+    //             if (i == start)
+    //                 return start;
+    //             tank += gas[i];
+    //         }
+    //     }
+
+    //     return -1;
+    // }
+    #endregion
     #endregion
 
     #region Math & Geometry
