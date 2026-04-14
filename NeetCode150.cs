@@ -376,7 +376,50 @@ public class NeetCode150
     }
     #endregion
 
+    // 875. Koko Eating Bananas
+    // Koko loves to eat bananas. There are n piles of bananas, the ith pile has piles[i] bananas. The guards have gone and will come back in h hours.
+    // Koko can decide her bananas-per-hour eating speed of k. Each hour, she chooses some pile of bananas and eats k bananas from that pile.
+    // If the pile has less than k bananas, she eats all of them instead and will not eat any more bananas during this hour.
+    // Koko likes to eat slowly but still wants to finish eating all the bananas before the guards return.
+    // Return the minimum integer k such that she can eat all the bananas within h hours.
+    // Идея: бинарный поиск. Ответ лежит в диапазоне от 1 до max(piles). Вычисляем среуднюю скорость speed =  min + (min - max)/2 = (min + max)/2
+    // Далее смотрим сколько часов потребуется, чтобы съесть все бананы с такой скоростью: hours = сумма всех (piles[i]/speed). 
+    // если hours > h, значит скорость слишком маленькая, нужно увеличить min до speed + 1. Иначе, если hours <= h, значит скорость может быть меньше, нужно уменьшить max до speed - 1 и запомнить результат как потенциальный ответ.
+    #region 875. Koko Eating Bananas
+    public int MinEatingSpeed(int[] piles, int h)
+    {
+        var n = piles.Length;
+        var minSpeed = 1;
+        var maxSpeed = piles.Max();
+
+        if (n == h) return maxSpeed;
+
+        var result = maxSpeed;
+        while (minSpeed <= maxSpeed)
+        {
+            var speed = (minSpeed + maxSpeed) / 2;
+            long hours = 0;
+            for (int i = 0; i < n; i++)
+            {
+                //hours += (long) Math.Ceiling((double)piles[i] / speed);
+                hours += (piles[i] + speed - 1) / speed; // standart integer ceil
+            }
+
+            if (hours <= h)
+            {
+                result = speed;
+                maxSpeed = speed - 1;
+            }
+            else
+            {
+                minSpeed = speed + 1;
+            }
+        }
+
+        return result;
+    }
     #endregion
+#endregion
 
     #region Linked List
 
@@ -1251,6 +1294,53 @@ public class NeetCode150
     //     return -1;
     // }
     #endregion
+
+    // 678. Valid Parenthesis String
+    // Given a string s containing only three types of characters: '(', ')' and '*', return true if s is valid.
+    // The following rules define a valid string:
+    // - Any left parenthesis '(' must have a corresponding right parenthesis ')'.
+    // - Any right parenthesis ')' must have a corresponding left parenthesis '('.
+    // - Left parenthesis '(' must go before the corresponding right parenthesis ')'.
+    // - '*' could be treated as a single right parenthesis ')' or a single left parenthesis '(' or an empty string "".
+    #region 678. Valid Parenthesis String
+    // Greedy solution
+    // TODO: investigate
+    public bool CheckValidString(string s)
+    {
+        var n = s.Length;
+        var leftMin = 0;
+        var leftMax = 0;
+        for (int i = 0; i < n; i++)
+        {
+            if (s[i] == '(')
+            {
+                leftMin++;
+                leftMax++;
+            }
+
+            if (s[i] == ')')
+            {
+                leftMin--;
+                leftMax--;
+            }
+
+            if (s[i] == '*')
+            {
+                leftMin--;
+                leftMax++;
+            }
+
+            if (leftMax < 0)
+                return false;
+
+            if (leftMin < 0)
+                leftMin = 0;
+        }
+
+        return leftMin == 0;
+    }
+    #endregion
+
     #endregion
 
     #region Math & Geometry
