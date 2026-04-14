@@ -398,7 +398,7 @@ public class NeetCode150
         while (minSpeed <= maxSpeed)
         {
             var speed = (minSpeed + maxSpeed) / 2;
-            long hours = 0;
+            long hours = 0; // long, иначе на некоторых тестах может быть переполнение
             for (int i = 0; i < n; i++)
             {
                 //hours += (long) Math.Ceiling((double)piles[i] / speed);
