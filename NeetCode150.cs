@@ -995,6 +995,51 @@ public class NeetCode150
     #endregion
 
     #region Graphs
+    // 695. Max Area of Island
+    // You are given an m x n binary matrix grid. An island is a group of 1's (representing land) connected 4-directionally (horizontal or vertical.)
+    // You may assume all four edges of the grid are surrounded by water.
+    // The area of an island is the number of cells with a value 1 in the island.
+    // Return the maximum area of an island in grid. If there is no island, return 0.
+    #region 695. Max Area of Island
+    // optimal solution, O(m*n) time complexity, O(1) space complexity
+    // TODO: get rid of recursion and implement with stack
+    public int MaxAreaOfIsland(int[][] grid)
+    {
+        var m = grid.Length;
+        var n = grid[0].Length;
+        var di = new int[] { 1, -1, 0, 0 };
+        var dj = new int[] { 0, 0, 1, -1 };
+
+        var result = 0;
+
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                result = Math.Max(result, DFS695(i, j));
+            }
+        }
+
+        return result;
+
+        int DFS695(int i, int j)
+        {
+            if (i < 0 || j < 0 || i >= m || j >= n || grid[i][j] != 1)
+            {
+                return 0;
+            }
+
+            var res = 1;
+            grid[i][j] = -1;
+            for (int k = 0; k < 4; k++)
+            {
+                res += DFS695(i + di[k], j + dj[k]);
+            }
+
+            return res;
+        }
+    }
+    #endregion
 
     // 130. Surrounded Regions
     // You are given an m x n matrix board containing letters 'X' and 'O', capture regions that are surrounded:
