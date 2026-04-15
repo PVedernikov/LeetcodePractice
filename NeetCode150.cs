@@ -994,6 +994,75 @@ public class NeetCode150
 
     #endregion
 
+    #region Graphs
+
+    // 130. Surrounded Regions
+    // You are given an m x n matrix board containing letters 'X' and 'O', capture regions that are surrounded:
+    // - Connect: A cell is connected to adjacent cells horizontally or vertically.
+    // - Region: To form a region connect every 'O' cell.
+    // Surround: A region is surrounded if none of the 'O' cells in that region are on the edge of the board. Such regions are completely enclosed by 'X' cells.
+    // To capture a surrounded region, replace all 'O's with 'X's in-place within the original board. You do not need to return anything.
+    // Идея: идем от границ, если встречаем 'O', то запускаем DFS и помечаем все связанные 'O' как '1'.
+    // В итоге все 'O', которые не были помечены, это те, которые нужно заменить на 'X', а все '1' нужно вернуть обратно в 'O'
+    #region 130. Surrounded Regions
+    // Runtime 1 ms Beats 100.00%
+    public void Solve(char[][] board)
+    {
+        var m = board.Length;
+        var n = board[0].Length;
+        var di = new int[] { 1, -1, 0, 0 };
+        var dj = new int[] { 0, 0, 1, -1 };
+
+        for (int i = 0; i < m; i++)
+        {
+            DFS130(i, 0);
+            DFS130(i, n - 1);
+        }
+
+        for (int j = 0; j < n; j++)
+        {
+            DFS130(0, j);
+            DFS130(m - 1, j);
+        }
+
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (board[i][j] == 'O')
+                {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (board[i][j] == '1')
+                {
+                    board[i][j] = 'O';
+                }
+            }
+        }
+
+        void DFS130(int i, int j)
+        {
+            if (i < 0 || i >= m || j < 0 || j >= n || board[i][j] != 'O')
+                return;
+
+            board[i][j] = '1';
+
+            for (int k = 0; k < 4; k++)
+            {
+                DFS130(i + di[k], j + dj[k]);
+            }
+        }
+    }
+    #endregion
+    #endregion
+
     #region 1-D Dynamic Programming
 
     // 746. Min Cost Climbing Stairs
