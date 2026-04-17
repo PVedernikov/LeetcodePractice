@@ -662,6 +662,30 @@ public class NeetCode150
     }
     #endregion
 
+    // 215. Kth Largest Element in an Array
+    // Given an integer array nums and an integer k, return the kth largest element in the array.
+    // Note that it is the kth largest element in the sorted order, not the kth distinct element.
+    // Can you solve it without sorting?
+    // Идея: кладем элементы в мин-кучу, если размер кучи больше k, удаляем минимальный элемент.
+    // В итоге в куче останется k наибольших элементов, а минимальный элемент в куче будет k-ым по величине.
+    #region 215. Kth Largest Element in an Array
+    public int FindKthLargest(int[] nums, int k)
+    {
+        var n = nums.Length;
+        var queue = new PriorityQueue<int, int>();
+        for (int i = 0; i < n; i++)
+        {
+            queue.Enqueue(nums[i], nums[i]);
+            if (queue.Count > k)
+            {
+                queue.Dequeue();
+            }
+        }
+
+        return queue.Peek();
+    }
+    #endregion
+
     // 621. Task Scheduler
     #region 621. Task Scheduler
     // TODO 
