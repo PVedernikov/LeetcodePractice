@@ -290,6 +290,68 @@ public class NeetCode150
     }
     #endregion
 
+    // 853. Car Fleet
+    // There are n cars at given miles away from the starting mile 0, traveling to reach the mile target.
+    // You are given two integer arrays position and speed, both of length n, where position[i] is the starting mile of the ith car and speed[i] is the speed of the ith car in miles per hour.
+    // A car cannot pass another car, but it can catch up and then travel next to it at the speed of the slower car.
+    // A car fleet is a single car or a group of cars driving next to each other. The speed of the car fleet is the minimum speed of any car in the fleet.
+    // If a car catches up to a car fleet at the mile target, it will still be considered as part of the car fleet.
+    // Return the number of car fleets that will arrive at the destination.
+    #region 853. Car Fleet
+    public int CarFleet(int target, int[] position, int[] speed)
+    {
+        var n = position.Length;
+        var cars = new int[n][];
+        for (int i = 0; i < n; i++)
+        {
+            var dist = target - position[i];
+            cars[i] = new[] { dist, speed[i] };
+        }
+        Array.Sort(cars, (a, b) => a[0].CompareTo(b[0]));
+
+        var leadTime = double.MinValue;
+        var result = 0;
+        for (int i = 0; i < n; i++)
+        {
+            var dst = cars[i][0];
+            var spd = cars[i][1];
+            var time = (double)dst / spd;
+            if (leadTime < time)
+            {
+                leadTime = time;
+                result++;
+            }
+        }
+        return result;
+    }
+
+    // Решение через кучу. По асимптотике вроде тоже самое, но работает медленнее из-за накладных расходов на кучу
+    // На LeetCode дает хуже результат
+    public int CarFleetHeap(int target, int[] position, int[] speed)
+    {
+        var n = position.Length;
+        var queue = new PriorityQueue<(int, int), int>();
+        for (int i = 0; i < n; i++)
+        {
+            var dist = target - position[i];
+            queue.Enqueue((dist, speed[i]), dist);
+        }
+
+        var result = 0;
+        double leadTime = double.MinValue;
+        while (queue.Count > 0)
+        {
+            (var dst, var spd) = queue.Dequeue();
+            var time = ((double)dst) / spd;
+            if (leadTime < time)
+            {
+                leadTime = time;
+                result++;
+            }
+        }
+        return result;
+    }
+    #endregion
     #endregion
 
     #region Binary Search
