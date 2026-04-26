@@ -481,7 +481,85 @@ public class NeetCode150
         return result;
     }
     #endregion
-#endregion
+
+    // 981. Time Based Key-Value Store
+    // Design a time-based key-value data structure that can store multiple values for the same key at different time stamps
+    // and retrieve the key's value at a certain timestamp.
+    // Implement the TimeMap class:
+    // - TimeMap() Initializes the object of the data structure.
+    // - void set(String key, String value, int timestamp) Stores the key key with the value value at the given time timestamp.
+    // - String get(String key, int timestamp) Returns a value such that set was called previously, with timestamp_prev <= timestamp.
+    //   If there are multiple such values, it returns the value associated with the largest timestamp_prev. If there are no values, it returns "".
+    //
+    // Expected complexity: O(log n) for get and O(1) for set.
+    // TODO: implement optimal solution with binary search
+    #region 981. Time Based Key-Value Store
+    // First attempt, Not optimal solution: set O(n), get O(n)
+    public class TimeMap
+    {
+        private Dictionary<string, ListNode> dict;
+        public TimeMap()
+        {
+            dict = new Dictionary<string, ListNode>();
+        }
+
+        public void Set(string key, string value, int timestamp)
+        {
+            var val = new ListNode
+            {
+                k = key,
+                v = value,
+                t = timestamp
+            };
+
+            if (!dict.ContainsKey(key))
+            {
+                dict[key] = val;
+            }
+            else
+            {
+                if (dict[key].t <= timestamp)
+                {
+                    val.next = dict[key];
+                    dict[key] = val;
+                }
+                else
+                {
+                    var curr = dict[key];
+                    while (curr.next is not null && curr.next.t > val.t)
+                    {
+                        curr = curr.next;
+                    }
+                    val.next = curr.next;
+                    curr.next = val;
+                }
+            }
+        }
+
+        public string Get(string key, int timestamp)
+        {
+            if (!dict.ContainsKey(key))
+                return string.Empty;
+            var curr = dict[key];
+            while (curr is not null && curr.t > timestamp)
+            {
+                curr = curr.next;
+            }
+
+            return curr is null ? string.Empty : curr.v;
+        }
+
+        class ListNode
+        {
+            public string k { get; set; }
+            public string v { get; set; }
+            public int t { get; set; }
+            public ListNode next { get; set; }
+        }
+    }
+    #endregion
+    
+    #endregion
 
     #region Linked List
 
