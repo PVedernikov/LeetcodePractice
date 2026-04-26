@@ -561,7 +561,40 @@ public class NeetCode150
         }
     }
     #endregion
-    
+
+    // 199. Binary Tree Right Side View
+    // Given the root of a binary tree, imagine yourself standing on the right side of it, return the values of the nodes you can see ordered from top to bottom.
+    // Examples: https://leetcode.com/problems/binary-tree-right-side-view/description/
+    // Идея: обход дерева по уровням (BFS), на каждом уровне добавляем в результат последний элемент, который мы видим, т.е. последний элемент в очереди на этом уровне
+    #region 199. Binary Tree Right Side View
+    public IList<int> RightSideView(TreeNode root)
+    {
+        var result = new List<int>();
+        if (root is null) return result;
+
+        var queue = new Queue<TreeNode>();
+
+        queue.Enqueue(root);
+
+        while (queue.Count > 0)
+        {
+            var levelCount = queue.Count;
+            for (int i = 0; i < levelCount; i++)
+            {
+                var node = queue.Dequeue();
+                if (node.left is not null)
+                    queue.Enqueue(node.left);
+                if (node.right is not null)
+                    queue.Enqueue(node.right);
+                if (i == levelCount - 1)
+                    result.Add(node.val);
+            }
+        }
+
+        return result;
+    }
+    #endregion
+
     // 1448. Count Good Nodes in Binary Tree
     // Given a binary tree root, a node X in the tree is named good if in the path from root to X there are no nodes with a value greater than X.
     // Return the number of good nodes in the binary tree.
@@ -659,6 +692,39 @@ public class NeetCode150
         }
 
         return heap.Count > 0 ? heap.Peek() : 0;
+    }
+    #endregion
+
+    // 973. K Closest Points to Origin
+    // Given an array of points where points[i] = [xi, yi] represents a point on the X-Y plane and an integer k, return the k closest points to the origin (0, 0).
+    // The distance between two points on the X-Y plane is the Euclidean distance (i.e., √(x1 - x2)^2 + (y1 - y2)^2).
+    // You may return the answer in any order. The answer is guaranteed to be unique (except for the order that it is in).
+    #region 973. K Closest Points to Origin
+    public int[][] KClosest(int[][] points, int k)
+    {
+        var n = points.Length;
+        var result = new int[k][];
+        var heap = new PriorityQueue<int[], long>();
+        for (int i = 0; i < n; i++)
+        {
+            var point = points[i];
+            long x = point[0]; // long чтобы избежать переполнения при возведении в квадрат, например для точки [10000, 10000] будет 10000^2 + 10000^2 = 200000000, что уже не помещается в int
+            long y = point[1]; // -//-
+            long distance = x * x + y * y;
+            heap.Enqueue(point, -distance);
+
+            if (heap.Count > k)
+            {
+                heap.Dequeue();
+            }
+        }
+
+        for (int i = 0; i < k; i++)
+        {
+            result[i] = heap.Dequeue();
+        }
+
+        return result;
     }
     #endregion
 
