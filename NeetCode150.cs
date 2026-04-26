@@ -491,6 +491,8 @@ public class NeetCode150
     // - String get(String key, int timestamp) Returns a value such that set was called previously, with timestamp_prev <= timestamp.
     //   If there are multiple such values, it returns the value associated with the largest timestamp_prev. If there are no values, it returns "".
     //
+    // All the timestamps timestamp of set are strictly increasing.
+    // Важный момент: в условии сказано, что вызовы set будут идти в порядке возрастания timestamp, поэтому можно вставлять прямо в начало/конец.
     // Expected complexity: O(log n) for get and O(1) for set.
     // TODO: implement optimal solution with binary search
     #region 981. Time Based Key-Value Store
