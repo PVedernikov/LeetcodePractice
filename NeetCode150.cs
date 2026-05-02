@@ -1340,6 +1340,57 @@ public class NeetCode150
     #endregion
     #endregion
 
+    #region Advanced Graphs
+    // 1584. Min Cost to Connect All Points
+    // You are given an array points representing integer coordinates of some points on a 2D-plane, where points[i] = [xi, yi].
+    // The cost of connecting two points [xi, yi] and [xj, yj] is the manhattan distance between them: |xi - xj| + |yi - yj|, where |val| denotes the absolute value of val.
+    // Return the minimum cost to make all points connected. All points are connected if there is exactly one simple path between any two points.
+    // 
+    // Prim's Algorithm, Prim's (MST), Minimum Spanning Tree, MST
+    // Идея: начинаем с первой точки, добавляем все ребра от нее до остальных точек в мин-кучу,
+    // затем на каждом шаге достаем из кучи ребро с минимальным весом, если оно ведет в новую точку,
+    // то добавляем эту точку в результат и добавляем все ребра от этой точки до остальных точек в кучу. Повторяем, пока не добавим все точки.
+    // Time complexity: O(n^2 log n)
+    #region 1584. Min Cost to Connect All Points
+    public int MinCostConnectPoints(int[][] points)
+    {
+        var n = points.Length;
+        var result = 0;
+        var visited = new bool[n];
+        visited[0] = true;
+        var heap = new PriorityQueue<(int, int), int>();
+        for (int j = 1; j < n; j++)
+        {
+            var dist = GetDistance(0, j);
+            heap.Enqueue((j, dist), dist);
+        }
+        var count = 1; // Только для раннего выхода, т.к. в таком графе может быть максимум n-1 ребер
+        while (heap.Count > 0 && count < n)
+        {
+            (var i, var dst) = heap.Dequeue();
+            if (visited[i]) continue;
+            visited[i] = true;
+            count++;
+            result += dst;
+            for (int j = 0; j < n; j++)
+            {
+                if (i == j || visited[j]) continue;
+                var dist = GetDistance(i, j);
+                heap.Enqueue((j, dist), dist);
+            }
+        }
+
+        return result;
+
+        int GetDistance(int i, int j)
+        {
+            return Math.Abs(points[i][0] - points[j][0])
+                    + Math.Abs(points[i][1] - points[j][1]);
+        }
+    }
+    #endregion
+    #endregion
+
     #region 1-D Dynamic Programming
 
     // 746. Min Cost Climbing Stairs
@@ -1490,8 +1541,6 @@ public class NeetCode150
     #endregion
 
     #endregion
-
-
 
     #region Greedy
 
