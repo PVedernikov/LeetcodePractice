@@ -1349,7 +1349,8 @@ public class NeetCode150
     #region 684. Redundant Connection
 
     // first attempt, O(n^2) time complexity, O(n) space complexity
-    // NOT OPTIMAL
+    // NOT OPTIMAL,
+    // TODO: implement optimal solution
     // Идея: используем массив unionFind, где unionFind[i] - это родитель вершины i. Изначально каждый элемент является своим родителем.
     // Мы схлопываем весь путь до одной вершитны, т.е. все вершины, которые принадлежат одной компоненте связности, будут иметь одного родителя.
     // Изначально это не так, но когда мы обрабатываем ребра, мы объединяем компоненты связности.
