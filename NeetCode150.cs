@@ -1372,7 +1372,7 @@ public class NeetCode150
             if (unionFind[a] == unionFind[b]) return edges[i];
             var parentA = unionFind[a];
             var parentB = unionFind[b];
-            for (int j = 1; j <= n; j++)
+            for (int j = 1; j <= n; j++) // This loop is O(n), and it makes the overall time complexity O(n^2)
             {
                 if (unionFind[j] == parentB)
                 {
