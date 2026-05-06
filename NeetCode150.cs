@@ -1399,7 +1399,7 @@ public class NeetCode150
     // Topological Sort, DFS, Graph
     // Time complexity: O(V + E), where V is the number of courses and E is the number of prerequisites
     #region 210. Course Schedule II
-    public int[] FindOrder1(int numCourses, int[][] prerequisites)
+    public int[] FindOrder_NotOptimal(int numCourses, int[][] prerequisites)
     {
         var adj = new List<int>[numCourses];
         for (int i = 0; i < prerequisites.Length; i++)
