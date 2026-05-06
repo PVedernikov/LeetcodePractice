@@ -1339,6 +1339,72 @@ public class NeetCode150
     }
     #endregion
 
+    // 210. Course Schedule II
+    // There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1.
+    // You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai.
+    // - For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
+    // Return the ordering of courses you should take to finish all courses. If there are many valid answers, return any of them. If it is impossible to finish all courses, return an empty array.
+    // Topological Sort, DFS, Graph
+    // Time complexity: O(V + E), where V is the number of courses and E is the number of prerequisites
+    #region 210. Course Schedule II
+    public int[] FindOrder(int numCourses, int[][] prerequisites)
+    {
+        var adj = new List<int>[numCourses];
+        for (int i = 0; i < prerequisites.Length; i++)
+        {
+            var a = prerequisites[i][0];
+            var b = prerequisites[i][1];
+            if (adj[a] is null)
+            {
+                adj[a] = new List<int>();
+            }
+
+            adj[a].Add(b);
+        }
+
+        var index = 0;
+        var result = new int[numCourses]; 
+        var finished = new bool[numCourses];
+        for (int i = 0; i < numCourses; i++)
+        {
+            if (finished[i]) continue;
+
+            if (!CanFinish(i, new bool[numCourses]))
+            {
+                return [];
+            }
+
+        }
+
+        return result;
+
+        bool CanFinish(int a, bool[] visited)
+        {
+            // TODO
+            // Вместо двух массивов visited и finished можно было бы использовать один массив, где 0 - не посещали, 1 - посещаем, 2 - закончили
+            if (finished[a]) return true;
+            if (visited[a]) return false;
+
+            visited[a] = true;
+            if (adj[a] is not null && adj[a].Count > 0)
+            {
+                foreach (int b in adj[a])
+                {
+                    if (!CanFinish(b, visited))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            finished[a] = true;
+            result[index] = a;
+            index++;
+            return true;
+        }
+    }
+    #endregion
+
     // 684. Redundant Connection
     // In this problem, a tree is an undirected graph that is connected and has no cycles.
     // You are given a graph that started as a tree with n nodes labeled from 1 to n, with one additional edge added.
