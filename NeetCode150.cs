@@ -1347,7 +1347,7 @@ public class NeetCode150
     // Topological Sort, DFS, Graph
     // Time complexity: O(V + E), where V is the number of courses and E is the number of prerequisites
     #region 210. Course Schedule II
-    public int[] FindOrder(int numCourses, int[][] prerequisites)
+    public int[] FindOrder1(int numCourses, int[][] prerequisites)
     {
         var adj = new List<int>[numCourses];
         for (int i = 0; i < prerequisites.Length; i++)
@@ -1381,7 +1381,7 @@ public class NeetCode150
         bool CanFinish(int a, bool[] visited)
         {
             // TODO
-            // Вместо двух массивов visited и finished можно было бы использовать один массив, где 0 - не посещали, 1 - посещаем, 2 - закончили
+            // Вместо двух массивов visited и finished можно было бы использовать один массив, где 0 - не обработан, 1 - посещали, 2 - закончили
             if (finished[a]) return true;
             if (visited[a]) return false;
 
@@ -1398,6 +1398,62 @@ public class NeetCode150
             }
 
             finished[a] = true;
+            result[index] = a;
+            index++;
+            return true;
+        }
+    }
+
+    // MORE OPTIMAL
+    public int[] FindOrder(int numCourses, int[][] prerequisites)
+    {
+        var adj = new List<int>[numCourses];
+        for (int i = 0; i < prerequisites.Length; i++)
+        {
+            var a = prerequisites[i][0];
+            var b = prerequisites[i][1];
+            if (adj[a] is null)
+            {
+                adj[a] = new List<int>();
+            }
+
+            adj[a].Add(b);
+        }
+
+        var index = 0;
+        var result = new int[numCourses];
+        var finished = new int[numCourses]; // 0 - not processed, 1 - visited, 2 - finished
+        for (int i = 0; i < numCourses; i++)
+        {
+            if (finished[i] == 2) continue;
+
+            if (!CanFinish(i))
+            {
+                return [];
+            }
+
+        }
+
+        return result;
+
+        bool CanFinish(int a)
+        {
+            if (finished[a] == 2) return true;
+            if (finished[a] == 1) return false;
+
+            finished[a] = 1;
+            if (adj[a] is not null && adj[a].Count > 0)
+            {
+                foreach (int b in adj[a])
+                {
+                    if (!CanFinish(b))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            finished[a] = 2;
             result[index] = a;
             index++;
             return true;
