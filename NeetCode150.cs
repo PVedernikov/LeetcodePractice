@@ -1472,8 +1472,7 @@ public class NeetCode150
             adj[a].Add(b);
         }
 
-        var index = 0;
-        var result = new int[numCourses];
+        var result = new List<int>(numCourses); // Pass numCourses because size is known, and in this case we avoid unnecessary re-allocations
         var finished = new int[numCourses]; // 0 - not processed, 1 - visited, 2 - finished
         for (int i = 0; i < numCourses; i++)
         {
@@ -1483,10 +1482,9 @@ public class NeetCode150
             {
                 return [];
             }
-
         }
 
-        return result;
+        return result.ToArray();
 
         bool CanFinish(int a)
         {
@@ -1506,8 +1504,7 @@ public class NeetCode150
             }
 
             finished[a] = 2;
-            result[index] = a;
-            index++;
+            result.Add(a);
             return true;
         }
     }
