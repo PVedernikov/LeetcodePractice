@@ -1273,6 +1273,50 @@ public class NeetCode150
     }
     #endregion
 
+    // 286. Walls and Gates
+    // You are given an m x n grid rooms initialized with these three possible values.
+    // 1) -1 A wall or an obstacle.
+    // 2) 0 A gate.
+    // 3) INF Infinity means an empty room. We use the value 231 - 1 = 2147483647 to represent INF as you may assume that the distance to a gate is less than 2147483647.
+    // Fill each empty room with the distance to its nearest gate. If it is impossible to reach a gate, it should be filled with INF.
+    // BFS (DFS doesn't work!)
+    #region 286. Walls and Gates
+    public void WallsAndGates(int[][] rooms)
+    {
+        var m = rooms.Length;
+        var n = rooms[0].Length;
+        var gates = new Queue<(int, int)>();
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (rooms[i][j] == 0)
+                {
+                    gates.Enqueue((i, j));
+                }
+            }
+        }
+
+        var ddi = new int[] { 1, -1, 0, 0 };
+        var ddj = new int[] { 0, 0, 1, -1 };
+        while (gates.Count > 0)
+        {
+            (var i, var j) = gates.Dequeue();
+
+            for (int k = 0; k < 4; k++)
+            {
+                var di = i + ddi[k];
+                var dj = j + ddj[k];
+                if (di < 0 || dj < 0 || di >= m || dj >= n || rooms[di][dj] != int.MaxValue) continue;
+                // if (rooms[di][dj] < rooms[i][j] + 1) continue; // лишнее, т.к. BFS гарантирует, что мы всегда будем идти от меньшего к большему
+                // TODO: разобраться почему. 
+                rooms[di][dj] = rooms[i][j] + 1;
+                gates.Enqueue((di, dj));
+            }
+        }
+    }
+    #endregion
+
     // 130. Surrounded Regions
     // You are given an m x n matrix board containing letters 'X' and 'O', capture regions that are surrounded:
     // - Connect: A cell is connected to adjacent cells horizontally or vertically.
