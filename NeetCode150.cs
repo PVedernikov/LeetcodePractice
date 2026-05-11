@@ -1279,7 +1279,7 @@ public class NeetCode150
     // 2) 0 A gate.
     // 3) INF Infinity means an empty room. We use the value 231 - 1 = 2147483647 to represent INF as you may assume that the distance to a gate is less than 2147483647.
     // Fill each empty room with the distance to its nearest gate. If it is impossible to reach a gate, it should be filled with INF.
-    // BFS (DFS doesn't work!)
+    // BFS (DFS doesn't work! Точнее работает, но гораздо медленнее)
     #region 286. Walls and Gates
     public void WallsAndGates(int[][] rooms)
     {
