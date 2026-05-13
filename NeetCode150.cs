@@ -560,10 +560,47 @@ public class NeetCode150
         }
     }
     #endregion
-    
+
     #endregion
 
     #region Linked List
+
+    // 287. Find the Duplicate Number
+    // Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive.
+    // There is only one repeated number in nums, return this repeated number.
+    // You must solve the problem without modifying the array nums and using only CONSTANT extra space.
+    // TODO: implement optimal solution with cycle detection (Floyd's Tortoise and Hare)
+    #region 287. Find the Duplicate Number
+    // O(n) memory, but fast
+    public int FindDuplicate(int[] nums)
+    {
+        var n = nums.Length;
+        var visited = new bool[n];
+
+        for (int i = 0; i < n; i++)
+        {
+            if (visited[nums[i] - 1])
+                return nums[i];
+            visited[nums[i] - 1] = true;
+        }
+
+        return 0;
+    }
+
+    // O(1) memory, but slow
+    // public int FindDuplicate(int[] nums)
+    // {
+    //     var n = nums.Length;
+    //     Array.Sort(nums);
+
+    //     for (int i = 1; i < n; i++)
+    //     {
+    //         if(nums[i] == nums[i - 1]) return nums[i];
+    //     }
+
+    //     return 0;
+    // }
+    #endregion
 
     // 146. LRU Cache
     // Design a data structure that follows the constraints of a Least Recently Used (LRU) cache.
