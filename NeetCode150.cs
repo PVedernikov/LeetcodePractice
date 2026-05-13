@@ -1952,6 +1952,65 @@ public class NeetCode150
     // }
     #endregion
 
+    // 846. Hand of Straights
+    // Alice has some number of cards and she wants to rearrange the cards into groups so that each group is of size groupSize, and consists of groupSize consecutive cards.
+    // Given an integer array hand where hand[i] is the value written on the ith card and an integer groupSize, return true if she can rearrange the cards, or false otherwise.
+    #region 846. Hand of Straights
+    // NOT OPTIMAL
+    // TODO: implement optimal solution (frequency count + min or max heap)
+    public bool IsNStraightHand(int[] hand, int groupSize)
+    {
+        var n = hand.Length;
+        if (n % groupSize > 0) return false;
+        if (groupSize == 1) return true;
+
+        var gn = n / groupSize;
+
+        Array.Sort(hand);
+        var groups = new int[gn];
+        var sizes = new int[gn];
+        //var heap = new ProirityQueue<int, int>();
+        for (int j = 0; j < gn; j++)
+        {
+            groups[j] = -1;
+            //heap.Enqueue(j, int,)
+        }
+        for (int i = 0; i < n; i++)
+        {
+            var found = false;
+            // first try to continue one of the groups
+            for (int j = 0; j < gn; j++) // optimize this
+            {
+                if (groups[j] == hand[i] - 1 && sizes[j] < groupSize)
+                {
+                    groups[j] = hand[i];
+                    sizes[j]++;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                // if we can't continue one of the groups, try to start new one
+                for (int j = 0; j < gn; j++) // optimize this
+                {
+                    if (groups[j] == -1)
+                    {
+                        groups[j] = hand[i];
+                        sizes[j]++;
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!found) return false;
+        }
+
+        return true;
+    }
+    #endregion
     // 678. Valid Parenthesis String
     // Given a string s containing only three types of characters: '(', ')' and '*', return true if s is valid.
     // The following rules define a valid string:
