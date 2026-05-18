@@ -2137,6 +2137,72 @@ public class NeetCode150
     }
     #endregion
 
+    // 763. Partition Labels
+    // You are given a string s. We want to partition the string into as many parts as possible so that each letter appears in at most one part.
+    // For example, the string "ababcc" can be partitioned into ["abab", "cc"], but partitions such as ["aba", "bcc"] or ["ab", "ab", "cc"] are invalid.
+    // Note that the partition is done so that after concatenating all the parts in order, the resultant string should be s.
+    // Return a list of integers representing the size of these parts.
+    #region 763. Partition Labels
+    // TODO: решение перегружено, нужно упростить. Можно убрать PriorityQueue. Идея, хранить только последнюю позицию, а интервалы строить на лету, когда идем по строке.
+    public IList<int> PartitionLabels(string s)
+    {
+        var n = s.Length;
+
+        var start = new int[26];
+        var end = new int[26];
+        for (int i = 0; i < 26; i++)
+        {
+            start[i] = -1;
+            end[i] = -1;
+        }
+
+        for (int i = 0; i < n; i++)
+        {
+            var c = s[i] - 'a';
+            if (start[c] < 0)
+            {
+                start[c] = i;
+            }
+
+            end[c] = i;
+        }
+
+        var queue = new PriorityQueue<(int, int), int>();
+        for (int i = 0; i < 26; i++)
+        {
+            if (start[i] < 0) continue;
+            queue.Enqueue((start[i], end[i]), start[i]);
+        }
+
+        var result = new List<int>();
+        if (queue.Count == 0) return result;
+        if (queue.Count == 1)
+        {
+            result.Add(n);
+            return result;
+        }
+
+        (var l, var r) = queue.Dequeue();
+        while (queue.Count > 0)
+        {
+            (var l1, var r1) = queue.Dequeue();
+            if (l1 > r)
+            {
+                result.Add(r - l + 1);
+                l = l1;
+                r = r1;
+            }
+            else
+            {
+                r = Math.Max(r, r1);
+            }
+        }
+        result.Add(r - l + 1);
+
+        return result;
+    }
+    #endregion
+
     // 678. Valid Parenthesis String
     // Given a string s containing only three types of characters: '(', ')' and '*', return true if s is valid.
     // The following rules define a valid string:
