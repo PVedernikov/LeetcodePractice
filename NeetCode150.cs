@@ -565,6 +565,62 @@ public class NeetCode150
 
     #region Linked List
 
+    // 138. Copy List with Random Pointer
+    // A linked list of length n is given such that each node contains an additional random pointer, which could point to any node in the list, or null.
+    // Construct a deep copy of the list. The deep copy should consist of exactly n brand new nodes, where each new node has its value set to the value of its corresponding original node.
+    // Both the next and random pointer of the new nodes should point to new nodes in the copied list such that
+    // the pointers in the original list and copied list represent the same list state. None of the pointers in the new list should point to nodes in the original list.
+    // For example, if there are two nodes X and Y in the original list, where X.random --> Y, then for the corresponding two nodes x and y in the copied list, x.random --> y.
+    // Return the head of the copied linked list.
+    // The linked list is represented in the input/output as a list of n nodes. Each node is represented as a pair of [val, random_index] where:
+    // - val: an integer representing Node.val
+    // - random_index: the index of the node (range from 0 to n-1) that the random pointer points to, or null if it does not point to any node.
+    // Your code will only be given the head of the original linked list.
+    #region 138. Copy List with Random Pointer
+    public Node138 CopyRandomList(Node138 head)
+    {
+        if (head is null) return null;
+
+        var cache = new Dictionary<Node138, Node138>();
+        var curr = head;
+        while (curr is not null)
+        {
+            cache[curr] = new Node138(curr.val);
+            curr = curr.next;
+        }
+
+        curr = head;
+        while (curr is not null)
+        {
+            var newNode = cache[curr];
+            var nextNode = curr.next is null
+                ? null
+                : cache[curr.next];
+            var randomNode = curr.random is null
+                ? null
+                : cache[curr.random];
+            newNode.next = nextNode;
+            newNode.random = randomNode;
+            curr = curr.next;
+        }
+        return cache[head];
+    }
+
+    public class Node138
+    {
+        public int val;
+        public Node138 next;
+        public Node138 random;
+
+        public Node138(int _val)
+        {
+            val = _val;
+            next = null;
+            random = null;
+        }
+    }
+    #endregion
+
     // 287. Find the Duplicate Number
     // Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive.
     // There is only one repeated number in nums, return this repeated number.
@@ -1843,7 +1899,6 @@ public class NeetCode150
 
     #region Greedy
 
-
     // 55. Jump Game
     // You are given an integer array nums. You are initially positioned at the array's first index,
     // and each element in the array represents your maximum jump length at that position
@@ -2081,7 +2136,6 @@ public class NeetCode150
         return false;
     }
     #endregion
-
 
     // 678. Valid Parenthesis String
     // Given a string s containing only three types of characters: '(', ')' and '*', return true if s is valid.
