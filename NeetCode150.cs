@@ -1871,6 +1871,35 @@ public class NeetCode150
     }
     #endregion
 
+    // 494. Target Sum
+    // You are given an integer array nums and an integer target.
+    // You want to build an expression out of nums by adding one of the symbols '+' and '-' before each integer in nums and then concatenate all the integers.
+    // For example, if nums = [2, 1], you can add a '+' before 2 and a '-' before 1 and concatenate them to build the expression "+2-1".
+    // Return the number of different expressions that you can build, which evaluates to target.
+    // Важно: перед 0 можно поставить как +, так и -, и это будет считаться разными выражениями, т.е. для nums = [0] и target = 0 ответ будет 2, т.к. можно построить выражения "+0" и "-0"
+    #region 494. Target Sum
+    // Naive solution
+    // TODO: implement 2-D DP solution
+    public int FindTargetSumWays(int[] nums, int target)
+    {
+        var n = nums.Length;
+        return Ways(0, target);
+
+        int Ways(int i, int sum)
+        {
+            if (i == n - 1)
+            {
+                var result = 0;
+                if (sum == nums[i]) result++;
+                if (sum == -nums[i]) result++;
+                return result;
+            }
+
+            return Ways(i + 1, sum + nums[i]) + Ways(i + 1, sum - nums[i]);
+        }
+    }
+    #endregion
+
     // 97. Interleaving String
     // Given strings s1, s2, and s3, find whether s3 is formed by an interleaving of s1 and s2.
     // An interleaving of two strings s and t is a configuration where s and t are divided into n and m substrings respectively, such that:
