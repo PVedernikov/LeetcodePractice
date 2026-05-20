@@ -1696,6 +1696,71 @@ public class NeetCode150
     #endregion
 
     #region Advanced Graphs
+
+    // 743. Network Delay Time
+    // You are given a network of n nodes, labeled from 1 to n. You are also given times, a list of travel times as directed edges times[i] = (ui, vi, wi),
+    // where ui is the source node, vi is the target node, and wi is the time it takes for a signal to travel from source to target.
+    // We will send a signal from a given node k.
+    // Return the minimum time it takes for all the n nodes to receive the signal.
+    // If it is impossible for all the n nodes to receive the signal, return -1.
+    // Dijkstra's Algorithm, Graph, Shortest Path
+    #region 743. Network Delay Time
+    public int NetworkDelayTime(int[][] times, int n, int k)
+    {
+        var adj = new List<int[]>[n];
+        for (int i = 0; i < times.Length; i++)
+        {
+            var u = times[i][0] - 1;
+            var v = times[i][1] - 1;
+            var w = times[i][2];
+
+            if (adj[u] is null)
+                adj[u] = new List<int[]>();
+
+            adj[u].Add(new int[] { v, w });
+        }
+        var dist = new int[n];
+        for (int i = 0; i < n; i++)
+        {
+            dist[i] = int.MaxValue;
+        }
+
+        var queue = new PriorityQueue<int, int>(); // Dijkstra
+        //var queue = new Queue<int>();
+        dist[k - 1] = 0;
+        queue.Enqueue(k - 1, 0); // Dijkstra
+        //queue.Enqueue(k - 1);
+        while (queue.Count > 0)
+        {
+            var i = queue.Dequeue();
+            if (adj[i] is null) continue;
+
+            foreach (var conn in adj[i])
+            {
+                var j = conn[0];
+                var speed = dist[i] + conn[1];
+                if (dist[j] > speed)
+                {
+                    dist[j] = speed;
+                    queue.Enqueue(j, speed); // Dijkstra
+                    //queue.Enqueue(j);
+                }
+            }
+        }
+
+        var result = -1;
+        for (int i = 0; i < n; i++)
+        {
+            if (dist[i] == int.MaxValue)
+                return -1;
+
+            result = Math.Max(result, dist[i]);
+        }
+
+        return result;
+    }
+    #endregion
+
     // 1584. Min Cost to Connect All Points
     // You are given an array points representing integer coordinates of some points on a 2D-plane, where points[i] = [xi, yi].
     // The cost of connecting two points [xi, yi] and [xj, yj] is the manhattan distance between them: |xi - xj| + |yi - yj|, where |val| denotes the absolute value of val.
