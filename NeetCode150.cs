@@ -1878,7 +1878,7 @@ public class NeetCode150
     // Return the number of different expressions that you can build, which evaluates to target.
     // Важно: перед 0 можно поставить как +, так и -, и это будет считаться разными выражениями, т.е. для nums = [0] и target = 0 ответ будет 2, т.к. можно построить выражения "+0" и "-0"
     #region 494. Target Sum
-    // Naive solution
+    // Naive solution, NOT OPTIMAL
     // TODO: implement 2-D DP solution
     public int FindTargetSumWays(int[] nums, int target)
     {
