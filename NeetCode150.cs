@@ -1833,6 +1833,39 @@ public class NeetCode150
         return Math.Min(min0, min1);
     }
     #endregion
+    // 416. Partition Equal Subset Sum
+    // Given an integer array nums, return true if you can partition the array into two subsets such that the sum of the elements in both subsets is equal or false otherwise.
+    #region 416. Partition Equal Subset Sum
+    // NOT OPTIMAL
+    // Решить с использованием реального DP, а не рекурсии с мемоизацией
+    public bool CanPartition(int[] nums)
+    {
+        var n = nums.Length;
+        if (n == 1) return false;
+        var sum = 0;
+        for (int i = 0; i < n; i++)
+        {
+            sum += nums[i];
+        }
+
+        if (sum % 2 > 0) return false;
+        sum /= 2;
+
+        var cache = new bool?[n, sum + 1];
+
+        return IsPossible(0, sum);
+
+        bool IsPossible(int i, int s)
+        {
+            if (s == 0) return true;
+            if (s < 0) return false;
+            if (i >= n) return false;
+            if (cache[i, s].HasValue) return cache[i, s] == true;
+            cache[i, s] = IsPossible(i + 1, s) || IsPossible(i + 1, s - nums[i]);
+            return cache[i, s].Value;
+        }
+    }
+    #endregion
     #endregion
 
     #region 2-D Dynamic Programming
