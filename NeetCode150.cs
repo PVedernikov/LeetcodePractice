@@ -561,6 +561,138 @@ public class NeetCode150
     }
     #endregion
 
+    // 4. Median of Two Sorted Arrays
+    // Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.
+    // The overall run time complexity should be O(log (m+n)).
+    // HARD
+    // Median is the middle value in an ordered integer list. If the size of the list is even, there is no middle value and the median is the mean of the two middle values.
+    #region 4. Median of Two Sorted Arrays
+    // Linear solution, O(m + n) time and O(m + n) space
+    // NOT OPTIMAL
+    // TODO: implement optimal solution with binary search, O(log(min(m, n))) time and O(1) space
+    public double FindMedianSortedArraysLinear(int[] nums1, int[] nums2)
+    {
+        var m = nums1.Length;
+        var n = nums2.Length;
+        if (n == 0 || m == 0)
+        {
+            return n == 0
+                ? GetMedian(nums1)
+                : GetMedian(nums2);
+        }
+
+        var merged = new int[m + n];
+        var i = 0;
+        var j = 0;
+        var curr = 0;
+        while (i < m && j < n)
+        {
+            if (nums1[i] < nums2[j])
+            {
+                merged[curr] = nums1[i];
+                i++;
+            }
+            else
+            {
+                merged[curr] = nums2[j];
+                j++;
+            }
+            curr++;
+        }
+
+        while (i < m)
+        {
+            merged[curr] = nums1[i];
+            i++;
+            curr++;
+        }
+
+        while (j < n)
+        {
+            merged[curr] = nums2[j];
+            j++;
+            curr++;
+        }
+
+        return GetMedian(merged);
+
+        double GetMedian(int[] arr)
+        {
+            var len = arr.Length;
+            if (len == 0)
+                return double.MinValue;
+
+            return len % 2 > 0
+                ? (double)arr[len / 2]
+                : ((double)arr[len / 2] + (double)arr[len / 2 - 1]) / 2;
+        }
+    }
+
+    // Linear solution, O(m + n) time and O(m + n) space, but optimized for early exit, если мы уже нашли медиану, то не нужно продолжать сливать массивы
+    // NOT OPTIMAL
+    public double FindMedianSortedArraysLinearOptimized(int[] nums1, int[] nums2)
+    {
+        var m = nums1.Length;
+        var n = nums2.Length;
+        if (n == 0 || m == 0)
+        {
+            return n == 0
+                ? GetMedian(nums1)
+                : GetMedian(nums2);
+        }
+
+        var mid = (m + n) / 2;
+        var merged = new int[mid + 1]; // Нам не нужен фулл саайз массив для мержа, нам нужно только до медианы
+        var i = 0;
+        var j = 0;
+        var curr = 0;
+        while (i < m && j < n && curr <= mid)
+        {
+            if (nums1[i] < nums2[j])
+            {
+                merged[curr] = nums1[i];
+                i++;
+            }
+            else
+            {
+                merged[curr] = nums2[j];
+                j++;
+            }
+            curr++;
+        }
+
+        // Если curr < mid + 1, значит либо nums1, либо nums2 закончился раньше, просто доливаем оставшиеся элементы
+        while (curr <= mid && i < m)
+        {
+            merged[curr] = nums1[i];
+            i++;
+            curr++;
+        }
+
+        while (curr <= mid && j < n)
+        {
+            merged[curr] = nums2[j];
+            j++;
+            curr++;
+        }
+
+        return (m + n) % 2 > 0
+            ? (double)merged[mid]
+            : ((double)merged[mid] + (double)merged[mid - 1]) / 2;
+
+
+        double GetMedian(int[] arr)
+        {
+            var len = arr.Length;
+            if (len == 0)
+                return double.MinValue;
+
+            return len % 2 > 0
+                ? (double)arr[len / 2]
+                : ((double)arr[len / 2] + (double)arr[len / 2 - 1]) / 2;
+        }
+    }
+    #endregion
     #endregion
 
     #region Linked List
