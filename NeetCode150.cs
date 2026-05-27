@@ -290,6 +290,33 @@ public class NeetCode150
     }
     #endregion
 
+    // 739. Daily Temperatures
+    // Given an array of integers temperatures represents the daily temperatures,
+    // return an array answer such that answer[i] is the number of days you have to wait after the ith day to get a warmer temperature.
+    // If there is no future day for which this is possible, keep answer[i] == 0 instead.
+    #region 739. Daily Temperatures
+    public int[] DailyTemperatures(int[] temperatures)
+    {
+        var n = temperatures.Length;
+        var result = new int[n];
+        var stack = new Stack<int>();
+
+        for (int i = 0; i < n; i++)
+        {
+            while (stack.Count > 0)
+            {
+                var j = stack.Peek();
+                if (temperatures[j] >= temperatures[i]) break;
+                stack.Pop();
+                result[j] = i - j;
+            }
+            stack.Push(i);
+        }
+
+        return result;
+    }
+    #endregion
+
     // 853. Car Fleet
     // There are n cars at given miles away from the starting mile 0, traveling to reach the mile target.
     // You are given two integer arrays position and speed, both of length n, where position[i] is the starting mile of the ith car and speed[i] is the speed of the ith car in miles per hour.
