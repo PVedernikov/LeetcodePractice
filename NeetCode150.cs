@@ -1968,6 +1968,68 @@ public class NeetCode150
         }
     }
     #endregion
+
+    // 787. Cheapest Flights Within K Stops
+    // There are n cities connected by some number of flights.
+    // You are given an array flights where flights[i] = [from_i, to_i, price_i] indicates that there is a flight from city from_i to city to_i with cost price_i.
+    // You are also given three integers src, dst, and k, return the cheapest price from src to dst with at most k stops. If there is no such route, return -1.
+    // Dijkstra's Algorithm, Graph, Shortest Path
+    #region 787. Cheapest Flights Within K Stops
+    public int FindCheapestPrice(int n, int[][] flights, int src, int dst, int k)
+    {
+        var adj = new List<(int, int)>[n];
+        for (int i = 0; i < flights.Length; i++)
+        {
+            var f = flights[i][0];
+            var t = flights[i][1];
+            var p = flights[i][2];
+            if (adj[f] is null)
+                adj[f] = new List<(int, int)>();
+            adj[f].Add((t, p));
+        }
+
+        var dist = new int[n, k + 2];
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < k + 2; j++)
+            {
+                dist[i, j] = int.MaxValue;
+            }
+        }
+
+        for (int j = 0; j < k + 2; j++)
+        {
+            dist[src, j] = 0;
+        }
+
+        var heap = new PriorityQueue<(int, int), int>();
+        heap.Enqueue((src, 0), 0);
+
+        while (heap.Count > 0)
+        {
+            (var i, var stops) = heap.Dequeue();
+            if (stops > k || adj[i] is null) continue;
+            foreach ((var j, var distance) in adj[i])
+            {
+                var d = distance + dist[i, stops];
+                if (dist[j, stops + 1] > d)
+                {
+                    dist[j, stops + 1] = d;
+                    heap.Enqueue((j, stops + 1), d);
+                }
+            }
+
+        }
+
+        var result = int.MaxValue;
+        for (int j = 0; j < k + 2; j++)
+        {
+            result = Math.Min(dist[dst, j], result);
+        }
+        return result == int.MaxValue ? -1 : result;
+    }
+    #endregion
+    
     #endregion
 
     #region 1-D Dynamic Programming
