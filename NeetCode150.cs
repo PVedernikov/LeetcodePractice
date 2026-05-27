@@ -2015,10 +2015,12 @@ public class NeetCode150
                 if (dist[j, stops + 1] > d)
                 {
                     dist[j, stops + 1] = d;
-                    heap.Enqueue((j, stops + 1), d);
+                    if (j != dst)
+                    {
+                        heap.Enqueue((j, stops + 1), d);
+                    }
                 }
             }
-
         }
 
         var result = int.MaxValue;
@@ -2029,7 +2031,7 @@ public class NeetCode150
         return result == int.MaxValue ? -1 : result;
     }
     #endregion
-    
+
     #endregion
 
     #region 1-D Dynamic Programming
