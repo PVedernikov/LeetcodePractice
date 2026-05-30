@@ -2262,6 +2262,7 @@ public class NeetCode150
 
         // Инициализируем dp[0, j], т.е. случаи, когда строка s пустая, а паттерн p может быть не пустой.
         // В этом случае, паттерн может совпадать со строкой только если он состоит из пар символов, где второй символ - '*', т.е. может означать 0 вхождений первого символа.
+        // Например, для паттерна "a*b*c*" строка "" будет совпадать, т.к. '*' может означать 0 вхождений
         for (int j = 2; j <= n; j++)
         {
             if (p[j - 1] == '*')
@@ -2297,6 +2298,39 @@ public class NeetCode150
         }
 
         return dp[m, n];
+    }
+
+    // NeetCode recursive solution with memoization
+    public bool IsMatchRecursive(string s, string p)
+    {
+        var m = s.Length;
+        var n = p.Length;
+        var cache = new Dictionary<(int, int), bool>();
+        return DFS(0, 0);
+
+        bool DFS(int i, int j)
+        {
+            if (cache.ContainsKey((i, j))) return cache[(i, j)];
+            if (i >= m && j >= n) return true;
+            if (j >= n) return false;
+
+            var match = i < m && (s[i] == p[j] || p[j] == '.');
+            if (j + 1 < n && p[j + 1] == '*')
+            {
+                var result = DFS(i, j + 2) // don't use '*'
+                    || (match && DFS(i + 1, j)); // use '*'
+                cache[(i, j)] = result;
+                return result;
+            }
+            if (match)
+            {
+                var result = DFS(i + 1, j + 1);
+                cache[(i, j)] = result;
+                return result;
+            }
+            cache[(i, j)] = false;
+            return false;
+        }
     }
     #endregion
 
