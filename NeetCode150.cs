@@ -2245,6 +2245,61 @@ public class NeetCode150
     }
     #endregion
 
+    // 10. Regular Expression Matching
+    // Given an input string s and a pattern p, implement regular expression matching with support for '.' and '*' where:
+    // - '.' Matches any single character.​​​​
+    // - '*' Matches zero or more of the preceding element.
+    // Return a boolean indicating whether the matching covers the entire input string (not partial).
+    // HARD
+    // 2D DP
+    #region 10. Regular Expression Matching
+    public bool IsMatch(string s, string p)
+    {
+        var m = s.Length;
+        var n = p.Length;
+        var dp = new bool[m + 1, n + 1];
+        dp[0, 0] = true;
+
+        // Инициализируем dp[0, j], т.е. случаи, когда строка s пустая, а паттерн p может быть не пустой.
+        // В этом случае, паттерн может совпадать со строкой только если он состоит из пар символов, где второй символ - '*', т.е. может означать 0 вхождений первого символа.
+        for (int j = 2; j <= n; j++)
+        {
+            if (p[j - 1] == '*')
+            {
+                dp[0, j] = dp[0, j - 2];
+            }
+        }
+
+        for (int i = 1; i < m + 1; i++)
+        {
+            for (var j = 1; j < n + 1; j++)
+            {
+                if (s[i - 1] == p[j - 1] || p[j - 1] == '.')
+                {
+                    dp[i, j] = dp[i - 1, j - 1]; // если символы совпадают (или '.'), то результат такой же, как для строк без этих символов
+                }
+                else if (p[j - 1] == '*')
+                {
+                    // если встретили '*', то два варианта:
+                    // 1) использовать символ p[j - 2] (т.е. тот, который перед '*'), тогда он должен совпадать с текущим символом строки s[i - 1] (или это '.')
+                    //    + должно быть так, что строка s до этого символа уже совпадала с паттерном, который включает '*', т.е. dp[i - 1, j] должно быть true,
+                    //    например проверяем baaaa и ba*, т.е. dp[5, 3], тогда для последнего символа строки 'a' мы можем использовать '*' для совпадения с ним,
+                    //    и при этом строка до этого символа 'baaa' уже совпадала с паттерном 'ba*', т.е. dp[4, 3] должно быть true
+                    // 2) не использовать символ p[j - 2] (т.е. тот, который перед '*'), тогда результат такой же, как для паттерна без p[j - 2]* (т.е. dp[i, j - 2])
+                    dp[i, j] = ((s[i - 1] == p[j - 2] || p[j - 2] == '.') && dp[i - 1, j])
+                    || dp[i, j - 2];
+                }
+                else
+                {
+                    dp[i, j] = false;
+                }
+            }
+        }
+
+        return dp[m, n];
+    }
+    #endregion
+
     #endregion
 
     #region Greedy
