@@ -1866,7 +1866,12 @@ public class NeetCode150
     // Explanation: One shortest transformation is "hit" -> "hot" -> "dot" -> "dog" -> "cog", which is 5 words long.
     #region 127. Word Ladder
     // First attempt. Naive solution + Dijkstra
-    // NOT OPTIMAL, TODO:
+    // NOT OPTIMAL, TODO: implement optimal solution with BFS + оптимизировать построение графа через промежуточный adj list
+    // где ключ - это маска слова с замененной буквой на *, а значение - это список слов, которые подходят под эту маску.
+    // Например для слова "hot" мы будем иметь маски "*ot", "h*t", "ho*", и для каждой маски будем хранить список слов, которые подходят под эту маску.
+    // Тогда при построении графа мы будем перебирать все слова, для каждого слова генерировать его маски и добавлять ребра между всеми словами, которые подходят под эти маски.
+    // Это позволит нам построить граф за O(n * m^2), где n - количество слов в wordList, m - длина слова, вместо O(n^2 * m) в текущей реализации.
+    // Это оптимальнее, т.к. по условию m гораздо меньше n.
     public int LadderLength(string beginWord, string endWord, IList<string> wordList)
     {
         var targetI = -1;
