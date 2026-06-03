@@ -1852,6 +1852,103 @@ public class NeetCode150
         return null;
     }
     #endregion
+
+    // 127. Word Ladder
+    // A transformation sequence from word beginWord to word endWord using a dictionary wordList is a sequence of words beginWord -> s1 -> s2 -> ... -> sk such that:
+    // - Every adjacent pair of words differs by a single letter.
+    // - Every si for 1 <= i <= k is in wordList. Note that beginWord does not need to be in wordList.
+    // - sk == endWord
+    // Given two words, beginWord and endWord, and a dictionary wordList, return the number of words in the shortest transformation sequence from beginWord to endWord,
+    // or 0 if no such sequence exists.
+    //
+    // Example: Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]
+    // Output: 5
+    // Explanation: One shortest transformation is "hit" -> "hot" -> "dot" -> "dog" -> "cog", which is 5 words long.
+    #region 127. Word Ladder
+    // First attempt. Naive solution + Dijkstra
+    // NOT OPTIMAL, TODO:
+    public int LadderLength(string beginWord, string endWord, IList<string> wordList)
+    {
+        var targetI = -1;
+        var n = wordList.Count;
+
+        if (isEarlyExit()) return 0;
+
+        var adj = new List<int>[n + 1];
+        var dist = new int[n + 1];
+
+        for (int i = 0; i < n + 1; i++)
+        {
+            adj[i] = new List<int>();
+            dist[i] = int.MaxValue;
+        }
+        dist[0] = 1;
+
+        for (int i = 0; i < n; i++)
+        {
+            //if (endWord == wordList[i]) targetI = i + 1;
+            if (Connected(beginWord, wordList[i]))
+            {
+                adj[0].Add(i + 1);
+                adj[i + 1].Add(0);
+            }
+
+            for (var j = i + 1; j < n; j++)
+            {
+                if (Connected(wordList[i], wordList[j]))
+                {
+                    adj[i + 1].Add(j + 1);
+                    adj[j + 1].Add(i + 1);
+                }
+            }
+        }
+
+        //if (targetI < 0) return 0;
+
+        var queue = new PriorityQueue<int, int>();
+        queue.Enqueue(0, 0);
+        while (queue.Count > 0)
+        {
+            var i = queue.Dequeue();
+            foreach (var j in adj[i])
+            {
+                var dst = dist[i] + 1;
+                if (dist[j] > dst)
+                {
+                    dist[j] = dst;
+                    queue.Enqueue(j, dst);
+                }
+            }
+        }
+
+        return targetI > 0 && dist[targetI] != int.MaxValue ? dist[targetI] : 0;
+
+        bool Connected(string s1, string s2)
+        {
+            var diff = 0;
+            for (int i = 0; i < s1.Length; i++)
+            {
+                if (s1[i] != s2[i]) diff++;
+                if (diff > 1) return false;
+            }
+            return diff == 1;
+        }
+
+        bool isEarlyExit()
+        {
+            for (var i = 0; i < n; i++)
+            {
+                if (wordList[i] == endWord)
+                {
+                    targetI = i + 1;
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+    #endregion
+
     #endregion
 
     #region Advanced Graphs
