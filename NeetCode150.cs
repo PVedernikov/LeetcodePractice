@@ -63,6 +63,122 @@ public class NeetCode150
 
     #endregion
 
+    #region Two Pointers
+
+    // 125. Valid Palindrome
+    // A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters,
+    // it reads the same forward and backward. Alphanumeric characters include letters and numbers.
+    // Given a string s, return true if it is a palindrome, or false otherwise.
+    // Example 1:
+    // Input: s = "A man, a plan, a canal: Panama"
+    // Output: true
+    // Explanation: "amanaplanacanalpanama" is a palindrome.
+    #region 125. Valid Palindrome
+    public bool IsPalindrome(string s)
+    {
+        var l = 0;
+        var r = s.Length - 1;
+        while (l < r)
+        {
+            if (!IsValid(s[l]))
+            {
+                l++;
+                continue;
+            }
+
+            if (!IsValid(s[r]))
+            {
+                r--;
+                continue;
+            }
+
+            var cl = ToLower(s[l]);
+            var cr = ToLower(s[r]);
+            if (cl != cr) return false;
+            l++;
+            r--;
+        }
+
+        return true;
+
+        bool IsValid(char c)
+        {
+            return (c >= '0' && c <= '9')
+                || (c >= 'a' && c <= 'z')
+                || (c >= 'A' && c <= 'Z');
+        }
+
+        char ToLower(char c)
+        {
+            return (c >= 'A' && c <= 'Z')
+                ? (char)(c - 'A' + 'a')
+                : c;
+        }
+    }
+    #endregion
+
+    // 42. Trapping Rain Water
+    // Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
+    // https://leetcode.com/problems/trapping-rain-water/description/
+    // HARD, two pointers
+    // O(n) / O(1)
+    #region 42. Trapping Rain Water
+    // First attempt, O(n) time and O(n) space
+    // Идея: найти индекс пика, который будет разделять массив на две части. Слева от пика вода будет скапливаться до уровня пика, справа от пика вода будет скапливаться до уровня пика.
+    // Проходим по каждой части и считаем количество воды, которая может там скапливаться.
+    public int Trap(int[] height)
+    {
+        var n = height.Length;
+        var max = -1;
+        var peak = n - 1;
+        for (int i = 0; i < n; i++)
+        {
+            if (max < height[i])
+            {
+                max = height[i];
+                peak = i;
+            }
+        }
+
+        var result = 0;
+        var prevHeight = 0;
+        var localResult = 0;
+        for (int i = 0; i <= peak; i++) // Идем слева до пика
+        {
+            if (prevHeight <= height[i])
+            {
+                result += localResult;
+                localResult = 0;
+                prevHeight = height[i];
+            }
+            else
+            {
+                localResult += prevHeight - height[i];
+            }
+        }
+
+        prevHeight = 0;
+        localResult = 0;
+        for (int i = n - 1; i >= peak; i--) // Идем справа до пика
+        {
+            if (prevHeight <= height[i])
+            {
+                result += localResult;
+                localResult = 0;
+                prevHeight = height[i];
+            }
+            else
+            {
+                localResult += prevHeight - height[i];
+            }
+        }
+
+        return result;
+    }
+    #endregion
+    
+    #endregion
+
     #region Sliding Window
 
     // 567. Permutation in String
