@@ -123,7 +123,8 @@ public class NeetCode150
     // HARD, two pointers
     // O(n) / O(1)
     #region 42. Trapping Rain Water
-    // First attempt, O(n) time and O(n) space
+    // First attempt,
+    // O(n) / O(1)
     // Идея: найти индекс пика, который будет разделять массив на две части. Слева от пика вода будет скапливаться до уровня пика, справа от пика вода будет скапливаться до уровня пика.
     // Проходим по каждой части и считаем количество воды, которая может там скапливаться.
     public int Trap(int[] height)
@@ -175,8 +176,38 @@ public class NeetCode150
 
         return result;
     }
+
+    // finding left and right walls height for each position
+    // O(n) / O(n), NOT OPTIMAL
+    public int TrapLR(int[] height)
+    {
+        var n = height.Length;
+        var leftMax = new int[n];
+        var rightMax = new int[n];
+        var max = 0;
+        for (int i = 0; i < n; i++) // Находим высоту левой стенки для каждой позиции
+        {
+            leftMax[i] = max;
+            max = Math.Max(max, height[i]);
+        }
+        max = 0;
+        for (int i = n - 1; i >= 0; i--) // Находим высоту правой стенки для каждой позиции
+        {
+            rightMax[i] = max;
+            max = Math.Max(max, height[i]);
+        }
+        var result = 0;
+        for (int i = 0; i < n; i++) // Находим количество воды для каждой позиции, которая может там скапливаться, исходя из высот левой и правой стенкок
+        {
+            var level = Math.Min(leftMax[i], rightMax[i]) - height[i];
+            result += level > 0 ? level : 0;
+        }
+
+        return result;
+    }
+
     #endregion
-    
+
     #endregion
 
     #region Sliding Window
