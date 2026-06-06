@@ -123,6 +123,34 @@ public class NeetCode150
     // HARD, two pointers
     // O(n) / O(1)
     #region 42. Trapping Rain Water
+    // Two pointers solution, O(n) / O(1), optimal
+    public int Trap(int[] height)
+    {
+        var n = height.Length;
+        var l = 0;
+        var r = n - 1;
+        var maxL = 0;
+        var maxR = 0;
+        var result = 0;
+        while (l <= r)
+        {
+            if (maxL < maxR)
+            {
+                result += Math.Max(0, maxL - height[l]);
+                maxL = Math.Max(maxL, height[l]);
+                l++;
+            }
+            else
+            {
+                result += Math.Max(0, maxR - height[r]);
+                maxR = Math.Max(maxR, height[r]);
+                r--;
+            }
+        }
+
+        return result;
+    }
+
     // First attempt
     // O(n) / O(1) - optimal
     // Идея: найти индекс пика, который будет разделять массив на две части. Слева от пика вода будет скапливаться до уровня пика, справа от пика вода будет скапливаться до уровня пика.
@@ -133,7 +161,7 @@ public class NeetCode150
     // _#~##~######
     // 010210132121
     // Проходим по каждой части и считаем количество воды, которая может там скапливаться.
-    public int Trap(int[] height)
+    public int Trap_Peak(int[] height)
     {
         var n = height.Length;
         var max = -1;
@@ -187,7 +215,7 @@ public class NeetCode150
     // O(n) / O(n), NOT OPTIMAL for memory
     // Идея: для каждой позиции найти высоту левой стенки и правой стенки, которая может удерживать воду.
     // Высота воды на позиции будет равна min(leftWall, rightWall) - height[i]. Если результат отрицательный, значит вода там скапливаться не будет.
-    public int TrapLR(int[] height)
+    public int Trap_Walls(int[] height)
     {
         var n = height.Length;
         var leftMax = new int[n];
