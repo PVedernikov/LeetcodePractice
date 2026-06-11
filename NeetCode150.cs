@@ -412,6 +412,7 @@ public class NeetCode150
 
     // Heap solution, O(n log k) time, NOT OPTIMAL
     // Heap, PriorityQueue
+    // TODO: implement optimal solution with deque, O(n) time and O(k) space
     public int[] MaxSlidingWindow_Heap(int[] nums, int k)
     {
         var n = nums.Length;
