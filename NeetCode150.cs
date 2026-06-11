@@ -368,8 +368,8 @@ public class NeetCode150
     // То есть, нужно вернуть максимум для каждого положения окна
 
     #region 239. Sliding Window Maximum
-    // First attempt, O(n * k) time, NOT OPTIMAL
-    public int[] MaxSlidingWindow(int[] nums, int k)
+    // First attempt, linear search, O(n * k) time, NOT OPTIMAL
+    public int[] MaxSlidingWindow_Linear(int[] nums, int k)
     {
         var n = nums.Length;
         var result = new List<int>();
@@ -409,9 +409,34 @@ public class NeetCode150
 
         return result.ToArray();
     }
-    
+
+    // Heap solution, O(n log k) time, NOT OPTIMAL
+    // Heap, PriorityQueue
+    public int[] MaxSlidingWindow_Heap(int[] nums, int k)
+    {
+        var n = nums.Length;
+        var result = new List<int>();
+        var heap = new PriorityQueue<(int index, int val), int>();
+        for (int i = 0; i < k - 1; i++)
+        {
+            heap.Enqueue((i, nums[i]), -nums[i]);
+        }
+
+        for (int i = 0; i <= n - k; i++)
+        {
+            heap.Enqueue((i + k - 1, nums[i + k - 1]), -nums[i + k - 1]);
+            while (heap.Peek().index < i)
+            {
+                heap.Dequeue();
+            }
+            result.Add(heap.Peek().val);
+        }
+
+        return result.ToArray();
+    }
+
     #endregion
-    
+
     #endregion
 
     #region Stack
