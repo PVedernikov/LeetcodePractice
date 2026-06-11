@@ -361,7 +361,57 @@ public class NeetCode150
     }
     #endregion
 
+    // 239. Sliding Window Maximum
+    // You are given an array of integers nums, there is a sliding window of size k which is moving from the very left of the array to the very right.
+    // You can only see the k numbers in the window. Each time the sliding window moves right by one position.
+    // Return the max sliding window.
+    // То есть, нужно вернуть максимум для каждого положения окна
 
+    #region 239. Sliding Window Maximum
+    // First attempt, O(n * k) time, NOT OPTIMAL
+    public int[] MaxSlidingWindow(int[] nums, int k)
+    {
+        var n = nums.Length;
+        var result = new List<int>();
+        var maxI = -1;
+        var maxVal = int.MinValue;
+        for (int i = 0; i < k; i++)
+        {
+            if (nums[i] >= maxVal)
+            {
+                maxVal = nums[i];
+                maxI = i;
+            }
+        }
+
+        for (int i = 0; i <= n - k; i++)
+        {
+            if (nums[i + k - 1] >= maxVal)
+            {
+                maxVal = nums[i + k - 1];
+                maxI = i + k - 1;
+            }
+            else if (maxI < i)
+            {
+                maxVal = int.MinValue;
+                for (int j = 0; j < k; j++) // this finding max in not optimal
+                {
+                    if (nums[i + j] >= maxVal)
+                    {
+                        maxVal = nums[i + j];
+                        maxI = i + j;
+                    }
+                }
+            }
+
+            result.Add(maxVal);
+        }
+
+        return result.ToArray();
+    }
+    
+    #endregion
+    
     #endregion
 
     #region Stack
