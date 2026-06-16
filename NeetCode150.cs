@@ -638,6 +638,48 @@ public class NeetCode150
         return result;
     }
     #endregion
+
+    // 84. Largest Rectangle in Histogram
+    // Given an array of integers heights representing the histogram's bar height where the width of each bar is 1, return the area of the largest rectangle in the histogram.
+    // https://leetcode.com/problems/largest-rectangle-in-histogram
+    // Идея: мототонно возрастающий стек. Используем стек, в котором храним пары (индекс, высота). Проходим по массиву высот и для каждой высоты проверяем,
+    // есть ли в стеке элементы с большей высотой. Если есть, то удаляем их из стека, т.к. они для нас не актуальны, т.к. с текущей позиции прямоугольник ограничен текущей высотой,
+    // В конце рассчитывает площади элементов, которые остались в стеке
+    #region 84. Largest Rectangle in Histogram
+    public int LargestRectangleArea(int[] heights)
+    {
+        var stack = new Stack<(int key, int val)>();
+        var n = heights.Length;
+        var result = 0;
+        for (int i = 0; i < n; i++)
+        {
+            var j = i;
+            while (stack.Count > 0 && stack.Peek().val >= heights[i])
+            {
+                // Удаляем из стека все элементы, которые выше текущего, т.к. они не могут быть частью прямоугольника, т.к. прямоукольник ограничен текущей высотой.
+                var h = stack.Pop();
+                // Перед удалением рассчитываем площадь всех прямоугольников, которые могли бы получиться с этим элементом.
+                // (i - 1) - стартуем с предыдушего индекса, т.к. нужно рассчитать предыдущие прямоугольники, а для текущего элемента расчитаем потом.
+                var a = h.val * (i - h.key); // == (i - 1) - h.key + 1
+                result = Math.Max(result, a);
+                j = h.key;
+            }
+
+            stack.Push((j, heights[i])); // Добавляем элемент и позицию, с которой его высота актуальна
+        }
+
+        while (stack.Count > 0) // рассчитываем остаток в стеке
+        {
+            var h = stack.Pop();
+            // (n - 1) - стартуем с последнего индекса
+            var area = h.val * (n - h.key); // == (n - 1) - h.key + 1
+            result = Math.Max(result, area);
+        }
+
+        return result;
+    }
+
+    #endregion
     #endregion
 
     #region Binary Search
