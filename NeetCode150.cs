@@ -1230,6 +1230,70 @@ public class NeetCode150
      * obj.Put(key,value);
      */
     #endregion
+
+    // 25. Reverse Nodes in k-Group
+    // Given the head of a linked list, reverse the nodes of the list k at a time, and return the modified list.
+    // k is a positive integer and is less than or equal to the length of the linked list.
+    // If the number of nodes is not a multiple of k then left-out nodes, in the end, should remain as it is.
+    // You may not alter the values in the list's nodes, only nodes themselves may be changed.
+    // https://leetcode.com/problems/reverse-nodes-in-k-group/
+    // Example 1:
+    // Input: head = [1,2,3,4,5], k = 2
+    // Output: [2,1,4,3,5]
+    // Example 2:
+    // Input: head = [1,2,3,4,5], k = 3
+    // Output: [3,2,1,4,5]
+    // Развернуть элементы группами по k элементов. Если в конце осталось меньше k элементов, то их не разворачиваем.
+    #region 25. Reverse Nodes in k-Group
+    public ListNode25 ReverseKGroup(ListNode25 head, int k)
+    {
+        if (k <= 1) return head;
+        var c = head;
+        var groups = 0;
+        while (c is not null)
+        {
+            groups++;
+            c = c.next;
+        }
+        groups /= k; // Считаем количество полных групп по k элементов, т.к. хвост не нужен разворачивать, если в нем меньше k элементов
+        if (groups == 0) return head;
+
+        var dummy = new ListNode25(-1, head);
+        var prev = dummy;
+        var start = head;
+        for (int i = 0; i < groups; i++)
+        {
+            var curr = start;
+            var next = start.next;
+            for (int j = 0; j < k - 1; j++)
+            {
+                var tmp = next.next;
+                next.next = curr;
+                curr = next;
+                next = tmp;
+            }
+            prev.next = curr;
+            start.next = next;
+
+            prev = start;
+            start = next;
+        }
+
+        return dummy.next;
+    }
+
+    public class ListNode25
+    {
+        public int val;
+        public ListNode25 next;
+        public ListNode25(int val = 0, ListNode25 next = null)
+        {
+            this.val = val;
+            this.next = next;
+        }
+    }
+    #endregion
+
     #endregion
 
     #region Trees
