@@ -3175,6 +3175,7 @@ public class NeetCode150
     // и удаляем из PriorityQueue все интервалы, которые заканчиваются до точки запроса.
     // Если PriorityQueue не пустой, то верхний элемент - это минимальный интервал, который покрывает запрос.
     #region 1851. Minimum Interval to Include Each Query
+    #region with custom comparator
     public int[] MinInterval(int[][] intervals, int[] queries)
     {
         var m = intervals.Length;
@@ -3188,7 +3189,7 @@ public class NeetCode150
             qrs[k] = (k, queries[k]);
         }
         Array.Sort(qrs, (a, b) => {
-            return a.val.CompareTo(b.val);
+            return a.val.CompareTo(b.val); // Сортируем запросы по значению
         });
 
         // PriorityQueue хранит интервалы по размеру (сначала меньшие), Если размер совпадает, то раньше лежит тот, который заканчивается раньше
@@ -3234,6 +3235,55 @@ public class NeetCode150
             return a[1].CompareTo(b[1]);
         }
     }
+    #endregion
+    
+    public int[] MinInterval_NoCustomComparer(int[][] intervals, int[] queries)
+    {
+        var m = intervals.Length;
+        var n = queries.Length;
+        Array.Sort(intervals, (a, b) => {
+            return a[0].CompareTo(b[0]); // Интервалы сортируем по левому краю
+        });
+        var qrs = new (int index, int val)[n]; // Нужен, чтобы потом восстановить индексы запросов после сортировки
+        for (int k = 0; k < n; k++)
+        {
+            qrs[k] = (k, queries[k]);
+        }
+        Array.Sort(qrs, (a, b) => {
+            return a.val.CompareTo(b.val); // Сортируем запросы по значению
+        });
+
+        var heap = new PriorityQueue<int[], int>();
+        var result = new int[n];
+        for (int k = 0; k < n; k++)
+        {
+            result[k] = -1;
+        }
+
+        var i = 0;
+        for (int j = 0; j < n; j++)
+        {
+            while (i < m && intervals[i][0] <= qrs[j].val) // Добавляем в PriorityQueue все интервалы, которые начинаются до или в точке запроса
+            {
+                heap.Enqueue(intervals[i], intervals[i][1] - intervals[i][0] + 1);
+                i++;
+            }
+
+            while (heap.Count > 0 && heap.Peek()[1] < qrs[j].val) // Удаляем из PriorityQueue все интервалы, которые заканчиваются до точки запроса
+            {
+                heap.Dequeue();
+            }
+
+            if (heap.Count > 0) // Если PriorityQueue не пустой, то верхний элемент - это минимальный интервал, который покрывает запрос
+            {
+                var intrvl = heap.Peek();
+                result[qrs[j].index] = intrvl[1] - intrvl[0] + 1;
+            }
+        }
+
+        return result;
+    }
+
     #endregion
 
     #endregion
