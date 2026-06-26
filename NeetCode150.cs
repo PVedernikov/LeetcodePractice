@@ -3157,6 +3157,87 @@ public class NeetCode150
 
     #endregion
 
+    #region Intervals
+
+    // 1851. Minimum Interval to Include Each Query
+    // HARD
+    // You are given a 2D integer array intervals, where intervals[i] = [lefti, righti] describes the ith interval starting at lefti and ending at righti (inclusive).
+    // The size of an interval is defined as the number of integers it contains, or more formally righti - lefti + 1.
+    // You are also given an integer array queries. The answer to the jth query is the size of the smallest interval i such that lefti <= queries[j] <= righti.
+    // If no such interval exists, the answer is -1.
+    // Return an array containing the answers to the queries.
+    // Example 1:
+    // Input: intervals = [[1,4],[2,4],[3,6],[4,4]], queries = [2,3,4,5]
+    // Output: [3,3,1,4]
+    // Идея: сортируем интервалы по левому краю, сортируем запросы, используем PriorityQueue для хранения интервалов, которые могут покрывать текущий запрос.
+    // В PriorityQueue храним интервалы по размеру (сначала меньшие), а также по правому краю.
+    // Для каждого запроса добавляем в PriorityQueue все интервалы, которые начинаются до или в точке запроса,
+    // и удаляем из PriorityQueue все интервалы, которые заканчиваются до точки запроса.
+    // Если PriorityQueue не пустой, то верхний элемент - это минимальный интервал, который покрывает запрос.
+    #region 1851. Minimum Interval to Include Each Query
+    public int[] MinInterval(int[][] intervals, int[] queries)
+    {
+        var m = intervals.Length;
+        var n = queries.Length;
+        Array.Sort(intervals, (a, b) => {
+            return a[0].CompareTo(b[0]); // Интервалы сортируем по левому краю
+        });
+        var qrs = new (int index, int val)[n]; // Нужен, чтобы потом восстановить индексы запросов после сортировки
+        for (int k = 0; k < n; k++)
+        {
+            qrs[k] = (k, queries[k]);
+        }
+        Array.Sort(qrs, (a, b) => {
+            return a.val.CompareTo(b.val);
+        });
+
+        // PriorityQueue хранит интервалы по размеру (сначала меньшие), Если размер совпадает, то раньше лежит тот, который заканчивается раньше
+        var heap = new PriorityQueue<int[], int[]>(new IntervalComparer());
+        var result = new int[n];
+        for (int k = 0; k < n; k++)
+        {
+            result[k] = -1;
+        }
+
+        var i = 0;
+        for (int j = 0; j < n; j++)
+        {
+            while (i < m && intervals[i][0] <= qrs[j].val) // Добавляем в PriorityQueue все интервалы, которые начинаются до или в точке запроса
+            {
+                heap.Enqueue(intervals[i], intervals[i]);
+                i++;
+            }
+
+            while (heap.Count > 0 && heap.Peek()[1] < qrs[j].val) // Удаляем из PriorityQueue все интервалы, которые заканчиваются до точки запроса
+            {
+                heap.Dequeue();
+            }
+
+            if (heap.Count > 0) // Если PriorityQueue не пустой, то верхний элемент - это минимальный интервал, который покрывает запрос
+            {
+                var intrvl = heap.Peek();
+                result[qrs[j].index] = intrvl[1] - intrvl[0] + 1;
+            }
+        }
+
+        return result;
+    }
+
+    class IntervalComparer : IComparer<int[]> // Класс для сравнения интервалов по размеру, если размер совпадает, то по правому краю
+    {
+        public int Compare(int[] a, int[] b)
+        {
+            var aLen = a[1] - a[0] + 1;
+            var bLen = b[1] - b[0] + 1;
+            if (aLen != bLen)
+                return aLen.CompareTo(bLen);
+            return a[1].CompareTo(b[1]);
+        }
+    }
+    #endregion
+
+    #endregion
+
     #region Math & Geometry
 
     // 50. Pow(x, n)
