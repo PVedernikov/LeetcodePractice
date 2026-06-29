@@ -2665,6 +2665,49 @@ public class NeetCode150
     }
     #endregion
 
+
+    // 329. Longest Increasing Path in a Matrix
+    // Given an m x n integers matrix, return the length of the longest increasing path in matrix.
+    // From each cell, you can either move in four directions: left, right, up, or down. You may not move diagonally or move outside the boundary (i.e., wrap-around is not allowed).
+    // Идея: DFS + мемоизация, т.е. для каждой ячейки запоминаем длину максимального пути, который начинается с этой ячейки.
+    #region 329. Longest Increasing Path in a Matrix
+    public int LongestIncreasingPath(int[][] matrix)
+    {
+        var m = matrix.Length;
+        var n = matrix[0].Length;
+        var di = new int[] { 1, -1, 0, 0 };
+        var dj = new int[] { 0, 0, 1, -1 };
+        var path = new int[m, n];
+        var result = 0;
+
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                result = Math.Max(result, DFS(i, j));
+            }
+        }
+
+        return result;
+
+        int DFS(int i, int j)
+        {
+            if (path[i, j] > 0) return path[i, j];
+            var res = 0;
+            for (int d = 0; d < 4; d++)
+            {
+                var ii = i + di[d];
+                var jj = j + dj[d];
+                if (ii < 0 || jj < 0 || ii >= m || jj >= n) continue;
+                if (matrix[i][j] >= matrix[ii][jj]) continue;
+                res = Math.Max(res, DFS(ii, jj));
+            }
+            path[i, j] = res + 1;
+            return path[i, j];
+        }
+    }
+    #endregion
+
     // 72. Edit Distance
     // Given two strings word1 and word2, return the minimum number of operations required to convert word1 to word2.
     // You have the following three operations permitted on a word:
@@ -3289,6 +3332,38 @@ public class NeetCode150
     #endregion
 
     #region Math & Geometry
+
+    // 202. Happy Number
+    // Write an algorithm to determine if a number n is happy.
+    // A happy number is a number defined by the following process:
+    // - Starting with any positive integer, replace the number by the sum of the squares of its digits.
+    // - Repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1.
+    // - Those numbers for which this process ends in 1 are happy.
+    // Return true if n is a happy number, and false if not.
+    #region 202. Happy Number
+    public bool IsHappy(int n)
+    {
+        var cache = new HashSet<int>();
+        while (!cache.Contains(n))
+        {
+            if (n == 1)
+                return true;
+
+            cache.Add(n);
+
+            var newN = 0;
+            while (n > 0)
+            {
+                var d = n % 10;
+                n /= 10;
+                newN += d * d;
+            }
+
+            n = newN;
+        }
+        return false;
+    }
+    #endregion
 
     // 50. Pow(x, n)
     // Implement pow(x, n), which calculates x raised to the power n (i.e., x^n).
