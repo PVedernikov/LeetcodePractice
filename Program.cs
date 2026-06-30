@@ -2507,6 +2507,14 @@ internal class Program
         //Console.WriteLine(Convert.ToString(34, 2));
         //Console.WriteLine(Convert.ToString(50, 2));
         //Console.WriteLine((char)('A' - 'A' + 'a'));
+
+        Console.WriteLine((int)'(');
+        Console.WriteLine((int)'{');
+        Console.WriteLine((int)'[');
+
+        Console.WriteLine(')' - '(');
+        Console.WriteLine('}' - '{');
+        Console.WriteLine(']' - '[');
     }
 }
 

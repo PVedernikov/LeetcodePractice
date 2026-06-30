@@ -441,6 +441,38 @@ public class NeetCode150
     #endregion
 
     #region Stack
+    // 20. Valid Parentheses
+    // Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+    // An input string is valid if:
+    // 1. Open brackets must be closed by the same type of brackets.
+    // 2. Open brackets must be closed in the correct order.
+    // 3. Every close bracket has a corresponding open bracket of the same type.
+    #region 20. Valid Parentheses
+    public bool IsValid(string s)
+    {
+        var n = s.Length;
+        if (n % 2 > 0) return false;
+        var stack = new Stack<char>();
+        for (int i = 0; i < n; i++)
+        {
+            if (s[i] == '(' || s[i] == '{' || s[i] == '[')
+            {
+                stack.Push(s[i]);
+            }
+            else
+            {
+                if (stack.Count == 0) return false;
+                var bracket = stack.Pop();
+                if (bracket == '(' && s[i] != ')') return false;
+                if (bracket == '{' && s[i] != '}') return false;
+                if (bracket == '[' && s[i] != ']') return false;
+            }
+        }
+
+        return stack.Count == 0;
+    }
+    #endregion
+
 
     // 155. Min Stack
     // Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
