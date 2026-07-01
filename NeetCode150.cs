@@ -2740,6 +2740,49 @@ public class NeetCode150
     }
     #endregion
 
+    // 115. Distinct Subsequences
+    // Given two strings s and t, return the number of distinct subsequences of s which equals t.
+    // The test cases are generated so that the answer fits on a 32-bit signed integer.
+    // Complexity: O(m * n), where m is the length of s and n is the length of t
+    // 2d DP, DFS + memoization
+    #region 115. Distinct Subsequences
+    public int NumDistinct(string s, string t)
+    {
+        var m = s.Length;
+        var n = t.Length;
+        var cache = new int[m, n];
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                cache[i, j] = -1;
+            }
+        }
+
+        return DFS(0, 0);
+
+        int DFS(int i, int j)
+        {
+            if (j >= n) return 1;
+            if (i >= m) return 0;
+            if (cache[i, j] >= 0) return cache[i, j];
+            if (m - i < n - j) // early exit, if remaining length of s is less than remaining length of t, then it's impossible to match
+            {
+                cache[i, j] = 0;
+                return 0;
+            }
+
+            var result = DFS(i + 1, j); // don't include symbol
+            if (s[i] == t[j])
+            {
+                result += DFS(i + 1, j + 1); // include symbol
+            }
+            cache[i, j] = result;
+            return result;
+        }
+    }
+    #endregion
+
     // 72. Edit Distance
     // Given two strings word1 and word2, return the minimum number of operations required to convert word1 to word2.
     // You have the following three operations permitted on a word:
