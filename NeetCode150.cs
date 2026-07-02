@@ -117,6 +117,54 @@ public class NeetCode150
     }
     #endregion
 
+    // 15. 3Sum
+    // Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
+    // Notice that the solution set must not contain duplicate triplets.
+    #region 15. 3Sum
+    public IList<IList<int>> ThreeSum(int[] nums)
+    {
+        Array.Sort(nums);
+        var n = nums.Length;
+
+        var result = new List<IList<int>>();
+        for (int i = 0; i < n - 2; i++)
+        {
+            if (i > 0 && nums[i] == nums[i - 1]) continue; // skip duplicates
+            var l = i + 1;
+            var r = n - 1;
+            while (l < r)
+            {
+                var s = nums[i] + nums[l] + nums[r];
+                if (s < 0)
+                {
+                    l++;
+                }
+                else if (s > 0)
+                {
+                    r--;
+                }
+                else
+                {
+                    result.Add(new List<int> { nums[i], nums[l], nums[r] });
+                    l++;
+                    while (l < r && nums[l] == nums[l - 1]) // skip duplicates
+                    {
+                        l++;
+                    }
+                    // equal to
+                    // r--;
+                    // while (l < r && nums[r] == nums[r + 1])
+                    // {
+                    //     r--;
+                    // }
+                }
+            }
+        }
+
+        return result;
+    }
+    #endregion
+
     // 42. Trapping Rain Water
     // Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
     // https://leetcode.com/problems/trapping-rain-water/description/
