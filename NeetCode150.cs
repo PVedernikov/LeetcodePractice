@@ -1920,7 +1920,75 @@ public class NeetCode150
     }
     #endregion
 
+    // 51. N-Queens
+    // The n-queens puzzle is the problem of placing n queens on an n x n chessboard such that no two queens attack each other.
+    // Given an integer n, return all distinct solutions to the n-queens puzzle. You may return the answer in any order.
+    // Each solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space, respectively.
+    #region 51. N-Queens
+    // First attempt, O(n!) time complexity, O(n) space complexity
+    public IList<IList<string>> SolveNQueens(int n)
+    {
+        var cols = new HashSet<int>();
+        var d1 = new HashSet<int>();
+        var d2 = new HashSet<int>();
+        var line = new char[n];
+        for (int i = 0; i < n; i++)
+        {
+            line[i] = '.';
+        }
+        var lines = new string[n];
+        for (int i = 0; i < n; i++)
+        {
+            line[i] = 'Q';
+            lines[i] = new string(line);
+            line[i] = '.';
+        }
 
+        var ret = new List<IList<string>>();
+        var res0 = Queens(0);
+        foreach (var r0 in res0)
+        {
+            if (r0.Count == n)
+            {
+                ret.Add(r0);
+            }
+        }
+        return ret;
+
+        IList<IList<string>> Queens(int i)
+        {
+            var result = new List<IList<string>>();
+            if (i >= n)
+            {
+                result.Add(new List<string>());
+                return result;
+            }
+
+            for (int j = 0; j < n; j++)
+            {
+                if (cols.Contains(j) || d1.Contains(i - j) || d2.Contains(i + j))
+                {
+                    continue;
+                }
+                cols.Add(j);
+                d1.Add(i - j);
+                d2.Add(i + j);
+
+                var res = Queens(i + 1);
+                foreach (var r in res)
+                {
+                    r.Add(lines[j]);
+                    result.Add(r);
+                }
+                cols.Remove(j);
+                d1.Remove(i - j);
+                d2.Remove(i + j);
+            }
+
+            return result;
+        }
+    }
+    #endregion
     #endregion
 
     #region Graphs
