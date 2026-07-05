@@ -1924,9 +1924,66 @@ public class NeetCode150
     // The n-queens puzzle is the problem of placing n queens on an n x n chessboard such that no two queens attack each other.
     // Given an integer n, return all distinct solutions to the n-queens puzzle. You may return the answer in any order.
     // Each solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space, respectively.
+    // Complexity: O(n!) time complexity, O(n) space complexity
     #region 51. N-Queens
-    // First attempt, O(n!) time complexity, O(n) space complexity
     public IList<IList<string>> SolveNQueens(int n)
+    {
+        var cols = new HashSet<int>();
+        var d1 = new HashSet<int>();
+        var d2 = new HashSet<int>();
+        var row = new char[n];
+        for (int i = 0; i < n; i++)
+        {
+            row[i] = '.';
+        }
+        var lines = new string[n]; // init all possible rows with queens for easy use
+        for (int i = 0; i < n; i++) 
+        {
+            row[i] = 'Q'; // i-th row has queen at i-th position
+            lines[i] = new string(row);
+            row[i] = '.';
+        }
+
+        var board = new List<string>();
+        var result = new List<IList<string>>();
+        QueensBacktrack(0);
+        return result;
+
+        void QueensBacktrack(int i)
+        {
+            if (i >= n)
+            {
+                result.Add(new List<string>(board)); // new List to create a copy of the board
+                return;
+            }
+
+            for (int j = 0; j < n; j++)
+            {
+                if (cols.Contains(j) || d1.Contains(i - j) || d2.Contains(i + j))
+                {
+                    continue;
+                }
+
+                cols.Add(j);
+                d1.Add(i - j);
+                d2.Add(i + j);
+                board.Add(lines[j]);
+
+                QueensBacktrack(i + 1);
+
+                // Cleanup the board, remove last row. We can do that using i, because the board here has exactly i+1 rows.
+                board.RemoveAt(i); // Maybe more readable is: board.RemoveAt(board.Count - 1)
+                cols.Remove(j);
+                d1.Remove(i - j);
+                d2.Remove(i + j);
+            }
+        }
+    }
+
+    // First attempt, O(n!) time complexity, O(n) space complexity
+    // Board is cobstructed in reverse order, i.e. last row is added first, which is not very intuitive
+    // But mathematically it is correct, because the solutions should be the same in the end
+    public IList<IList<string>> SolveNQueens_1st(int n)
     {
         var cols = new HashSet<int>();
         var d1 = new HashSet<int>();
