@@ -476,6 +476,19 @@ public static class LeetCodeBlind75
         return result;
     }
 
+    public static int MissingNumber_later(int[] nums)
+    {
+        var n = nums.Length;
+        var sum = 0;
+        var target = (n * n + n) / 2;
+        for (int i = 0; i < n; i++)
+        {
+            sum += nums[i];
+        }
+
+        return target - sum;
+    }
+
     // #12
     // 15. 3Sum
     // Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
