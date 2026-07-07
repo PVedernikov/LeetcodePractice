@@ -3003,6 +3003,58 @@ public class NeetCode150
     }
     #endregion
 
+    // 312. Burst Balloons
+    // You are given n balloons, indexed from 0 to n - 1. Each balloon is painted with a number on it represented by an array nums. You are asked to burst all the balloons.
+    // If you burst the ith balloon, you will get nums[i - 1] * nums[i] * nums[i + 1] coins.
+    // If i - 1 or i + 1 goes out of bounds of the array, then treat it as if there is a balloon with a 1 painted on it.
+    // Return the maximum coins you can collect by bursting the balloons wisely.
+    // HARD
+    // 2D DP, DFS
+    #region 312. Burst Balloons
+    // Идея: дополняем массив nums двумя единицами в начале и в конце, чтобы упростить вычисление.
+    // Инвариант: для каждого элемента nums[i] мы считаем, что он последний, т.е. лопаем сначала все элементы слева и справа от него. 
+    // Кешируем результат для каждого диапазона [l, r]. Мы так можем сделать, т.к. элементы слева и справа от диапазона остаются неизменными.
+    public int MaxCoins(int[] nums)
+    {
+        var n = nums.Length;
+        var eNums = new int[n + 2];
+        eNums[0] = 1;
+        eNums[n + 1] = 1;
+        for (int i = 1; i < n + 1; i++)
+        {
+            eNums[i] = nums[i - 1];
+        }
+        var dp = new int[n + 2, n + 2];
+        for (int i = 0; i < n + 2; i++)
+        {
+            for (int j = 0; j < n + 2; j++)
+            {
+                dp[i, j] = -1;
+            }
+        }
+
+        return Coins(1, n);
+
+        int Coins(int l, int r)
+        {
+            if (l > r) return 0;
+            if (dp[l, r] >= 0) return dp[l, r];
+
+            var result = 0;
+            for (int i = l; i <= r; i++)
+            {
+                var lRes = Coins(l, i - 1);
+                var rRes = Coins(i + 1, r);
+                var res = eNums[i] * eNums[l - 1] * eNums[r + 1] + lRes + rRes;
+                result = Math.Max(result, res);
+            }
+
+            dp[l, r] = result;
+            return result;
+        }
+    }
+    #endregion
+
     // 10. Regular Expression Matching
     // Given an input string s and a pattern p, implement regular expression matching with support for '.' and '*' where:
     // - '.' Matches any single character.​​​​
