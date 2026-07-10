@@ -2708,6 +2708,44 @@ public class NeetCode150
 
     #region 1-D Dynamic Programming
 
+    // 70. Climbing Stairs
+    // You are climbing a staircase. It takes n steps to reach the top.
+    // Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+    #region 70. Climbing Stairs
+    public int ClimbStairs(int n)
+    {
+        var prev1 = 1;
+        var prev2 = 0;
+        var result = 0;
+        for (int i = 1; i <= n; i++)
+        {
+            result = prev1 + prev2;
+            prev2 = prev1;
+            prev1 = result;
+        }
+        return result;
+    }
+
+    // memoization solution, O(n) time complexity, O(n) space complexity
+    // NOT OPTIMAL for memory
+    public int ClimbStairs_memo(int n)
+    {
+        var dp = new int[n + 1];
+        return Climb(n);
+
+        int Climb(int num)
+        {
+            if (num <= 1) return 1;
+            if (num == 2) return 2;
+            if (dp[num] > 0) return dp[num];
+
+            var result = Climb(num - 1) + Climb(num - 2);
+            dp[num] = result;
+            return result;
+        }
+    }
+    #endregion
+
     // 746. Min Cost Climbing Stairs
     // You are given an integer array cost where cost[i] is the cost of ith step on a staircase. Once you pay the cost, you can either climb one or two steps.
     // You can either start from the step with index 0, or the step with index 1.
