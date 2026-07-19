@@ -2592,6 +2592,83 @@ public class NeetCode150
     }
     #endregion
 
+    // 332. Reconstruct Itinerary
+    // You are given a list of airline tickets where tickets[i] = [fromi, toi] represent the departure and the arrival airports of one flight.
+    // Reconstruct the itinerary in order and return it.
+    // All of the tickets belong to a man who departs from "JFK", thus, the itinerary must begin with "JFK".
+    // If there are multiple valid itineraries, you should return the itinerary that has the smallest lexical order when read as a single string.
+    // - For example, the itinerary ["JFK", "LGA"] has a smaller lexical order than ["JFK", "LGB"].
+    // You may assume all tickets form at least one valid itinerary. You must use all the tickets once and only once.
+    // HARD
+    // Eulerian Path, Graph, DFS, Hierholzer's Algorithm
+    // Эйлеров путь (Eulerian Path) - это путь в графе, который проходит через каждое ребро ровно один раз.
+    #region 332. Reconstruct Itinerary
+    // Чтобы найти Эйлеров путь в графе, нужно выполнить следующие шаги:
+    // 1. Доказать, что граф имеет Эйлеров путь. Для этого нужно проверить, что в графе не более двух вершин имеют нечетную степень.
+    //    Для ориентированного графа, нужно проверить, что в графе не более одной вершины имеет out-degree - in-degree = 1 (число иходящих ребер МИНУС число входящих ребер)
+    //    и не более одной вершины имеет in-degree - out-degree = 1.
+    //    Если у всех вершин in-degree = out-degree, то граф имеет Эйлеров цикл, который является частным случаем Эйлерова пути.
+    // 2. Найти стартовую вершину. Если граф имеет Эйлеров путь, то стартовая вершина - это вершина с out-degree - in-degree = 1.
+    //    Если это Эйлкеров цикл, то стартовая вершина может быть любой.
+    // 3. Найти сам путь.
+    // Алгоритм Хирхольцера (Hierholzer's Algorithm) для поиска эйлерова пути в графе
+    // Идея: используем DFS (в моей реалицазии итеративный, но можно написать и рекурсию), идем по ребрам вглубь, удаляя использованные ребра из графа.
+    // Когда дошли до вершины, из которой нельзя идти дальше (т.е. все ребра уже использованы), добавляем её в результат (результат в данном случае формируется в обратном порядке).
+    // Далее откатываемся назад по стеку до вершины, из которой можно идти дальше, и продолжаем идти по ребрам, пока не использованы все ребра.
+    //
+    // Почему это работает: когда мы добавляем вершину в результат, это значит, что мы прошли по всем ребрам, которые ведут из этой вершины.
+    // Это, значит, что в полном пути мы можем дойти до этой вершины только пройдя раньше где-то, где мы еще не прошли.
+    // Пример:      E              Если мы дошли до D, можно ее добавить в результат, т.к. мы можем дойти до D только пройдя ранее остальной граф
+    //              ↑↓             Далее откатываемся назад по стеку до вершины B, из которой можно еще сходить в E
+    //         A -> B -> C -> D    Итоговый результат: [D, C, B, E, B, A], и поскольку он в обратном порядке, возвращаем [A, B, E, B, C, D]
+    // Поскольку по условию задачи нам гарантировано, что существует хотя бы один Эйлеров путь, и нам дана стартовая вершина, то пункты 1 и 2 можно пропустить, и сразу идти к пункту 3.
+    // TODO: Найти еще задачи на Эйлеров путь и реализовать доказательство, что граф имеет Эйлеров путь, и найти стартовую вершину.
+    public IList<string> FindItinerary(IList<IList<string>> tickets)
+    {
+        var adj = new Dictionary<string, List<string>>();
+        for (int i = 0; i < tickets.Count; i++)
+        {
+            if (!adj.ContainsKey(tickets[i][0]))
+            {
+                adj[tickets[i][0]] = new List<string>();
+            }
+            adj[tickets[i][0]].Add(tickets[i][1]);
+        }
+
+        foreach (var (key, value) in adj) 
+        {
+            // Эта сортировка нужна, чтобы обеспечить условие задачи:
+            // If there are multiple valid itineraries, you should return the itinerary that has the smallest lexical order when read as a single string.
+            value.Sort((a, b) => string.CompareOrdinal(b, a)); // Сортируем в обратном порядке и будем доставать элементы из конца списка
+            // Удалять из конца списка дешевле, чем из начала, поэтому что при удалении из начала списка все элементы сдвигаются на одну позицию влево,
+            // что занимает O(n) времени, а при удалении из конца списка это O(1)
+        }
+
+        var result = new List<string>();
+        var stack = new Stack<string>();
+        stack.Push("JFK");
+        while (stack.Count > 0)
+        {
+            var curr = stack.Peek();
+            if (adj.ContainsKey(curr) && adj[curr].Count > 0)
+            {
+                var len = adj[curr].Count;
+                stack.Push(adj[curr][len - 1]); // Поскольку у нас DFS, добавляем в стек только одну первую подходящую вершину и идем дальше
+                adj[curr].RemoveAt(len - 1); // Удаляем ребро из конца списка
+            }
+            else
+            {
+                result.Add(stack.Pop()); // Дальше идти некуда, добавляем вершину в результат
+                // Далее мы автоматом откатываемся назад по стеку до вершины, из которой можно идти дальше
+                // т.к. те вершины, из которых нельзя идти дальше, мы Pop-нем из стека на следующих шагах, пока в стеке не останется вершина, из которой можно идти дальше
+            }
+        }
+
+        result.Reverse(); // Результат формируется в обратном порядке, поэтому разворачиваем
+        return result;
+    }
+    #endregion
+
     // 1584. Min Cost to Connect All Points
     // You are given an array points representing integer coordinates of some points on a 2D-plane, where points[i] = [xi, yi].
     // The cost of connecting two points [xi, yi] and [xj, yj] is the manhattan distance between them: |xi - xj| + |yi - yj|, where |val| denotes the absolute value of val.
@@ -2802,6 +2879,56 @@ public class NeetCode150
     #endregion
 
     #region 2-D Dynamic Programming
+
+    // 309. Best Time to Buy and Sell Stock with Cooldown
+    // You are given an array prices where prices[i] is the price of a given stock on the ith day.
+    // Find the maximum profit you can achieve. You may complete as many transactions as you like
+    // (i.e., buy one and sell one share of the stock multiple times) with the following restrictions:
+    // - After you sell your stock, you cannot buy stock on the next day (i.e., cooldown one day).
+    // Note: You may not engage in multiple transactions simultaneously (i.e., you must sell the stock before you buy again).
+    // DP
+    // Даны цена акций на каждый день. Нужно найти максимальную прибыль, которую можно получить, покупая и продавая акции.
+    // После продажы акции, нельзя покупать на следующий день (т.е. есть "cooldown" в один день).
+    #region 309. Best Time to Buy and Sell Stock with Cooldown
+    // Идея: bottom-up DP, где cache[i, 0] - максимальная прибыль на i-й день, если мы можем купить,
+    // cache[i, 1] - максимальная прибыль на i-й день, если мы не можем купить (т.е. мы продали на предыдущем дне)
+    // Если мы покупаем, то отнимаем у результата цену акции на i-й день. Если продаем, то прибавляем.
+    public int MaxProfit(int[] prices)
+    {
+        var n = prices.Length;
+        var cache = new int[2, n];
+        for (int i = 0; i < n; i++)
+        {
+            cache[0, i] = int.MinValue; // buy cache
+            cache[1, i] = int.MinValue; // sell cache
+        }
+        return dp(0, true);
+
+        int dp(int i, bool canBuy)
+        {
+            if (i >= n)
+                return 0;
+
+            var cacheIndex = canBuy ? 0 : 1; // 0 - buy cache, 1 - sell cache
+
+            if (cache[cacheIndex, i] > int.MinValue)
+                return cache[cacheIndex, i];
+
+            var res = dp(i + 1, canBuy); // we can skip this step, do nothing
+
+            if (canBuy)
+            {
+                res = Math.Max(res, dp(i + 1, false) - prices[i]); // buy
+            }
+            else
+            {
+                res = Math.Max(res, dp(i + 2, true) + prices[i]); // sell + cooldown
+            }
+            cache[cacheIndex, i] = res;
+            return res;
+        }
+    }
+    #endregion
 
     // 518. Coin Change II
     // You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.
