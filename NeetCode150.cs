@@ -1597,6 +1597,75 @@ public class NeetCode150
 
     #endregion
 
+    // 355. Design Twitter
+    // Design a simplified version of Twitter where users can post tweets, follow/unfollow another user, and is able to see the 10 most recent tweets in the user's news feed.
+    // Implement the Twitter class:
+    // - Twitter() Initializes your twitter object.
+    // - void postTweet(int userId, int tweetId) Composes a new tweet with ID tweetId by the user userId. Each call to this function will be made with a unique tweetId.
+    // - List<Integer> getNewsFeed(int userId) Retrieves the 10 most recent tweet IDs in the user's news feed.
+    //   Each item in the news feed must be posted by users who the user followed or by the user themself. Tweets must be ordered from most recent to least recent.
+    // - void follow(int followerId, int followeeId) The user with ID followerId started following the user with ID followeeId.
+    // - void unfollow(int followerId, int followeeId) The user with ID followerId started unfollowing the user with ID followeeId.
+    #region 355. Design Twitter
+    // First attempt
+    public class Twitter
+    {
+        private Dictionary<int, HashSet<int>> follow = new Dictionary<int, HashSet<int>>();
+        private List<(int a, int t)> allTweets = new List<(int a, int t)>();
+        public Twitter()
+        {
+
+        }
+
+        public void PostTweet(int userId, int tweetId)
+        {
+            allTweets.Add((userId, tweetId));
+        }
+
+        public IList<int> GetNewsFeed(int userId)
+        {
+            var result = new List<int>();
+            if (!follow.ContainsKey(userId))
+            {
+                follow[userId] = new HashSet<int>();
+                follow[userId].Add(userId);
+            }
+
+            var follows = follow[userId];
+            for (int i = allTweets.Count - 1; i >= 0; i--)
+            {
+                var tweet = allTweets[i];
+                if (follows.Contains(tweet.a))
+                {
+                    result.Add(tweet.t);
+                }
+                if (result.Count >= 10) break;
+            }
+
+            return result;
+        }
+
+        public void Follow(int followerId, int followeeId)
+        {
+            if (followerId == followeeId) return;
+            if (!follow.ContainsKey(followerId))
+            {
+                follow[followerId] = new HashSet<int>();
+                follow[followerId].Add(followerId);
+            }
+            follow[followerId].Add(followeeId);
+        }
+
+        public void Unfollow(int followerId, int followeeId)
+        {
+            if (follow.ContainsKey(followerId))
+            {
+                follow[followerId].Remove(followeeId);
+            }
+        }
+    }
+    #endregion
+
     #endregion
 
     #region Backtracking
