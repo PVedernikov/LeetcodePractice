@@ -66,4 +66,36 @@ public class LeetCodeGeneral
         return -1;
     }
     #endregion
+
+    // 343. Integer Break
+    // Given an integer n, break it into the sum of k positive integers, where k >= 2, and maximize the product of those integers.
+    // Return the maximum product you can get.
+    // Example 1: Input: n = 2 Output: 1 Explanation: 2 = 1 + 1, 1 × 1 = 1.
+    // Example 2: Input: n = 10 Output: 36 Explanation: 10 = 3 + 3 + 4, 3 × 3 × 4 = 36.
+    // 1D DP solution
+    // Time complexity: O(n^2)
+    // TODO: implement greedy solution O(n)
+    #region 343. Integer Break
+    public int IntegerBreak(int n)
+    {
+        var dp = new int[n + 1];
+        //dp[1] = 1;
+        return dfs(n);
+
+        int dfs(int a)
+        {
+            if (a == 1) return 1;
+            if (dp[a] > 0) return dp[a];
+            // Because k >= 2, we can't take n, because in this case the we have only one number
+            // But if a < n, we can take a, because in this case we have at least two numbers, a and n - a
+            var result = a < n ? a : 0; 
+            for (int i = 1; i < a; i++)
+            {
+                result = Math.Max(result, i * dfs(a - i));
+            }
+            dp[a] = result;
+            return result;
+        }
+    }
+    #endregion
 }
