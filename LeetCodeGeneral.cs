@@ -72,14 +72,12 @@ public class LeetCodeGeneral
     // Return the maximum product you can get.
     // Example 1: Input: n = 2 Output: 1 Explanation: 2 = 1 + 1, 1 × 1 = 1.
     // Example 2: Input: n = 10 Output: 36 Explanation: 10 = 3 + 3 + 4, 3 × 3 × 4 = 36.
+    #region 343. Integer Break
     // 1D DP solution
     // Time complexity: O(n^2)
-    // TODO: implement greedy solution O(n)
-    #region 343. Integer Break
-    public int IntegerBreak(int n)
+    public int IntegerBreak_DP(int n)
     {
         var dp = new int[n + 1];
-        //dp[1] = 1;
         return dfs(n);
 
         int dfs(int a)
@@ -96,6 +94,39 @@ public class LeetCodeGeneral
             dp[a] = result;
             return result;
         }
+    }
+
+    // Greedy solution
+    // Time complexity: O(n)
+    // Идея: лучше всего разбивать число на как можно больше троек, но нельзя оставлять остаток 1
+    // 7 = 3 + 4, 3 * 4 = 12
+    // 8 = 3 + 3 + 2, 3 * 3 * 2 = 18
+    // 9 = 3 + 3 + 3, 3 * 3 * 3 = 27
+    // 10 = 3 + 3 + 4, 3 * 3 * 4 = 36
+    public int IntegerBreak(int n)
+    {
+        if (n == 2) return 1;
+        if (n == 3) return 2;
+        if (n == 4) return 4;
+
+        var result = 1;
+        while (n > 0)
+        {
+            var a = 1;
+            if (n <= 4)
+            {
+                a = n;
+            }
+            else
+            {
+                a = 3;
+            }
+
+            result *= a;
+            n -= a;
+        }
+
+        return result;
     }
     #endregion
 }
