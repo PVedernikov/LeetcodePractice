@@ -110,23 +110,13 @@ public class LeetCodeGeneral
         if (n == 4) return 4;
 
         var result = 1;
-        while (n > 0)
+        while (n > 4)
         {
-            var a = 1;
-            if (n <= 4)
-            {
-                a = n;
-            }
-            else
-            {
-                a = 3;
-            }
-
-            result *= a;
-            n -= a;
+            result *= 3;
+            n -= 3;
         }
 
-        return result;
+        return result * n;
     }
     #endregion
 }
