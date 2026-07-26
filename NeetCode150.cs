@@ -3,6 +3,192 @@
 public class NeetCode150
 {
     #region Arrays & Hashing
+    // 217. Contains Duplicate
+    // Given an integer array nums, return true if any value appears more than once in the array, otherwise return false.
+    #region 217. Contains Duplicate
+    public bool hasDuplicate(int[] nums)
+    {
+        var hash = new HashSet<int>();
+        var n = nums.Length;
+
+        for (int i = 0; i < n; i++)
+        {
+            if (!hash.Add(nums[i])) return true;
+        }
+
+        return false;
+    }
+    #endregion
+
+    // 242. Valid Anagram
+    // Given two strings s and t, return true if t is an anagram of s, and false otherwise.
+    #region 242. Valid Anagram
+    public bool IsAnagram(string s, string t)
+    {
+        if (s.Length != t.Length) return false;
+
+        var freq = new Dictionary<char, int>();
+        for (int i = 0; i < s.Length; i++)
+        {
+            if (freq.ContainsKey(s[i]))
+            {
+                freq[s[i]]++;
+            }
+            else
+            {
+                freq[s[i]] = 1;
+            }
+        }
+
+        for (int i = 0; i < t.Length; i++)
+        {
+            if (!freq.ContainsKey(t[i]) || freq[t[i]] <= 0)
+            {
+                return false;
+            }
+
+            freq[t[i]]--;
+        }
+
+        return true;
+    }
+    #endregion
+    // 1. Two Sum
+    // Given an array of integers nums and an integer target, return the indices i and j such that nums[i] + nums[j] == target and i != j.
+    // You may assume that every input has exactly one pair of indices i and j that satisfy the condition.
+    // Return the answer with the smaller index first.
+    #region 1. Two Sum
+    public int[] TwoSum(int[] nums, int target)
+    {
+        var cache = new Dictionary<int, int>();
+        for (int i = 0; i < nums.Length; i++)
+        {
+            var compliment = target - nums[i];
+            if (cache.ContainsKey(compliment))
+            {
+                return new int[] { cache[compliment], i };
+            }
+            cache[nums[i]] = i;
+        }
+
+        return Array.Empty<int>();
+    }
+    #endregion
+
+    // 49. Group Anagrams
+    // Given an array of strings strs, group all anagrams together into sublists. You may return the output in any order.
+    // An anagram is a string that contains the exact same characters as another string, but the order of the characters can be different.
+    #region 49. Group Anagrams
+    public List<List<string>> GroupAnagrams(string[] strs)
+    {
+        var n = strs.Length;
+        var groups = new Dictionary<string, List<string>>();
+
+        for (int i = 0; i < n; i++)
+        {
+            var keyArr = new int[26];
+            for (int j = 0; j < strs[i].Length; j++)
+            {
+                var c = strs[i][j] - 'a';
+                keyArr[c]++;
+            }
+            var key = string.Join('_', keyArr);
+            if (!groups.ContainsKey(key))
+            {
+                groups[key] = new List<string>();
+            }
+            groups[key].Add(strs[i]);
+        }
+
+        var result = new List<List<string>>();
+        foreach (var key in groups.Keys)
+        {
+            result.Add(groups[key]);
+        }
+        return result;
+    }
+    #endregion
+
+    // 347. Top K Frequent Elements
+    // Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.
+    #region 347. Top K Frequent Elements
+    public int[] TopKFrequent(int[] nums, int k)
+    {
+        var n = nums.Length;
+        var freq = new Dictionary<int, int>();
+        for (int i = 0; i < n; i++)
+        {
+            if (freq.ContainsKey(nums[i]))
+            {
+                freq[nums[i]]++;
+            }
+            else
+            {
+                freq[nums[i]] = 1;
+            }
+        }
+
+        var buckets = new Dictionary<int, List<int>>();
+        foreach ((var num, var count) in freq)
+        {
+            if (!buckets.ContainsKey(count))
+            {
+                buckets[count] = new List<int>();
+            }
+            buckets[count].Add(num);
+        }
+
+        var m = k > freq.Count ? freq.Count : k;
+        var r = 0;
+        var result = new int[m];
+        for (int i = n; i >= 0 && r < m; i--)
+        {
+            if (buckets.ContainsKey(i))
+            {
+                for (int j = 0; j < buckets[i].Count && r < m; j++)
+                {
+                    result[r] = buckets[i][j];
+                    r++;
+                }
+            }
+        }
+
+        return result;
+    }
+    #endregion
+
+
+    // 238. Product of Array Except Self
+    // Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i].
+    // The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
+    // You must write an algorithm that runs in O(n) time and without using the division operation.
+    #region 238. Product of Array Except Self
+    // Идея: Префиксное произведение. Считаем префикс произведения, а суффмкс считаем налету.
+    // TODO: оптимизация по памяти: можно хранить префикс сразу в result (см. Blind 75)
+    // PS: в этом решений использется prefix, хотя по факту мы считаем суффикс, но на логику это не вляет.
+    // Можно посчитать суффикс или префикс, в зависимости от того, с какой стороны объходить массив.
+    public int[] ProductExceptSelf(int[] nums)
+    {
+        var n = nums.Length;
+        var prefix = new int[n];
+        prefix[n - 1] = nums[n - 1];
+        for (int i = n - 2; i >= 0; i--)
+        {
+            prefix[i] = nums[i] * prefix[i + 1];
+        }
+
+        var result = new int[n];
+        var suffix = 1;
+        for (int i = 0; i < n - 1; i++)
+        {
+            result[i] = suffix * prefix[i + 1];
+            suffix *= nums[i];
+        }
+        result[n - 1] = suffix;
+        return result;
+    }
+    #endregion
+
 
     // 36. Valid Sudoku
     // Determine if a 9 x 9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
