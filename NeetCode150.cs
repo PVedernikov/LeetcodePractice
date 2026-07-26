@@ -1607,12 +1607,167 @@ public class NeetCode150
     // - void follow(int followerId, int followeeId) The user with ID followerId started following the user with ID followeeId.
     // - void unfollow(int followerId, int followeeId) The user with ID followerId started unfollowing the user with ID followeeId.
     #region 355. Design Twitter
-    // First attempt
-    public class Twitter
+    // Linked List solution
+    public class Twitter_LinkedList
+    {
+        private int count;
+        private Dictionary<int, HashSet<int>> follow;
+        private Dictionary<int, ListNode355> tweets;
+        public Twitter_LinkedList()
+        {
+            count = 0;
+            follow = new Dictionary<int, HashSet<int>>();
+            tweets = new Dictionary<int, ListNode355>();
+        }
+
+        public void PostTweet(int userId, int tweetId)
+        {
+            var head = new ListNode355(tweetId, count++);
+            if (tweets.ContainsKey(userId))
+            {
+                head.next = tweets[userId];
+            }
+            tweets[userId] = head;
+        }
+
+        public IList<int> GetNewsFeed(int userId)
+        {
+            if (!follow.ContainsKey(userId))
+            {
+                follow[userId] = new HashSet<int>();
+                follow[userId].Add(userId);
+            }
+
+            var follows = follow[userId];
+            var lists = new List<ListNode355>();
+            foreach (var uId in follows)
+            {
+                if (tweets.ContainsKey(uId) && tweets[uId] is not null)
+                {
+                    var dummy = new ListNode355(-1, -1);
+                    var curr = dummy;
+                    var orig = tweets[uId];
+                    for (int i = 0; i < 10 && orig is not null; i++)
+                    {
+                        var newNode = new ListNode355(orig.tweetId, orig.ts); // copy lists because we don't want to rearrange original tweets
+                        curr.next = newNode;
+                        curr = curr.next;
+                        orig = orig.next;
+                    }
+                    lists.Add(dummy.next);
+                }
+            }
+
+            var res = MergeKLists(lists, 0, lists.Count - 1);
+            if (res is null) return [];
+
+            var result = new List<int>();
+            var h = res;
+            while (h is not null && result.Count < 10)
+            {
+                result.Add(h.tweetId);
+                h = h.next;
+            }
+            return result;
+        }
+
+        private ListNode355 MergeKLists(List<ListNode355> lists, int l, int r)
+        {
+            if (l < 0 || r < 0 || l >= lists.Count || r >= lists.Count) return null;
+            if (l == r) return lists[l];
+
+            ListNode355 listA;
+            ListNode355 listB;
+            if (r == l + 1)
+            {
+                listA = lists[l];
+                listB = lists[r];
+            }
+            else
+            {
+                var m = l + (r - l) / 2;
+                listA = MergeKLists(lists, l, m);
+                listB = MergeKLists(lists, m + 1, r);
+            }
+            return MergeTwoLists(listA, listB);
+        }
+
+        private ListNode355 MergeTwoLists(ListNode355 a, ListNode355 b)
+        {
+            var hA = a;
+            var hB = b;
+            var c = 0;
+
+            ListNode355 curr = new ListNode355(-1, -1);
+            ListNode355 dummy = curr;
+            while (hA is not null && hB is not null && c < 10)
+            {
+                if (hA.ts > hB.ts)
+                {
+                    curr.next = hA;
+                    hA = hA.next;
+                }
+                else
+                {
+                    curr.next = hB;
+                    hB = hB.next;
+                }
+                curr = curr.next;
+                c++;
+            }
+
+            if (c < 10 && hB is null && hA is not null)
+            {
+                curr.next = hA;
+            }
+            if (c < 10 && hA is null && hB is not null)
+            {
+                curr.next = hB;
+            }
+
+            return dummy.next;
+        }
+
+        public void Follow(int followerId, int followeeId)
+        {
+            if (followerId == followeeId) return;
+            if (!follow.ContainsKey(followerId))
+            {
+                follow[followerId] = new HashSet<int>();
+                follow[followerId].Add(followerId);
+            }
+            follow[followerId].Add(followeeId);
+        }
+
+        public void Unfollow(int followerId, int followeeId)
+        {
+            if (followerId == followeeId) return;
+            if (follow.ContainsKey(followerId))
+            {
+                follow[followerId].Remove(followeeId);
+            }
+        }
+
+        class ListNode355
+        {
+            public int tweetId;
+            public int ts;
+            public ListNode355 next;
+            public ListNode355(int tweetId, int ts, ListNode355 next = null)
+            {
+                this.tweetId = tweetId;
+                this.ts = ts;
+                this.next = next;
+            }
+        }
+    }
+
+    // First attempt - global tweets list
+    public class Twitter_Global
     {
         private Dictionary<int, HashSet<int>> follow = new Dictionary<int, HashSet<int>>();
         private List<(int a, int t)> allTweets = new List<(int a, int t)>();
-        public Twitter()
+        public Twitter_Global()
         {
 
         }
