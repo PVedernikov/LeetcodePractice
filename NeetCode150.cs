@@ -1,4 +1,6 @@
-﻿namespace LeetcodePreapare;
+﻿using System.Text;
+
+namespace LeetcodePreapare;
 
 public class NeetCode150
 {
@@ -157,6 +159,55 @@ public class NeetCode150
     }
     #endregion
 
+    // 271. Encode and Decode Strings
+    // Design an algorithm to encode a list of strings to a string. The encoded string is then sent over the network and is decoded back to the original list of strings.
+    // You are not allowed to solve the problem using any serialize methods (such as eval).
+    // Разработать алгоритм кодирования и декодирования массива строк
+    #region 271. Encode and Decode Strings
+    // Идея: кодируем строки префиском: <длина строки>:<строка>. Это нам позволит заранее знать количество символов, которое нужно прочитать для каждой строки.
+    // Т.е. мы всегда знаем, что сначла идет префикс "<длина строки>:", затем сама строка, длину которой мы можем вычислить из префикса.
+    public class Solution271
+    {
+        public string Encode(IList<string> strs)
+        {
+            var builder = new StringBuilder();
+            foreach (var str in strs)
+            {
+                builder.Append(str.Length);
+                builder.Append(':');
+                builder.Append(str);
+            }
+
+            return builder.ToString();
+        }
+
+        public List<string> Decode(string s)
+        {
+            var n = s.Length;
+            var result = new List<string>();
+            var i = 0;
+            while (i < n)
+            {
+                var len = 0;
+                while (i < n && s[i] != ':') // в этом цмкле вычисляем длину строки, пока не дошли до разделителя ':'
+                {
+                    var digit = s[i] - '0';
+                    len = len * 10 + digit;
+                    i++;
+                }
+                i++; // перепрыгиваем разделитель
+                var str = new char[len];
+                for (int j = 0; j < len; j++) // считываем строку заданой длины
+                {
+                    str[j] = s[i + j];
+                }
+                i += len; // смещаем индекс на следующий префикс
+                result.Add(new string(str));
+            }
+            return result;
+        }
+    }
+    #endregion
 
     // 238. Product of Array Except Self
     // Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i].
