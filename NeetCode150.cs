@@ -1607,6 +1607,130 @@ public class NeetCode150
     // - void follow(int followerId, int followeeId) The user with ID followerId started following the user with ID followeeId.
     // - void unfollow(int followerId, int followeeId) The user with ID followerId started unfollowing the user with ID followeeId.
     #region 355. Design Twitter
+    // Standard list solution
+    public class Twitter
+    {
+        private int count;
+        private Dictionary<int, HashSet<int>> follow;
+        private Dictionary<int, List<(int id, int ts)>> tweets;
+        public Twitter()
+        {
+            count = 0;
+            follow = new Dictionary<int, HashSet<int>>();
+            tweets = new Dictionary<int, List<(int id, int ts)>>();
+        }
+
+        public void PostTweet(int userId, int tweetId)
+        {
+            if (!tweets.ContainsKey(userId))
+            {
+                tweets[userId] = new List<(int id, int ts)>();
+            }
+            tweets[userId].Add((tweetId, count++));
+        }
+
+        public IList<int> GetNewsFeed(int userId)
+        {
+            if (!follow.ContainsKey(userId))
+            {
+                follow[userId] = new HashSet<int>();
+                follow[userId].Add(userId);
+            }
+
+            var follows = follow[userId];
+            var lists = new List<List<(int id, int ts)>>();
+            foreach (var uId in follows)
+            {
+                if (tweets.ContainsKey(uId) && tweets[uId] is not null && tweets[uId].Count > 0)
+                {
+                    lists.Add(tweets[uId].TakeLast(10).ToList());
+                }
+            }
+
+            var res = MergeKLists(lists, 0, lists.Count - 1);
+            if (res is null || res.Count == 0) return [];
+
+            var result = res.Select(x => x.id).ToList();
+            result.Reverse();
+            return result;
+        }
+
+        private List<(int id, int ts)> MergeKLists(List<List<(int id, int ts)>> lists, int l, int r)
+        {
+            if (l < 0 || r < 0 || l >= lists.Count || r >= lists.Count) return [];
+            if (l == r) return lists[l];
+
+            List<(int id, int ts)> listA;
+            List<(int id, int ts)> listB;
+            if (r == l + 1)
+            {
+                listA = lists[l];
+                listB = lists[r];
+            }
+            else
+            {
+                var m = l + (r - l) / 2;
+                listA = MergeKLists(lists, l, m);
+                listB = MergeKLists(lists, m + 1, r);
+            }
+            return MergeTwoLists(listA, listB);
+        }
+
+        private List<(int id, int ts)> MergeTwoLists(List<(int id, int ts)> a, List<(int id, int ts)> b)
+        {
+            var i = a.Count - 1;
+            var j = b.Count - 1;
+            var result = new List<(int id, int ts)>();
+            while (i >= 0 && j >= 0 && result.Count < 10)
+            {
+                if (a[i].ts > b[j].ts)
+                {
+                    result.Add(a[i]);
+                    i--;
+                }
+                else
+                {
+                    result.Add(b[j]);
+                    j--;
+                }
+            }
+
+            while (result.Count < 10 && i >= 0)
+            {
+                result.Add(a[i]);
+                i--;
+            }
+            while (result.Count < 10 && j >= 0)
+            {
+                result.Add(b[j]);
+                j--;
+            }
+
+            result.Reverse();
+            return result;
+        }
+
+        public void Follow(int followerId, int followeeId)
+        {
+            if (followerId == followeeId) return;
+            if (!follow.ContainsKey(followerId))
+            {
+                follow[followerId] = new HashSet<int>();
+                follow[followerId].Add(followerId);
+            }
+            follow[followerId].Add(followeeId);
+        }
+
+        public void Unfollow(int followerId, int followeeId)
+        {
+            if (followerId == followeeId) return;
+            if (follow.ContainsKey(followerId))
+            {
+                follow[followerId].Remove(followeeId);
+            }
+        }
+    }
+
     // Linked List solution
     public class Twitter_LinkedList
     {
