@@ -298,6 +298,45 @@ public class NeetCode150
     }
     #endregion
 
+    // 128. Longest Consecutive Sequence
+    // Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence.
+    // You must write an algorithm that runs in O(n) time.
+    // Найти длину строго возрастающей последовательности, где каждый элемент отличается от следующего и предыдущего на 1.
+    // В исходном массиве элементы расположены в произвольном порядке.
+    #region 128. Longest Consecutive Sequence
+    // Идея: начинаем считать длину последовательности только от первого элемента последовательности
+    // Первый элемент последовательности, это тот, для которого не существует элемента, который меньше на 1.
+    // Time complexity: кажется, что у нас вложенные циклы, поэтому сложность O(n^2), но это не так.
+    // Т.к. мы считаем длину последовательности только от начала, а сумма длин всех последовательностей равна размеру массива,
+    // То получается, что мы проходим весь каждый элемент за ровно два раза, то есть O(2n) = O(n)
+    public int LongestConsecutive(int[] nums)
+    {
+        var n = nums.Length;
+        var result = 0;
+
+        var unique = new HashSet<int>();
+        for (int i = 0; i < n; i++)
+        {
+            unique.Add(nums[i]);
+        }
+
+        foreach (int val in unique)
+        {
+            if (!unique.Contains(val - 1))
+            {
+                var len = 1;
+                while (unique.Contains(val + len))
+                {
+                    len++;
+                }
+
+                result = Math.Max(result, len);
+            }
+        }
+        return result;
+    }
+    #endregion
+
     #endregion
 
     #region Two Pointers
