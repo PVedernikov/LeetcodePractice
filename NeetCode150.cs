@@ -5,6 +5,26 @@ namespace LeetcodePreapare;
 public class NeetCode150
 {
     #region Arrays & Hashing
+    // 1929. Concatenation of Array
+    // Given an integer array nums of length n, you want to create an array ans of length 2n where ans[i] == nums[i] and ans[i + n] == nums[i] for 0 <= i < n (0-indexed).
+    // Specifically, ans is the concatenation of two nums arrays.
+    // Return the array ans.
+    // NeetCode 250
+    #region 1929. Concatenation of Array
+    public int[] GetConcatenation(int[] nums)
+    {
+        var n = nums.Length;
+        var ans = new int[2 * n];
+        for (int i = 0; i < n; i++)
+        {
+            ans[i] = nums[i];
+            ans[i + n] = nums[i];
+        }
+        return ans;
+    }
+    #endregion
+
+
     // 217. Contains Duplicate
     // Given an integer array nums, return true if any value appears more than once in the array, otherwise return false.
     #region 217. Contains Duplicate
