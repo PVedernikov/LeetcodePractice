@@ -474,6 +474,38 @@ public class NeetCode150
     }
     #endregion
 
+    // 11. Container With Most Water
+    // You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]).
+    // Find two lines that together with the x-axis form a container, such that the container contains the most water.
+    // Return the maximum amount of water a container can store.
+    // Notice that you may not slant the container. - нельзя наклонять контейнер
+    #region 11. Container With Most Water
+    public int MaxArea(int[] heights)
+    {
+        var n = heights.Length;
+        var l = 0;
+        var r = n - 1;
+        var result = 0;
+        while (l < r)
+        {
+            var h = Math.Min(heights[l], heights[r]);
+            var area = (r - l) * h;
+            result = Math.Max(result, area);
+            if (heights[l] < heights[r])
+            {
+                l++;
+            }
+            else
+            {
+                r--;
+            }
+        }
+
+
+        return result;
+    }
+    #endregion
+
     // 42. Trapping Rain Water
     // Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
     // https://leetcode.com/problems/trapping-rain-water/description/
@@ -605,6 +637,81 @@ public class NeetCode150
 
     #region Sliding Window
 
+    // 121. Best Time to Buy and Sell Stock
+    // You are given an integer array prices where prices[i] is the price of NeetCoin on the ith day.
+    // You may choose a single day to buy one NeetCoin and choose a different day in the future to sell it.
+    // Return the maximum profit you can achieve. You may choose to not make any transactions, in which case the profit would be 0.
+    #region 121. Best Time to Buy and Sell Stock
+    public int MaxProfit(int[] prices)
+    {
+        var result = 0;
+        var min = prices[0];
+        for (int i = 0; i < prices.Length; i++)
+        {
+            result = Math.Max(result, prices[i] - min);
+            min = Math.Min(min, prices[i]);
+        }
+
+        return result;
+    }
+    #endregion
+
+    // 3. Longest Substring Without Repeating Characters
+    // Given a string s, find the length of the longest substring without duplicate characters.
+    #region 3. Longest Substring Without Repeating Characters
+    public int LengthOfLongestSubstring(string s)
+    {
+        var l = 0;
+        var symbols = new HashSet<char>();
+        var result = 0;
+        for (int r = 0; r < s.Length; r++)
+        {
+            while (symbols.Contains(s[r]) && l < r)
+            {
+                symbols.Remove(s[l]);
+                l++;
+            }
+            symbols.Add(s[r]);
+            result = Math.Max(result, r - l + 1);
+        }
+        return result;
+    }
+    #endregion
+
+    // 424. Longest Repeating Character Replacement
+    // You are given a string s and an integer k. You can choose any character of the string and change it to any other uppercase English character.
+    // You can perform this operation at most k times.
+    // Return the length of the longest substring containing the same letter you can get after performing the above operations.
+    #region 424. Longest Repeating Character Replacement
+
+    public int CharacterReplacement(string s, int k)
+    {
+        var n = s.Length;
+        if (k >= n) return n;
+
+        var result = 0;
+        var cache = new int[26];
+        var max = 0;
+        var l = 0;
+        for (int r = 0; r < n; r++)
+        {
+            int ir = s[r] - 'A';
+            cache[ir]++;
+            max = Math.Max(max, cache[ir]);
+
+            while (r - l + 1 - max > k && l < r)
+            {
+                int il = s[l] - 'A';
+                cache[il]--;
+                l++;
+            }
+            result = Math.Max(result, r - l + 1);
+        }
+
+        return result;
+    }
+    #endregion
+
     // 567. Permutation in String
     // You are given two strings s1 and s2.
     // Return true if s2 contains a permutation of s1, or false otherwise. That means if a permutation of s1 exists as a substring of s2, then return true.
@@ -723,7 +830,6 @@ public class NeetCode150
     // You can only see the k numbers in the window. Each time the sliding window moves right by one position.
     // Return the max sliding window.
     // То есть, нужно вернуть максимум для каждого положения окна
-
     #region 239. Sliding Window Maximum
     // First attempt, linear search, O(n * k) time, NOT OPTIMAL
     public int[] MaxSlidingWindow_Linear(int[] nums, int k)
@@ -1069,6 +1175,7 @@ public class NeetCode150
     }
 
     #endregion
+    
     #endregion
 
     #region Binary Search
