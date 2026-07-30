@@ -97,6 +97,37 @@ public class NeetCode150
     }
     #endregion
 
+    // 14. Longest Common Prefix
+    // Write a function to find the longest common prefix string amongst an array of strings.
+    // If there is no common prefix, return an empty string "".
+    // NeetCode 250
+    #region 14. Longest Common Prefix
+    public string LongestCommonPrefix(string[] strs)
+    {
+        var prefix = new StringBuilder();
+        var index = 0;
+        while (index < strs[0].Length)
+        {
+            var c = strs[0][index];
+            var match = true;
+            for (int i = 1; i < strs.Length; i++)
+            {
+
+                if (index >= strs[i].Length || strs[i][index] != c)
+                {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (!match) break;
+            prefix.Append(c);
+            index++;
+        }
+        return prefix.ToString();
+    }
+    #endregion
+
     // 49. Group Anagrams
     // Given an array of strings strs, group all anagrams together into sublists. You may return the output in any order.
     // An anagram is a string that contains the exact same characters as another string, but the order of the characters can be different.
