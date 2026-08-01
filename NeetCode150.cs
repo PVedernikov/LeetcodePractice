@@ -764,7 +764,8 @@ public class NeetCode150
 
     // 567. Permutation in String
     // You are given two strings s1 and s2.
-    // Return true if s2 contains a permutation of s1, or false otherwise. That means if a permutation of s1 exists as a substring of s2, then return true.
+    // Return true if s2 contains a permutation of s1, or false otherwise.
+    // That means if a permutation of s1 exists as a substring of s2, then return true.
     // Both strings only contain lowercase letters.
     // Note: Permutation is anagram, so using sliding window and counting frequencies
     #region 567. Permutation in String
@@ -872,6 +873,81 @@ public class NeetCode150
         }
 
         return false;
+    }
+    #endregion
+
+    // 76. Minimum Window Substring
+    // Given two strings s and t of lengths m and n respectively, return the minimum window substring of s
+    // such that every character in t (including duplicates) is included in the window.
+    // If there is no such substring, return the empty string "".
+    #region 76. Minimum Window Substring
+    // Главная проблема: как быстро понять, что окно валидно.
+    // Идея: заводим счетчик символов, которые должны быть валидны hasToBeValid, и второй счетчик символов, которые уже есть в окне valid.
+    // Считаем частоты символов в строке t.
+    // Далее идем по стреке s. Если частота символа в строке s совпала с частотой символа в строке t, то увеличиваем счетчик валидных символов valid.
+    // Если счетчик валидных символов valid == hasToBeValid, значит окно валидно, мы нашли окно, которое содержит все символы из строки t.
+    // Если окно валидно (т.е. valid == hasToBeValid), пытаемся его сузить, двигая левый указатель l вправо, пока окно станет невалидным.
+    // Если окно невалидно, двигаем правый указатель r вправо.
+    // То есть главная мысль в том, что мы увеличиваем или уменьшаем счетчик valid тогда и только тогда, когда частота символа в окне совпадает с частотой символа в строке t.
+    public string MinWindow(string s, string t)
+    {
+        var m = s.Length;
+        var n = t.Length;
+        if (m < n) return string.Empty;
+        var tf = new Dictionary<char, int>();
+        var sf = new Dictionary<char, int>();
+        var hasToBeValid = 0;
+        for (int i = 0; i < n; i++)
+        {
+            if (!tf.ContainsKey(t[i]))
+            {
+                tf[t[i]] = 1;
+                hasToBeValid++;
+            }
+            else
+            {
+                tf[t[i]]++;
+            }
+            sf[t[i]] = 0;
+        }
+
+        var l = 0;
+        var valid = 0;
+        var resultL = 0;
+        var resultLen = int.MaxValue;
+        for (int r = 0; r < m; r++)
+        {
+            if (tf.ContainsKey(s[r]))
+            {
+                sf[s[r]]++;
+                if (tf[s[r]] == sf[s[r]])
+                {
+                    valid++;
+                }
+            }
+
+            while (l <= r && valid == hasToBeValid)
+            {
+                var len = r - l + 1;
+                if (len < resultLen)
+                {
+                    resultL = l;
+                    resultLen = len;
+                }
+
+                if (tf.ContainsKey(s[l]))
+                {
+                    if (sf[s[l]] == tf[s[l]])
+                    {
+                        valid--;
+                    }
+                    sf[s[l]]--;
+                }
+                l++;
+            }
+        }
+
+        return resultLen < int.MaxValue ? s.Substring(resultL, resultLen) : string.Empty;
     }
     #endregion
 
