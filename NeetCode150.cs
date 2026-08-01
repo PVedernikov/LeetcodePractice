@@ -291,7 +291,6 @@ public class NeetCode150
     }
     #endregion
 
-
     // 36. Valid Sudoku
     // Determine if a 9 x 9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
     // 1. Each row must contain the digits 1-9 without repetition.
@@ -1357,6 +1356,110 @@ public class NeetCode150
     }
     #endregion
 
+    // 153. Find Minimum in Rotated Sorted Array
+    // Suppose an array of length n sorted in ascending order is rotated between 1 and n times.
+    // For example, the array nums = [0,1,2,4,5,6,7] might become:
+    // - [4,5,6,7,0,1,2] if it was rotated 4 times.
+    // - [0,1,2,4,5,6,7] if it was rotated 7 times.
+    // Notice that rotating an array [a[0], a[1], a[2], ..., a[n-1]] 1 time results in the array [a[n-1], a[0], a[1], a[2], ..., a[n-2]].
+    // Given the sorted rotated array nums of unique elements, return the minimum element of this array.
+    // You must write an algorithm that runs in O(log n) time.
+    #region 153. Find Minimum in Rotated Sorted Array
+    // Идея: если все элементы уникальные, то в прокрученном отсортированном массиве левый элемент должен быть больше правого.
+    // 1. Если левый элемент меньше правого, значит минимум это левый элемент, иначе массив прокручен
+    // 2. Проверяем левую половину массива: Если левый элемент больше правого, значит минимум находится в этой части массива, иначе берем правую половину.
+    // 
+    // Например: 6712345: 6 > 5, значит массив прокручен. Левая половина 6712, 6 > 2, значит минимум здесь, оставляем 6712
+    // 6712: 6 > 2, значит массив прокручен. Смотрим левую половину 67: 6 < 7, значит минимум в правой половине, оставляем 12.
+    // 12: 1 < 2, значит этот отрезок не прокручен, возврашаем левый элемент 1.
+    // Iterative
+    public int FindMin(int[] nums)
+    {
+        var l = 0;
+        var r = nums.Length - 1;
+
+        while (l < r)
+        {
+            if (nums[l] <= nums[r]) return nums[l];
+
+            var m = l + (r - l) / 2;
+            if (nums[l] > nums[m])
+            {
+                r = m;
+            }
+            else
+            {
+                l = m + 1;
+            }
+        }
+
+        return nums[l];
+    }
+
+    // Recursive
+    public int FindMin_Recursive(int[] nums)
+    {
+        return bs(0, nums.Length - 1);
+
+        int bs(int l, int r)
+        {
+            if (nums[l] <= nums[r]) return nums[l];
+
+            var m = l + (r - l) / 2;
+            if (nums[l] > nums[m])
+            {
+                return bs(l, m);
+            }
+            return bs(m + 1, r);
+        }
+    }
+    #endregion
+
+    // 33. Search in Rotated Sorted Array
+    // There is an integer array nums sorted in ascending order (with distinct values).
+    // Prior to being passed to your function, nums is possibly left rotated at an unknown index k (1 <= k < nums.length)
+    // such that the resulting array is [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]] (0-indexed).
+    // For example, [0,1,2,4,5,6,7] might be left rotated by 3 indices and become [4,5,6,7,0,1,2].
+    // Given the array nums after the possible rotation and an integer target, return the index of target if it is in nums, or -1 if it is not in nums.
+    // You must write an algorithm with O(log n) runtime complexity.
+    #region 33. Search in Rotated Sorted Array
+    public int Search33(int[] nums, int target)
+    {
+        var l = 0;
+        var r = nums.Length - 1;
+        while (l <= r)
+        {
+            var m = l + (r - l) / 2;
+            if (nums[m] == target) return m;
+
+            if (nums[l] <= nums[m])
+            {
+                if (nums[l] <= target && nums[m] > target)
+                {
+                    r = m - 1;
+                }
+                else
+                {
+                    l = m + 1;
+                }
+            }
+            else
+            {
+                if (nums[m] < target && nums[r] >= target)
+                {
+                    l = m + 1;
+                }
+                else
+                {
+                    r = m - 1;
+                }
+            }
+        }
+
+        return -1;
+    }
+    #endregion
+
     // 981. Time Based Key-Value Store
     // Design a time-based key-value data structure that can store multiple values for the same key at different time stamps
     // and retrieve the key's value at a certain timestamp.
@@ -1568,6 +1671,7 @@ public class NeetCode150
         }
     }
     #endregion
+    
     #endregion
 
     #region Linked List
