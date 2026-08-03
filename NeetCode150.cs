@@ -1027,6 +1027,37 @@ public class NeetCode150
 
     #endregion
 
+    // 239. Sliding Window Maximum
+    // You are given an array of integers nums, there is a sliding window of size k which is moving from the very left of the array to the very right.
+    // You can only see the k numbers in the window. Each time the sliding window moves right by one position.
+    // Return the max sliding window.
+    #region 239. Sliding Window Maximum
+    // First attempt, heap solution, O(n log k) time, NOT OPTIMAL
+    // TODO: implement optimal solution with Deque using LinkedList, O(n) time and O(k) space
+    public int[] MaxSlidingWindow(int[] nums, int k)
+    {
+        var n = nums.Length;
+        var heap = new PriorityQueue<(int val, int i), int>();
+        for (int i = 0; i < k; i++)
+        {
+            heap.Enqueue((nums[i], i), -nums[i]);
+        }
+
+        var result = new int[n - k + 1];
+        result[0] = heap.Peek().val;
+        for (int r = k; r < n; r++)
+        {
+            heap.Enqueue((nums[r], r), -nums[r]);
+            var l = r - k + 1;
+            while (heap.Peek().i < l)
+                heap.Dequeue();
+            result[l] = heap.Peek().val;
+        }
+
+        return result;
+    }
+    #endregion
+
     #endregion
 
     #region Stack
