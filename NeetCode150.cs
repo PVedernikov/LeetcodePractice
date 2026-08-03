@@ -1778,10 +1778,99 @@ public class NeetCode150
         }
     }
     #endregion
-    
+
     #endregion
 
     #region Linked List
+
+    // 206. Reverse Linked List
+    // Given the head of a singly linked list, reverse the list, and return the reversed list.
+    #region 206. Reverse Linked List
+    // Идея: вставка за голову
+    public ListNode ReverseList(ListNode head)
+    {
+        var dummy = new ListNode();
+        var curr = head;
+        while (curr is not null)
+        {
+            var tmp = curr.next;
+            curr.next = dummy.next;
+            dummy.next = curr;
+            curr = tmp;
+        }
+        return dummy.next;
+    }
+    #endregion
+
+    // 21. Merge Two Sorted Lists
+    // You are given the heads of two sorted linked lists list1 and list2.
+    // Merge the two lists into one sorted linked list and return the head of the new sorted linked list.
+    // The new list should be made up of nodes from list1 and list2.
+    #region 21. Merge Two Sorted Lists
+    public ListNode MergeTwoLists(ListNode list1, ListNode list2)
+    {
+        var dummy = new ListNode();
+        var curr = dummy;
+        while (list1 is not null || list2 is not null)
+        {
+            if (list1 is null)
+            {
+                curr.next = list2;
+                break;
+            }
+            if (list2 is null)
+            {
+                curr.next = list1;
+                break;
+            }
+
+            if (list1.val < list2.val)
+            {
+                curr.next = list1;
+                list1 = list1.next;
+            }
+            else
+            {
+                curr.next = list2;
+                list2 = list2.next;
+            }
+            curr = curr.next;
+        }
+
+        return dummy.next;
+    }
+    #endregion
+
+    // 141. Linked List Cycle
+    // Given the beginning of a linked list head, return true if there is a cycle in the linked list. Otherwise, return false.
+    // There is a cycle in a linked list if at least one node in the list can be visited again by following the next pointer.
+    // Internally, index determines the index of the beginning of the cycle, if it exists. The tail node of the list will set it's next pointer to the index-th node.
+    // If index = -1, then the tail node points to null and no cycle exists.
+    // Note: index is not given to you as a parameter.
+    #region 141. Linked List Cycle
+    // Идея: два указателя, медленный и быстрый. Медленный двигается на 1 шаг, быстрый на 2 шага. Если есть цикл, то они встретятся в какой-то момент.
+    public bool HasCycle(ListNode head)
+    {
+        var slow = head;
+        if (slow is null) return false;
+        var fast = head;
+        while (fast is not null)
+        {
+            slow = slow.next;
+            if (fast.next is not null)
+            {
+                fast = fast.next.next;
+            }
+            else
+            {
+                return false;
+            }
+            if (slow == fast) return true;
+        }
+
+        return false;
+    }
+    #endregion
 
     // 138. Copy List with Random Pointer
     // A linked list of length n is given such that each node contains an additional random pointer, which could point to any node in the list, or null.
@@ -3920,7 +4009,7 @@ public class NeetCode150
     // Идея: bottom-up DP, где cache[i, 0] - максимальная прибыль на i-й день, если мы можем купить,
     // cache[i, 1] - максимальная прибыль на i-й день, если мы не можем купить (т.е. мы продали на предыдущем дне)
     // Если мы покупаем, то отнимаем у результата цену акции на i-й день. Если продаем, то прибавляем.
-    public int MaxProfit(int[] prices)
+    public int MaxProfit309(int[] prices)
     {
         var n = prices.Length;
         var cache = new int[2, n];
