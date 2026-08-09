@@ -4087,26 +4087,70 @@ public class NeetCode150
     // Return the number of different expressions that you can build, which evaluates to target.
     // Важно: перед 0 можно поставить как +, так и -, и это будет считаться разными выражениями, т.е. для nums = [0] и target = 0 ответ будет 2, т.к. можно построить выражения "+0" и "-0"
     #region 494. Target Sum
-    // Naive solution, NOT OPTIMAL
-    // TODO: implement 2-D DP solution
+    // dfs + memoization
     public int FindTargetSumWays(int[] nums, int target)
     {
         var n = nums.Length;
-        return Ways(0, target);
+        var cache = new Dictionary<(int, int), int>();
 
-        int Ways(int i, int sum)
+        return dfs(0, 0);
+
+        int dfs(int i, int sum)
         {
-            if (i == n - 1)
+            if (cache.ContainsKey((i, sum)))
             {
-                var result = 0;
-                if (sum == nums[i]) result++;
-                if (sum == -nums[i]) result++;
-                return result;
+                return cache[(i, sum)];
             }
 
-            return Ways(i + 1, sum + nums[i]) + Ways(i + 1, sum - nums[i]);
+            if (i >= n)
+            {
+                return sum == target ? 1 : 0;
+            }
+
+            var result = dfs(i + 1, sum + nums[i]) + dfs(i + 1, sum - nums[i]);
+            cache[(i, sum)] = result;
+            
+            return result;
         }
     }
+
+    // Bottom-up DP
+    public int FindTargetSumWays_bottomUp(int[] nums, int target)
+    {
+        var n = nums.Length;
+        var row = new Dictionary<int, int>();
+        row[0] = 1; // number of way to get 0 with 0 integers
+
+        for (int i = 0; i < n; i++)
+        {
+            var nextRow = new Dictionary<int, int>();
+            foreach ((var sum, var count) in row)
+            {
+                if (nextRow.ContainsKey(sum + nums[i]))
+                {
+                    nextRow[sum + nums[i]] += count;
+                }
+                else
+                {
+                    nextRow[sum + nums[i]] = count;
+                }
+
+                if (nextRow.ContainsKey(sum - nums[i]))
+                {
+                    nextRow[sum - nums[i]] += count;
+                }
+                else
+                {
+                    nextRow[sum - nums[i]] = count;
+                }
+            }
+
+            row = nextRow;
+        }
+
+        return row.ContainsKey(target) ? row[target] : 0;
+    }
+
     #endregion
 
     // 97. Interleaving String
