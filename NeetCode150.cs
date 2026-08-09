@@ -1872,6 +1872,90 @@ public class NeetCode150
     }
     #endregion
 
+
+    // 143. Reorder List
+    // You are given the head of a singly linked-list. The list can be represented as:
+    // L0 → L1 → … → Ln - 1 → Ln
+    // Reorder the list to be on the following form:
+    // L0 → Ln → L1 → L(n - 1) → L2 → L(n - 2) → …
+    // You may not modify the values in the list's nodes. Only nodes themselves may be changed.
+    #region 143. Reorder List
+    public void ReorderList(ListNode head)
+    {
+        // split head and tail
+        // Ищем середину списку с помощью быстрого и медленного указателя
+        var fast = head;
+        var mid = head;
+        while (fast.next is not null
+            && fast.next.next is not null)
+        {
+            fast = fast.next.next;
+            mid = mid.next;
+        }
+
+        // reverse tail
+        // переворачиваем вторую половину списка с помощью вставки за голову
+        var curr = mid.next;
+        mid.next = null;
+        var dummy = new ListNode();
+        while (curr is not null)
+        {
+            var dn = dummy.next;
+            var cn = curr.next;
+            dummy.next = curr;
+            curr.next = dn;
+            curr = cn;
+        }
+
+        // merge head and tail
+        // сливаем списки
+        var c1 = head;
+        var c2 = dummy.next;
+        while (c1 is not null && c2 is not null)
+        {
+            var t1 = c1.next;
+            var t2 = c2.next;
+            c1.next = c2;
+            c2.next = t1;
+            c1 = t1;
+            c2 = t2;
+        }
+    }
+    #endregion
+
+    // 19. Remove Nth Node From End of List
+    // Given the head of a linked list, remove the nth node from the end of the list and return its head.
+    #region 19. Remove Nth Node From End of List
+    // Идея: два указателя. Второй начинаем двикаться с отставанием на n элементов.
+    // Когда второй указатель дойдет до конца, первый будет указывать на элемент перед удаляемым.
+    // TODO: более простое решение через dummy head, тогда не нужно отдельно обрабатывать удаление головы списка
+    public ListNode RemoveNthFromEnd(ListNode head, int n)
+    {
+        var preNth = head;
+        var curr = head;
+        var sz = 0; // длина списка
+        while (curr is not null)
+        {
+            if (sz > n) // тут набо быть аккурантым. Нужно чтобы в итоге preNth был ПЕРЕД удаляемым элементом
+            {
+                preNth = preNth.next;
+            }
+            curr = curr.next;
+            sz++;
+        }
+
+        // Отдельная обработка, когда требуется удалить голову
+        if (sz == n) // Если n == sz, значит нужно удалить первый элемент
+        {
+            return head.next;
+        }
+
+        preNth.next = preNth.next.next;
+
+        return head;
+    }
+    #endregion
+
     // 138. Copy List with Random Pointer
     // A linked list of length n is given such that each node contains an additional random pointer, which could point to any node in the list, or null.
     // Construct a deep copy of the list. The deep copy should consist of exactly n brand new nodes, where each new node has its value set to the value of its corresponding original node.
@@ -1925,6 +2009,97 @@ public class NeetCode150
             next = null;
             random = null;
         }
+    }
+    #endregion
+
+    // 2. Add Two Numbers
+    // You are given two non-empty linked lists representing two non-negative integers.
+    // The digits are stored in reverse order, and each of their nodes contains a single digit.
+    // Add the two numbers and return the sum as a linked list.
+    // You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+    #region 2. Add Two Numbers
+    // Идея: чтобы было O(1) по памяти, храним результат в списке l1.
+    // Если l1 короче, чем l2, аттачим хвост l2 к l1 и продолжаем суммировать. Если в конце остался carry, то добавляем новый элемент в конец списка.
+    // TODO: Реализовать каноничное решение через dummy head, где мы строим новый список, а не мутируем l1.
+    // Это хуже по памяти, но проще в реализации и нагляднее.
+    public ListNode AddTwoNumbers(ListNode l1, ListNode l2)
+    {
+        var carry = 0;
+        var c1 = l1;
+        var c2 = l2;
+        var last1 = c1;
+        var last2 = c2;
+        while (c1 is not null && c2 is not null)
+        {
+            var val = c1.val + c2.val + carry;
+            carry = val / 10;
+            c1.val = val % 10;
+            last1 = c1;
+            last2 = c2;
+            c1 = c1.next;
+            c2 = c2.next;
+        }
+
+        ListNode c = null;
+        if (c2 is not null)
+        {
+            // l2 оказался длиннее, поэтому аттачим хвост l2 к l1
+            // и дальше будем хранить реультат в хвосте l2
+            last1.next = c2; 
+            c = c2;
+        }
+
+        if (c1 is not null)
+        {
+            c = c1; // l1 оказался длиннее, поэтому продолжаем суммировать хвост l1 c carry
+        }
+
+        while (carry > 0) // если остался carry, то продолжаем суммировать
+        {
+            if (c is null) // если оба списка закончились, а carry остался, значит создаем новый элемент, в который запишем остаток
+            {
+                c = new ListNode(0);
+                last1.next = c;
+            }
+
+            var val = c.val + carry;
+            carry = val / 10;
+            c.val = val % 10;
+            last1 = c;
+            c = c.next;
+        }
+
+        return l1;
+    }
+    #endregion
+
+    // 287. Find the Duplicate Number
+    // Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive.
+    // There is only one repeated number in nums, return this repeated number.
+    // You must solve the problem without modifying the array nums and using only constant extra space.
+    // Hint: номер может повторяться несколько раз, поэтому решение через разность сумм не подходит.
+    // TODO: решить через список и цикл (Floyd's Tortoise and Hare) - ебанутое решение, как до него дойти на интервью, я не понимаю.
+    // Идея: Представить массив как список, где значение элемента - это указатель на следующий элемент.
+    // Повторяющийся элемент будет указывать на один и тот же элемент, что формирует цикл. 
+    // Ожидаемая сложность O(n) по времени и O(1) по памяти.
+    #region 287. Find the Duplicate Number
+    // Решение через HashSet, O(n) по памяти, O(n) по времени
+    // На мой взгляд самое адвекатвое и понятное.
+    public int FindDuplicate(int[] nums)
+    {
+        var seen = new HashSet<int>();
+
+        for (int i = 0; i < nums.Length; i++)
+        {
+            if (seen.Contains(nums[i]))
+            {
+                return nums[i];
+            }
+
+            seen.Add(nums[i]);
+        }
+
+        return 0;
     }
     #endregion
 
@@ -2144,6 +2319,22 @@ public class NeetCode150
     #endregion
 
     #region Trees
+
+    // 226. Invert Binary Tree
+    // Given the root of a binary tree, invert the tree, and return its root.
+    #region 226. Invert Binary Tree
+    public TreeNode InvertTree(TreeNode root)
+    {
+        if (root is null) return root;
+
+        var tmp = root.left;
+        root.left = InvertTree(root.right);
+        root.right = InvertTree(tmp);
+
+        return root;
+    }
+    #endregion
+
     // 543. Diameter of Binary Tree
     // Given the root of a binary tree, return the length of the diameter of the tree.
     // The diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root.
