@@ -2100,29 +2100,6 @@ public class NeetCode150
 
         return 0;
     }
-    #endregion
-
-    // 287. Find the Duplicate Number
-    // Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive.
-    // There is only one repeated number in nums, return this repeated number.
-    // You must solve the problem without modifying the array nums and using only CONSTANT extra space.
-    // TODO: implement optimal solution with cycle detection (Floyd's Tortoise and Hare)
-    #region 287. Find the Duplicate Number
-    // O(n) memory, but fast
-    public int FindDuplicate(int[] nums)
-    {
-        var n = nums.Length;
-        var visited = new bool[n];
-
-        for (int i = 0; i < n; i++)
-        {
-            if (visited[nums[i] - 1])
-                return nums[i];
-            visited[nums[i] - 1] = true;
-        }
-
-        return 0;
-    }
 
     // O(1) memory, but slow
     // public int FindDuplicate(int[] nums)
@@ -2377,7 +2354,7 @@ public class NeetCode150
     #endregion
 
     #endregion
-
+    
     #region Trees
 
     // 226. Invert Binary Tree
@@ -2501,6 +2478,30 @@ public class NeetCode150
 
         return IsSameTree(p.left, q.left)
             && IsSameTree(p.right, q.right);
+    }
+    #endregion
+
+    // 572. Subtree of Another Tree
+    // Given the roots of two binary trees root and subRoot, return true if there is a subtree of root with the same structure and node values of subRoot and false otherwise.
+    // A subtree of a binary tree tree is a tree that consists of a node in tree and all of this node's descendants. The tree tree could also be considered as a subtree of itself.
+    #region 572. Subtree of Another Tree
+    public bool IsSubtree(TreeNode root, TreeNode subRoot)
+    {
+        if (IsSame(root, subRoot)) return true;
+
+        if (root is null) return false;
+
+        return IsSubtree(root.left, subRoot)
+            || IsSubtree(root.right, subRoot);
+
+        bool IsSame(TreeNode n1, TreeNode n2)
+        {
+            if (n1 is null && n2 is null) return true;
+            if (n1 is null || n2 is null) return false;
+            if (n1.val != n2.val) return false;
+            return IsSame(n1.left, n2.left)
+                && IsSame(n1.right, n2.right);
+        }
     }
     #endregion
 

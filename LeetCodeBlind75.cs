@@ -1733,12 +1733,33 @@ public static class LeetCodeBlind75
         return result.ToArray();
     }
     #endregion
-    
+
     // #36
     // 572. Subtree of Another Tree
-    // Subtree of Another Tree
+    // Given the roots of two binary trees root and subRoot, return true if there is a subtree of root with the same structure and node values of subRoot and false otherwise.
+    // A subtree of a binary tree tree is a tree that consists of a node in tree and all of this node's descendants. The tree tree could also be considered as a subtree of itself.
     #region Subtree of Another Tree
     public static bool IsSubtree(TreeNode root, TreeNode subRoot)
+    {
+        if (IsSameTree572(root, subRoot)) return true;
+
+        if (root is null) return false;
+
+        return IsSubtree(root.left, subRoot)
+            || IsSubtree(root.right, subRoot);
+
+        bool IsSameTree572(TreeNode n1, TreeNode n2)
+        {
+            if (n1 is null && n2 is null) return true;
+            if (n1 is null || n2 is null) return false;
+            if (n1.val != n2.val) return false;
+            return IsSameTree572(n1.left, n2.left)
+                && IsSameTree572(n1.right, n2.right);
+        }
+    }
+
+    // Громоздкое старое решение для простой задачи
+    public static bool IsSubtree_old(TreeNode root, TreeNode subRoot)
     {
         return IsSubSubtree(root, subRoot, false);
     }
