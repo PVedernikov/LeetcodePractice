@@ -1872,7 +1872,6 @@ public class NeetCode150
     }
     #endregion
 
-
     // 143. Reorder List
     // You are given the head of a singly linked-list. The list can be represented as:
     // L0 → L1 → … → Ln - 1 → Ln
@@ -2253,6 +2252,67 @@ public class NeetCode150
      */
     #endregion
 
+    // 23. Merge k Sorted Lists
+    // You are given an array of k linked lists lists, where each list is sorted in ascending order.
+    // Return the sorted linked list that is the result of merging all of the individual linked lists.
+    #region 23. Merge k Sorted Lists
+    public ListNode MergeKLists(ListNode[] lists)
+    {
+        var k = lists.Length;
+
+        return MergeRangeLists(0, k - 1);
+
+        ListNode MergeRangeLists(int l, int r)
+        {
+            if (l > r) return null; // if lists is empty
+            if (l == r) return lists[l];
+            if (l + 1 == r)
+                return Merge2Lists(lists[l], lists[r]);
+
+            var m = (r - l) / 2 + l;
+            var l1 = MergeRangeLists(l, m);
+            var l2 = MergeRangeLists(m + 1, r);
+            return Merge2Lists(l1, l2);
+        }
+
+        ListNode Merge2Lists(ListNode l1, ListNode l2)
+        {
+            var dummy = new ListNode();
+            var c1 = l1;
+            var c2 = l2;
+            var curr = dummy;
+            while (c1 is not null || c2 is not null)
+            {
+                if (c1 is null)
+                {
+                    curr.next = c2;
+                    break;
+                }
+
+                if (c2 is null)
+                {
+                    curr.next = c1;
+                    break;
+                }
+
+                if (c1.val < c2.val)
+                {
+                    curr.next = c1;
+                    c1 = c1.next;
+                    curr = curr.next;
+                }
+                else
+                {
+                    curr.next = c2;
+                    c2 = c2.next;
+                    curr = curr.next;
+                }
+            }
+            return dummy.next;
+        }
+    }
+    #endregion
+
     // 25. Reverse Nodes in k-Group
     // Given the head of a linked list, reverse the nodes of the list k at a time, and return the modified list.
     // k is a positive integer and is less than or equal to the length of the linked list.
@@ -2335,6 +2395,49 @@ public class NeetCode150
     }
     #endregion
 
+    // 104. Maximum Depth of Binary Tree
+    // Given the root of a binary tree, return its maximum depth.
+    // A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
+    #region 104. Maximum Depth of Binary Tree
+    // Stack
+    public int MaxDepth(TreeNode root)
+    {
+        if (root is null) return 0;
+        var stack = new Stack<(TreeNode, int)>();
+        stack.Push((root, 1));
+
+        var result = 0;
+        while (stack.Count > 0)
+        {
+            (var node, var h) = stack.Pop();
+            if (node is not null)
+            {
+                result = Math.Max(result, h);
+                if (node.left is not null)
+                {
+                    stack.Push((node.left, h + 1));
+                }
+                if (node.right is not null)
+                {
+                    stack.Push((node.right, h + 1));
+                }
+            }
+        }
+
+        return result;
+    }
+
+    // Recursive
+    public int MaxDepth_recursive(TreeNode root)
+    {
+        if (root is null) return 0;
+
+        return 1 + Math.Max(
+            MaxDepth_recursive(root.left),
+            MaxDepth_recursive(root.right));
+    }
+    #endregion
+    
     // 543. Diameter of Binary Tree
     // Given the root of a binary tree, return the length of the diameter of the tree.
     // The diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root.
@@ -2356,6 +2459,48 @@ public class NeetCode150
             result = Math.Max(result, leftResult + rightResult);
             return 1 + Math.Max(leftResult, rightResult);
         }
+    }
+    #endregion
+
+    // 110. Balanced Binary Tree
+    // Given a binary tree, determine if it is height-balanced.
+    // A height-balanced binary tree is a binary tree in which the depth of the two subtrees of every node never differs by more than one.
+    // Важно: поддеревья тоже должны быть сбалансированы
+    #region 110. Balanced Binary Tree
+    public bool IsBalanced(TreeNode root)
+    {
+        var balanced = true;
+        dfs(root);
+
+        int dfs(TreeNode node)
+        {
+            if (!balanced) return 0;
+            if (node is null) return 0;
+            var hl = dfs(node.left);
+            var hr = dfs(node.right);
+            if (Math.Abs(hl - hr) > 1)
+            {
+                balanced = false;
+            }
+
+            return 1 + Math.Max(hl, hr);
+        }
+        return balanced;
+    }
+    #endregion
+
+    // 100. Same Tree
+    // Given the roots of two binary trees p and q, write a function to check if they are the same or not.
+    // Two binary trees are considered the same if they are structurally identical, and the nodes have the same value.
+    #region 100. Same Tree
+    public bool IsSameTree(TreeNode p, TreeNode q)
+    {
+        if (p is null && q is null) return true;
+        if (p is null || q is null) return false;
+        if (p.val != q.val) return false;
+
+        return IsSameTree(p.left, q.left)
+            && IsSameTree(p.right, q.right);
     }
     #endregion
 
