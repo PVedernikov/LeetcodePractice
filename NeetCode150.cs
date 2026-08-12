@@ -2487,9 +2487,9 @@ public class NeetCode150
     #region 572. Subtree of Another Tree
     public bool IsSubtree(TreeNode root, TreeNode subRoot)
     {
+        if (subRoot is null) return true; // пустое дерево является поддеревом любого дерева
         if (IsSame(root, subRoot)) return true;
-
-        if (root is null) return false;
+        if (root is null) return false; // если дерево пустое, а поддерево нет, то поддерево не может быть поддеревом пустого дерева
 
         return IsSubtree(root.left, subRoot)
             || IsSubtree(root.right, subRoot);
