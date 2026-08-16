@@ -2505,6 +2505,88 @@ public class NeetCode150
     }
     #endregion
 
+    // 235. Lowest Common Ancestor of a Binary Search Tree
+    // Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST.
+    // According to the definition of LCA on Wikipedia:
+    // "The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants
+    // (where we allow a node to be a descendant of itself)."
+    #region 235. Lowest Common Ancestor of a Binary Search Tree
+    // Iterative
+    public TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q)
+    {
+        var node = root;
+        while (node is not null)
+        {
+            if (p.val < node.val && q.val < node.val)
+            {
+                node = node.left;
+            }
+            else if (p.val > node.val && q.val > node.val)
+            {
+                node = node.right;
+            }
+            else
+            {
+                return node;
+            }
+        }
+
+        return node;
+    }
+
+    // Recursive
+    public TreeNode LowestCommonAncestor_R(TreeNode root, TreeNode p, TreeNode q)
+    {
+        if (p.val < root.val && q.val < root.val)
+        {
+            return LowestCommonAncestor_R(root.left, p, q);
+        }
+        if (p.val > root.val && q.val > root.val)
+        {
+            return LowestCommonAncestor_R(root.right, p, q);
+        }
+
+         return root;
+    }
+    #endregion
+
+    // 102. Binary Tree Level Order Traversal
+    // Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).
+    // Обойти дерево уровень за уровнем, вернуть узлы на каждом уровне
+    #region 102. Binary Tree Level Order Traversal
+    public List<List<int>> LevelOrder(TreeNode root)
+    {
+        var result = new List<List<int>>();
+        if (root is null) return result;
+
+        var queue = new Queue<TreeNode>();
+        queue.Enqueue(root);
+
+        while (queue.Count > 0)
+        {
+            var levelLen = queue.Count; // Длина текущего уровня
+            var res = new List<int>();
+            for (int i = 0; i < levelLen; i++) // Читаем из очереди ровно столько элементов, сколько должно быть на текущем уровне
+            {
+                var node = queue.Dequeue();
+                res.Add(node.val);
+                if (node.left is not null)
+                {
+                    queue.Enqueue(node.left);
+                }
+                if (node.right is not null)
+                {
+                    queue.Enqueue(node.right);
+                }
+            }
+            result.Add(res);
+        }
+
+        return result;
+    }
+
+    #endregion
+
     // 199. Binary Tree Right Side View
     // Given the root of a binary tree, imagine yourself standing on the right side of it, return the values of the nodes you can see ordered from top to bottom.
     // Examples: https://leetcode.com/problems/binary-tree-right-side-view/description/
@@ -2556,6 +2638,123 @@ public class NeetCode150
         return result;
     }
     #endregion
+
+    // 98. Validate Binary Search Tree
+    // Given the root of a binary tree, determine if it is a valid binary search tree (BST).
+    // A valid BST is defined as follows:
+    // - The left subtree of a node contains only nodes with keys strictly less than the node's key.
+    // - The right subtree of a node contains only nodes with keys strictly greater than the node's key.
+    // - Both the left and right subtrees must also be binary search trees.
+    // ВАЖНО: на NeetCode ограничение на значения узлов: -1000000000 <= Node.val <= 1000000000,
+    // поэтому можно использовать int.MinValue и int.MaxValue в качестве начальных значений
+    // На LeetCode ограничения: -2^31 <= Node.val <= 2^31 - 1, поэтому только long.MinValue и long.MaxValue
+    #region 98. Validate Binary Search Tree
+    public bool IsValidBST(TreeNode root)
+    {
+        return IsValidBST(root, long.MinValue, long.MaxValue);
+
+        bool IsValidBST(TreeNode node, long l, long r)
+        {
+            if (node is null) return true;
+            if (node.val <= l || node.val >= r)
+                return false;
+
+            return IsValidBST(node.left, l, node.val)
+                && IsValidBST(node.right, node.val, r);
+        }
+    }
+    #endregion
+
+    // 230. Kth Smallest Element in a BST
+    // Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.
+    // A binary search tree satisfies the following constraints:
+    // - The left subtree of every node contains only nodes with keys less than the node's key.
+    // - The right subtree of every node contains only nodes with keys greater than the node's key.
+    // - Both the left and right subtrees are also binary search trees.
+    #region 230. Kth Smallest Element in a BST
+    // recursive
+    // in LeetCode Blind 75 there is an iterative solution using stack. I like it more, but this ine is ok as well.
+    public int KthSmallest(TreeNode root, int k)
+    {
+        var count = 0;
+        var result = -1;
+
+        dfs(root);
+
+        return result;
+
+        bool dfs(TreeNode node)
+        {
+            if (node is null) return false;
+            if (dfs(node.left)) return true;
+
+            count++;
+            if (count == k)
+            {
+                result = node.val;
+                return true;
+            }
+
+            return dfs(node.right);
+        }
+    }
+    #endregion
+
+    // 124. Binary Tree Maximum Path Sum
+    // A path in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them.
+    // A node can only appear in the sequence at most once. Note that the path does not need to pass through the root.
+    // The path sum of a path is the sum of the node's values in the path.
+    // Given the root of a binary tree, return the maximum path sum of any non-empty path.
+    // HARD
+    #region 124. Binary Tree Maximum Path Sum
+    // Идея: глобально храним максимальный путь, а из рекурсии наверх возвращаем либо левый, либо правый, т.к. они являются частями другого пути.
+    // Смысл в том, что путь через вершину (лево + вершина + право) - это готовый путь, его нельзя передать наверх, т.к. у пути не может быть ветвлений.
+    // Но наверх мы должны вернуть либо левую часть, либо правую, чтобы построить путь для вершины выше. 
+    // Таким образом мы возвращаем наверх либо левую ветку, либо правую (либо только сам элемент), чтобы можно было простроить путь с родительской вершиной
+    // Но также запоминаем и путь через конкретную вершину (лево + вершина + право), т.к. он может оказаться максимальным в итоге.
+    public int MaxPathSum(TreeNode root)
+    {
+        var result = int.MinValue;
+        dfs(root);
+        return result;
+
+        int dfs(TreeNode node)
+        {
+            if (node is null) return 0;
+            var l = dfs(node.left);
+            var r = dfs(node.right);
+            var res = Math.Max(node.val, node.val + l);
+            res = Math.Max(res, node.val + r);
+            // и итоге res - это максимум из левого и правого пути, и из самого элемента если пути отрицительные
+            result = Math.Max(result, res);
+            result = Math.Max(result, node.val + l + r); // или фиксируем локальный путь через эту вершину
+            return res;
+        }
+    }
+
+    //public int MaxPathSum(TreeNode root)
+    //{
+    //    var result = int.MinValue;
+    //    dfs(root);
+    //    return result;
+
+    //    int dfs(TreeNode node)
+    //    {
+    //        if (node is null) return 0;
+    //        var l = dfs(node.left);
+    //        var r = dfs(node.right);
+    //        var res = Math.Max(node.val, node.val + l);
+    //        res = Math.Max(res, node.val + r);
+
+    //        result = Math.Max(result, node.val);
+    //        result = Math.Max(result, node.val + l);
+    //        result = Math.Max(result, node.val + r);
+    //        result = Math.Max(result, node.val + l + r);
+    //        return res;
+    //    }
+    //}
+    #endregion
+    
     #endregion
 
     #region Heap / Priority Queue
@@ -2696,9 +2895,34 @@ public class NeetCode150
     #endregion
 
     // 621. Task Scheduler
+    // You are given an array of CPU tasks, each labeled with a letter from A to Z, and a number n.
+    // Each CPU interval can be idle or allow the completion of one task.
+    // Tasks can be completed in any order, but there's a constraint: there has to be a gap of at least n intervals between two tasks with the same label.
+    // Return the minimum number of CPU intervals required to complete all tasks.
     #region 621. Task Scheduler
-    // TODO 
+    // TODO: есть какой-то более какноничный вариант с совершенно другой идеей. Нужно его изучить.
+    public int LeastInterval(char[] tasks, int n)
+    {
+        var time = new int[26];
+        var heap = new PriorityQueue<(char c, int t), int>();
+        for (int i = 0; i < tasks.Length; i++)
+        {
+            var j = tasks[i] - 'A';
+            heap.Enqueue((tasks[i], time[j]), time[j]);
+            time[j] += n + 1;
+        }
 
+        var result = 0;
+        while (heap.Count > 0)
+        {
+            if (heap.Peek().t <= result)
+            {
+                heap.Dequeue();
+            }
+            result++;
+        }
+        return result;
+    }
     #endregion
 
     // 355. Design Twitter
@@ -3501,6 +3725,7 @@ public class NeetCode150
     #endregion
 
     #region Graphs
+
     // 695. Max Area of Island
     // You are given an m x n binary matrix grid. An island is a group of 1's (representing land) connected 4-directionally (horizontal or vertical.)
     // You may assume all four edges of the grid are surrounded by water.
@@ -3825,6 +4050,53 @@ public class NeetCode150
             result.Add(a);
             return true;
         }
+    }
+    #endregion
+
+    // 261. Graph Valid Tree
+    // You have a graph of n nodes labeled from 0 to n - 1.
+    // You are given an integer n and a list of edges where edges[i] = [ai, bi] indicates that there is an undirected edge between nodes ai and bi in the graph.
+    // Return true if the edges of the given graph make up a valid tree, and false otherwise.
+    #region 261. Graph Valid Tree
+    // Идея: в дереве должно быть ровно n - 1 ребер, если это условия выполняется, то зачит граф должен быть связанным.
+    // Обходим граф, начиная с рандомной вершины, например 0. В конце проверяем сколько вершин мы посетили.
+    
+    public bool ValidTree(int n, int[][] edges)
+    {
+        var e = edges.Length;
+        if (e != n - 1) return false; // Если ребер больше или меньше, чем n - 1, то это точно не дерево
+        if (n == 1) return e == 0; // Отдельно проверяем случай только для одной вершины - должно быть 0 ребер.
+
+        var adj = new List<int>[n];
+        for (int i = 0; i < e; i++)
+        {
+            var a = edges[i][0];
+            var b = edges[i][1];
+            if (adj[a] is null) adj[a] = new List<int>();
+            if (adj[b] is null) adj[b] = new List<int>();
+            adj[a].Add(b);
+            adj[b].Add(a);
+        }
+
+        var visited = new HashSet<int>();
+        var stack = new Stack<int>();
+        stack.Push(0);
+        while (stack.Count > 0)
+        {
+            var v = stack.Pop();
+            if (adj[v] is null) return false; // если вершина ни с чем не связана, то точно не дерево
+            visited.Add(v);
+            for (int i = 0; i < adj[v].Count; i++)
+            {
+                if (!visited.Contains(adj[v][i]))
+                {
+                    stack.Push(adj[v][i]);
+                }
+            }
+        }
+
+        return visited.Count == n; // мы обошли какую-то связанную область, если после этого остались вершины, которые мы не посетили, значит граф не дерево.
+
     }
     #endregion
 
