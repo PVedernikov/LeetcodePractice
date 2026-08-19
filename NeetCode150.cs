@@ -4282,6 +4282,51 @@ public class NeetCode150
     }
     #endregion
 
+    // 323. Number of Connected Components in an Undirected Graph
+    // You have an undirected graph of n nodes labeled from 0 to n - 1.
+    // You are given an integer n and an array edges where edges[i] = [aᵢ, bᵢ] indicates that there is an edge between aᵢ and bᵢ in the graph.
+    // Return the number of connected components in the graph.
+    // Complexity: O(n + e), Space: O(n + e)
+    // TODO: implement iterative solution
+    #region 323. Number of Connected Components in an Undirected Graph
+    public int CountComponents(int n, int[][] edges)
+    {
+        var adj = new List<int>[n];
+        for (int i = 0; i < edges.Length; i++)
+        {
+            var a = edges[i][0];
+            var b = edges[i][1];
+            if (adj[a] is null) adj[a] = new List<int>();
+            if (adj[b] is null) adj[b] = new List<int>();
+            adj[a].Add(b);
+            adj[b].Add(a);
+        }
+        var visited = new bool[n];
+        var result = 0;
+        for (int i = 0; i < n; i++)
+        {
+            if (!visited[i])
+            {
+                result++;
+                dfs(i);
+            }
+        }
+        return result;
+
+        void dfs(int i)
+        {
+            if (visited[i]) return;
+            visited[i] = true;
+
+            if (adj[i] is null) return;
+            for (int j = 0; j < adj[i].Count; j++)
+            {
+                dfs(adj[i][j]);
+            }
+        }
+    }
+    #endregion
+
     // 684. Redundant Connection
     // In this problem, a tree is an undirected graph that is connected and has no cycles.
     // You are given a graph that started as a tree with n nodes labeled from 1 to n, with one additional edge added.
@@ -4750,6 +4795,42 @@ public class NeetCode150
         return Math.Min(min0, min1);
     }
     #endregion
+
+    // 198. House Robber
+    // You are a professional robber planning to rob houses along a street.
+    // Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them
+    // is that adjacent houses have security systems connected and it will automatically contact the police
+    // if two adjacent houses were broken into on the same night.
+    // Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
+    #region 198. House Robber
+    // Рекурсивное решение. Понятное, но можно решить без рекурсии (top-down), см. Blind 75.
+    public int Rob(int[] nums)
+    {
+        var n = nums.Length;
+        var dp = new int[n];
+        for (int i = 0; i < n; i++)
+        {
+            dp[i] = -1;
+        }
+        return Rob(0);
+
+        int Rob(int i)
+        {
+            if (i >= n) return 0;
+            if (i == n - 1)
+            {
+                return nums[i];
+            }
+            if (dp[i] >= 0) return dp[i];
+
+            var result = Math.Max(nums[i] + Rob(i + 2), Rob(i + 1));
+            dp[i] = result;
+            return result;
+        }
+    }
+
+    #endregion
+
     // 416. Partition Equal Subset Sum
     // Given an integer array nums, return true if you can partition the array into two subsets such that the sum of the elements in both subsets is equal or false otherwise.
     #region 416. Partition Equal Subset Sum
