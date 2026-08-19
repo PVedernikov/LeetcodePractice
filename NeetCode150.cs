@@ -3919,6 +3919,41 @@ public class NeetCode150
     }
     #endregion
 
+    // 133. Clone Graph
+    // Given a node in a connected undirected graph, return a deep copy of the graph.
+    // Each node in the graph contains an integer value and a list of its neighbors.
+    //    class Node { // Node133
+    //        public int val;
+    //        public List<Node> neighbors;
+    //    }      
+    // Test case format:
+    // The graph is shown in the test cases as an adjacency list. An adjacency list is a mapping of nodes to lists, used to represent a finite graph.
+    // Each list describes the set of neighbors of a node in the graph.
+    // For simplicity, nodes values are numbered from 1 to n, where n is the total number of nodes in the graph.
+    // The index of each node within the adjacency list is the same as the node's value (1-indexed).
+    // The input node will always be the first node in the graph and have 1 as the value.
+    #region 133. Clone Graph
+    // TODO: implement non-recursive solution
+    public Node133 CloneGraph(Node133 node)
+    {
+        if (node is null) return null;
+
+        var cache = new Dictionary<Node133, Node133>();
+        return clone(node);
+        Node133 clone(Node133 orig)
+        {
+            if (cache.ContainsKey(orig)) return cache[orig];
+            var result = new Node133(orig.val);
+            cache[orig] = result;
+            foreach (var n in orig.neighbors)
+            {
+                result.neighbors.Add(clone(n));
+            }
+            return result;
+        }
+    }
+    #endregion
+
     // 286. Walls and Gates
     // You are given an m x n grid rooms initialized with these three possible values.
     // 1) -1 A wall or an obstacle.
