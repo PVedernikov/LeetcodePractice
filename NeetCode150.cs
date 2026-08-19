@@ -3564,6 +3564,50 @@ public class NeetCode150
     }
     #endregion
 
+    // 79. Word Search
+    // Given an m x n grid of characters board and a string word, return true if word exists in the grid.
+    // The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring.
+    // The same letter cell may not be used more than once.
+    #region 79. Word Search
+    // TODO: решить через стек
+    public bool Exist(char[][] board, string word)
+    {
+        var m = board.Length;
+        var n = board[0].Length;
+        var len = word.Length;
+        var di = new int[] { 1, -1, 0, 0 };
+        var dj = new int[] { 0, 0, 1, -1 };
+        var visited = new bool[m, n];
+        for (int row = 0; row < m; row++)
+        {
+            for (int col = 0; col < n; col++)
+            {
+                if (dfs(row, col, 0)) return true;
+            }
+        }
+        return false;
+
+        bool dfs(int i, int j, int c)
+        {
+            if (c >= len) return true; // дошли до конца слова, значит всё совпало, нашли слово в гриде
+            if (i < 0 || i >= m) return false;
+            if (j < 0 || j >= n) return false;
+            if (visited[i, j]) return false;
+            if (board[i][j] != word[c]) return false;
+            visited[i, j] = true;
+            for (int d = 0; d < 4; d++)
+            {
+                var ii = i + di[d];
+                var jj = j + dj[d];
+                var cc = c + 1;
+                if (dfs(ii, jj, cc)) return true;
+            }
+            visited[i, j] = false; // Важно: обязательно снять флаг, если не нашли правильный путь, т.к. буква может использоваться в другом пути
+            return false;
+        }
+    }
+    #endregion
+
     // 131. Palindrome Partitioning
     // Given a string s, partition s such that every substring of the partition is a palindrome. Return all possible palindrome partitioning of s.
     // Example 1:
@@ -3784,6 +3828,50 @@ public class NeetCode150
     #endregion
 
     #region Graphs
+
+    // 200. Number of Islands
+    // Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.
+    // An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically.
+    // You may assume all four edges of the grid are all surrounded by water.
+    #region 200. Number of Islands
+    // Идея: идем по всем клеткам, как только встречаем сушу, затапливаем остров.
+    // TODO: можно написать нерекурсивно через стек.
+    public int NumIslands(char[][] grid)
+    {
+        var m = grid.Length;
+        var n = grid[0].Length;
+        var di = new int[] { -1, 1, 0, 0 };
+        var dj = new int[] { 0, 0, -1, 1 };
+        var result = 0;
+        for (int row = 0; row < m; row++)
+        {
+            for (int col = 0; col < n; col++)
+            {
+                if (grid[row][col] == '1')
+                {
+                    result++;
+                    sink(row, col);
+                }
+            }
+        }
+
+        return result;
+
+        void sink(int i, int j)
+        {
+            if (i < 0 || i >= m) return;
+            if (j < 0 || j >= n) return;
+            if (grid[i][j] != '1') return;
+            grid[i][j] = '2'; // so we can restore islands if needed
+            for (int d = 0; d < 4; d++)
+            {
+                var ii = i + di[d];
+                var jj = j + dj[d];
+                sink(ii, jj);
+            }
+        }
+    }
+    #endregion
 
     // 695. Max Area of Island
     // You are given an m x n binary matrix grid. An island is a group of 1's (representing land) connected 4-directionally (horizontal or vertical.)
