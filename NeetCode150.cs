@@ -3998,6 +3998,127 @@ public class NeetCode150
     }
     #endregion
 
+    // 994. Rotting Oranges
+    // You are given an m x n grid where each cell can have one of three values:
+    // - 0 representing an empty cell,
+    // - 1 representing a fresh orange, or
+    // - 2 representing a rotten orange.
+    // Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten.
+    // Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.
+    #region 994. Rotting Oranges
+    public int OrangesRotting(int[][] grid)
+    {
+        var m = grid.Length;
+        var n = grid[0].Length;
+        var fresh = 0; // количество свежих фруктов
+        var queue = new Queue<(int i, int j)>();
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (grid[i][j] == 1) fresh++; 
+                if (grid[i][j] == 2) queue.Enqueue((i, j)); // кладем гнилые фрукты в очередь
+            }
+        }
+
+        var di = new int[] { -1, 1, 0, 0 };
+        var dj = new int[] { 0, 0, -1, 1 };
+        var result = 0;
+
+        while (queue.Count > 0)
+        {
+            var more = false; // нужна ли еще минута для для гниения фруктов
+            var rCount = queue.Count; // количество гнилых фруктов в данную минуту
+            for (int i = 0; i < rCount; i++)
+            {
+                var f = queue.Dequeue();
+                for (int d = 0; d < 4; d++)
+                {
+                    var ii = di[d] + f.i;
+                    var jj = dj[d] + f.j;
+                    // заражаем всех свежих соседей, если они есть
+                    if (ii >= 0 && ii < m && jj >= 0 && jj < n && grid[ii][jj] == 1) // нашли свежий фрукт
+                    {
+                        more = true; // фрукт сгнил, можно будет увеличить счетчик минут
+                        grid[ii][jj] = 2; // фрукт сгнил
+                        fresh--;
+                        queue.Enqueue((ii, jj)); // кладем новый гнилой фрукт в очередь
+                    }
+                }
+            }
+
+            if (more) // если на этом шаге загнили новые фрукты, то увеличиваем счетчик минут
+            { // т.к. нам потребуется как минимум еще минута, чтобы заразить соседей новый гнилых фруктов
+                result++;
+            }
+        }
+
+        // смотрим, остались ли свежие фрукты или нет
+        return fresh > 0 ? -1 : result;
+    }
+
+    // старое решение (лучше по памяти, но в теории хуже по скорости)
+    public int OrangesRotting_old(int[][] grid)
+    {
+        var n = grid.Length;
+        var m = grid[0].Length;
+        var dI = new int[] { 1, -1, 0, 0 };
+        var dJ = new int[] { 0, 0, 1, -1 };
+        var result = 0;
+        while (true)
+        {
+            var changed = 0;
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < m; j++)
+                {
+                    if (grid[i][j] == 0) continue;
+
+                    for (int k = 0; k < 4; k++)
+                    {
+                        var di = i + dI[k];
+                        var dj = j + dJ[k];
+                        if (di < 0 || dj < 0 || di >= n || dj >= m) continue;
+                        if (grid[di][dj] == 2 && grid[i][j] != 2 && grid[i][j] != 3)
+                        {
+                            grid[i][j] = 3;
+                            changed++;
+                        }
+                    }
+                }
+            }
+
+            if (changed == 0) break;
+            result++;
+
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < m; j++)
+                {
+                    if (grid[i][j] == 3)
+                    {
+                        grid[i][j] = 2;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                if (grid[i][j] == 1)
+                {
+                    return -1;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    #endregion
+
     // 130. Surrounded Regions
     // You are given an m x n matrix board containing letters 'X' and 'O', capture regions that are surrounded:
     // - Connect: A cell is connected to adjacent cells horizontally or vertically.
