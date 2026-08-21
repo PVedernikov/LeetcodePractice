@@ -4005,6 +4005,7 @@ public class NeetCode150
     // - 2 representing a rotten orange.
     // Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten.
     // Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.
+    // O (m + n)
     #region 994. Rotting Oranges
     public int OrangesRotting(int[][] grid)
     {
