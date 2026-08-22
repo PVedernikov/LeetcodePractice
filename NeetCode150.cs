@@ -4120,6 +4120,82 @@ public class NeetCode150
 
     #endregion
 
+    // 417. Pacific Atlantic Water Flow
+    // There is an m x n rectangular island that borders both the Pacific Ocean and Atlantic Ocean.
+    // The Pacific Ocean touches the island's left and top edges, and the Atlantic Ocean touches the island's right and bottom edges.
+    // The island is partitioned into a grid of square cells.
+    // You are given an m x n integer matrix heights where heights[r][c] represents the height above sea level of the cell at coordinate (r, c).
+    // The island receives a lot of rain, and the rain water can flow to neighboring cells directly north, south, east, and west
+    // if the neighboring cell's height is less than or equal to the current cell's height. Water can flow from any cell adjacent to an ocean into the ocean.
+    // Return a 2D list of grid coordinates result where result[i] = [ri, ci] denotes that rain water can flow from cell (ri, ci) to both the Pacific and Atlantic oceans.
+    #region 417. Pacific Atlantic Water Flow
+    // Идея: идем от краев вверх. Сначла от однго океана, потом от другого. Если встречаем пересечение, добавляем в результат.
+    // Важно на будущее: не называть струтктуры похожими именами - замучаешься отлаживать.
+    public List<List<int>> PacificAtlantic(int[][] heights)
+    {
+        var m = heights.Length;
+        var n = heights[0].Length;
+        var di = new int[] { -1, 1, 0, 0 };
+        var dj = new int[] { 0, 0, -1, 1 };
+        var cache = new int[m, n]; // 1 - P, 2 - A, 3 - both
+        var queueP = new Queue<(int, int)>(); // Плохое имя, т.к. легко перепутать с queueA
+        var queueA = new Queue<(int, int)>(); // Плохое имя, т.к. легко перепутать с queueP
+
+        for (int i = 0; i < m; i++)
+        {
+            queueP.Enqueue((i, 0));
+            queueA.Enqueue((i, n - 1));
+        }
+        for (int i = 0; i < n; i++)
+        {
+            queueP.Enqueue((0, i));
+            queueA.Enqueue((m - 1, i));
+        }
+
+        while (queueP.Count > 0)
+        {
+            (var i, var j) = queueP.Dequeue();
+            if (cache[i, j] == 1) continue;
+            cache[i, j] = 1;
+            for (int d = 0; d < 4; d++)
+            {
+                var ii = di[d] + i;
+                var jj = dj[d] + j;
+                if (ii < 0 || ii >= m || jj < 0 || jj >= n) continue;
+                if (heights[ii][jj] < heights[i][j]) continue;
+                queueP.Enqueue((ii, jj));
+            }
+        }
+
+        var result = new List<List<int>>();
+        while (queueA.Count > 0)
+        {
+            (var i, var j) = queueA.Dequeue();
+            if (cache[i, j] == 2 || cache[i, j] == 3) continue;
+            if (cache[i, j] == 1)
+            {
+                cache[i, j] = 3;
+                result.Add([i, j]);
+            }
+            else
+            {
+                cache[i, j] = 2;
+            }
+            for (int d = 0; d < 4; d++)
+            {
+                var ii = di[d] + i;
+                var jj = dj[d] + j;
+                if (ii < 0 || ii >= m || jj < 0 || jj >= n) continue;
+                if (heights[ii][jj] < heights[i][j]) continue;
+
+                queueA.Enqueue((ii, jj));
+            }
+        }
+
+        return result;
+    }
+    #endregion
+
     // 130. Surrounded Regions
     // You are given an m x n matrix board containing letters 'X' and 'O', capture regions that are surrounded:
     // - Connect: A cell is connected to adjacent cells horizontally or vertically.
