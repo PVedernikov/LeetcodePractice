@@ -5029,6 +5029,43 @@ public class NeetCode150
 
     #endregion
 
+    // 213. House Robber II
+    // You are a professional robber planning to rob houses along a street.
+    // Each house has a certain amount of money stashed. All houses at this place are arranged in a circle.
+    // That means the first house is the neighbor of the last one.
+    // Meanwhile, adjacent houses have a security system connected, and it will automatically contact the police if two adjacent houses were broken into on the same night.
+    // Given an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.
+    #region 213. House Robber II
+    // Complexity: O(n), Space: O(1)
+    // Идея: как и в прошлой задаче считаем, но с учетом того, что дома закольцованы, используем два цикла (0; n-2) и (1; n - 1)
+    // И далее выбираем максимальный результат из двух циклов.
+    public int Rob_II(int[] nums)
+    {
+        var n = nums.Length;
+        if (n == 1) return nums[0];
+
+        var skip = 0;
+        var keep = 0;
+        var result = 0;
+        for (int i = 0; i < n - 1; i++) // Если грабим дом 0, то дом n-1 грабить нельзя
+        {
+            result = Math.Max(skip, keep + nums[i]);
+            keep = skip;
+            skip = result;
+        }
+        skip = 0;
+        keep = 0;
+        var result2 = 0;
+        for (int i = 1; i < n; i++) // Если пропускаем дом 0, то дом n-1 грабить можно
+        {
+            result2 = Math.Max(skip, keep + nums[i]);
+            keep = skip;
+            skip = result2;
+        }
+        return Math.Max(result, result2);
+    }
+    #endregion
+
     // 416. Partition Equal Subset Sum
     // Given an integer array nums, return true if you can partition the array into two subsets such that the sum of the elements in both subsets is equal or false otherwise.
     #region 416. Partition Equal Subset Sum
