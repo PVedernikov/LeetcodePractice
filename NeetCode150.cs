@@ -5114,7 +5114,46 @@ public class NeetCode150
         return s.Substring(start, length);
     }
     #endregion
- 
+
+    // 647. Palindromic Substrings
+    // Given a string s, return the number of substrings within s that are palindromes.
+    // A palindrome is a string that reads the same forward and backward.
+    // Example:
+    // Input: s = "aaa", Output: 6
+    // Explanation: "a", "a", "a", "aa", "aa", "aaa". Note that different substrings are counted as different palindromes even if the string contents are the same.
+    #region 647. Palindromic Substrings
+    public int CountSubstrings(string s)
+    {
+        var n = s.Length;
+        var result = 0;
+        for (int i = 0; i < n; i++)
+        {
+            var l = i;
+            var r = i;
+            while (l >= 0 && r < n && s[l] == s[r])
+            {
+                result++;
+                l--;
+                r++;
+            }
+        }
+
+        for (int i = 0; i < n; i++)
+        {
+            var l = i;
+            var r = i + 1;
+            while (l >= 0 && r < n && s[l] == s[r])
+            {
+                result++;
+                l--;
+                r++;
+            }
+        }
+
+        return result;
+    }
+    #endregion
+
     // 416. Partition Equal Subset Sum
     // Given an integer array nums, return true if you can partition the array into two subsets such that the sum of the elements in both subsets is equal or false otherwise.
     #region 416. Partition Equal Subset Sum
