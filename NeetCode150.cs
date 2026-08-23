@@ -5066,6 +5066,54 @@ public class NeetCode150
     }
     #endregion
 
+    // 5. Longest Palindromic Substring
+    // Given a string s, return the longest substring of s that is a palindrome.
+    // A palindrome is a string that reads the same forward and backward.
+    // If there are multiple palindromic substrings that have the same length, return any one of them.
+    #region 5. Longest Palindromic Substring
+    // Идея: расширение вокруг центра
+    // ВАЖНО: учесть четные и нечетные строки
+    public string LongestPalindrome(string s)
+    {
+        var n = s.Length;
+        var start = 0;
+        var length = 0;
+        for (int i = 0; i < n; i++) // цикл для нечетных строк
+        {
+            var l = i;
+            var r = i;
+            while (l >= 0 && r < n && s[l] == s[r])
+            {
+                var len = r - l + 1;
+                if (length < len)
+                {
+                    length = len;
+                    start = l;
+                }
+                l--;
+                r++;
+            }
+        }
+
+        for (int i = 0; i < n; i++) // цикл для четных строк
+        {
+            var l = i;
+            var r = i + 1;
+            while (l >= 0 && r < n && s[l] == s[r])
+            {
+                var len = r - l + 1;
+                if (length < len)
+                {
+                    length = len;
+                    start = l;
+                }
+                l--;
+                r++;
+            }
+        }
+        return s.Substring(start, length);
+    }
+    #endregion
     // 416. Partition Equal Subset Sum
     // Given an integer array nums, return true if you can partition the array into two subsets such that the sum of the elements in both subsets is equal or false otherwise.
     #region 416. Partition Equal Subset Sum
