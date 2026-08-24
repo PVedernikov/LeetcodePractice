@@ -4868,6 +4868,61 @@ public class NeetCode150
     }
     #endregion
 
+    // 778. Swim in Rising Water
+    // You are given an n x n integer matrix grid where each value grid[i][j] represents the elevation at that point (i, j).
+    // It starts raining, and water gradually rises over time. At time t, the water level is t, meaning any cell with elevation less than equal to t is submerged or reachable.
+    // You can swim from a square to another 4-directionally adjacent square if and only if the elevation of both squares individually are at most t.
+    // You can swim infinite distances in zero time. Of course, you must stay within the boundaries of the grid during your swim.
+    // Return the minimum time until you can reach the bottom right square (n - 1, n - 1) if you start at the top left square (0, 0).
+    #region 778. Swim in Rising Water
+    // Dijkstra, Priority Queue
+    // TODO: вникнуть и перерешать задачу с нуля. Не до конца понимаю решение. 
+    public int SwimInWater(int[][] grid)
+    {
+        var n = grid.Length;
+        var di = new int[] { 0, 0, -1, 1 };
+        var dj = new int[] { -1, 1, 0, 0 };
+        var cache = new int[n, n];
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                cache[i, j] = int.MaxValue;
+            }
+        }
+        cache[0, 0] = grid[0][0];
+
+        var heap = new PriorityQueue<(int i, int j, int t), int>();
+        heap.Enqueue((0, 0, grid[0][0]), grid[0][0]);
+
+        while (heap.Count > 0)
+        {
+            (var i, var j, var t) = heap.Dequeue();
+            if (i == n - 1 && j == n - 1)
+            {
+                return Math.Max(cache[i, j], grid[i][j]);
+            }
+
+            if (t > cache[i, j]) continue;
+
+            for (int k = 0; k < 4; k++)
+            {
+                var ii = i + di[k];
+                var jj = j + dj[k];
+                if (ii < 0 || ii >= n || jj < 0 || jj >= n) continue;
+
+                var tt = Math.Max(t, grid[ii][jj]);
+                if (tt >= cache[ii, jj]) continue;
+
+                cache[ii, jj] = tt;
+                heap.Enqueue((ii, jj, tt), tt);
+            }
+        }
+
+        return cache[n - 1, n - 1];
+    }
+    #endregion
+
     // 787. Cheapest Flights Within K Stops
     // There are n cities connected by some number of flights.
     // You are given an array flights where flights[i] = [from_i, to_i, price_i] indicates that there is a flight from city from_i to city to_i with cost price_i.
