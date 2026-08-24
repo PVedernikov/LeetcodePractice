@@ -4876,6 +4876,8 @@ public class NeetCode150
     // Return the minimum time until you can reach the bottom right square (n - 1, n - 1) if you start at the top left square (0, 0).
     #region 778. Swim in Rising Water
     // Dijkstra, Priority Queue
+    // Идея: стоимость пути равна максимальной высоте клетки на пути
+    // Нужно использовать Дейкстру, но время в пути до вершины - это максимальная вершина в пути на данный момент.
     // TODO: вникнуть и перерешать задачу с нуля. Не до конца понимаю решение. 
     public int SwimInWater(int[][] grid)
     {
