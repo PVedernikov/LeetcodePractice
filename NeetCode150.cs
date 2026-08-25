@@ -5265,9 +5265,9 @@ public class NeetCode150
     // Return the fewest number of coins that you need to make up the exact target amount. If it is impossible to make up the amount, return -1.
     // You may assume that you have an unlimited number of each coin.
     #region 322. Coin Change
-    // Идея: dp[sum] хранит минимальное количество монет чтобы собрать сумму sum
+    // Идея: dp[sum] хранит минимальное количество монет, чтобы собрать сумму sum
     // Вычисляем суммы в порядке возрастания, начиная с 1 (оставляем 0 для базового случая)
-    // Из текущей суммы sum вычитаем номинал монеты coins[i], и смотрим сколькоими способами можно собрать сумму sum - coins[i]
+    // Из текущей суммы sum вычитаем номинал монеты coins[i], и смотрим сколькоими способами можно собрать предыдущюю сумму sum - coins[i]
     public int CoinChange(int[] coins, int amount)
     {
         var n = coins.Length;
@@ -5283,7 +5283,7 @@ public class NeetCode150
                     res = Math.Min(res, dp[sum - coins[i]]); // Берем лучший результат
                 }
             }
-            // Если лучший результат не найдем, ставим -1
+            // Если лучший результат не найден, ставим -1
             // Иначе добавляем еще одну монету 1 + res
             dp[sum] = res == int.MaxValue ? -1 : 1 + res;
         }
