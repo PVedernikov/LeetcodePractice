@@ -5260,6 +5260,38 @@ public class NeetCode150
     }
     #endregion
 
+    //322. Coin Change
+    // You are given an integer array coins representing coins of different denominations (e.g. 1 dollar, 5 dollars, etc) and an integer amount representing a target amount of money.
+    // Return the fewest number of coins that you need to make up the exact target amount. If it is impossible to make up the amount, return -1.
+    // You may assume that you have an unlimited number of each coin.
+    #region 322. Coin Change
+    // Идея: dp[sum] хранит минимальное количество монет чтобы собрать сумму sum
+    // Вычисляем суммы в порядке возрастания, начиная с 1 (оставляем 0 для базового случая)
+    // Из текущей суммы sum вычитаем номинал монеты coins[i], и смотрим сколькоими способами можно собрать сумму sum - coins[i]
+    public int CoinChange(int[] coins, int amount)
+    {
+        var n = coins.Length;
+        var dp = new int[amount + 1];
+
+        for (int sum = 1; sum <= amount; sum++) // Идем с 1, в dp[0] всегда 0
+        {
+            var res = int.MaxValue; // минимальное количество монет, чтобы собрать сумму sum, или -1, если невозможно
+            for (int i = 0; i < n; i++)
+            {
+                if (coins[i] <= sum && dp[sum - coins[i]] >= 0) // Проверяем, чтобы предыдущая сумма sum - coins[i] тоже была валидна
+                {
+                    res = Math.Min(res, dp[sum - coins[i]]); // Берем лучший результат
+                }
+            }
+            // Если лучший результат не найдем, ставим -1
+            // Иначе добавляем еще одну монету 1 + res
+            dp[sum] = res == int.MaxValue ? -1 : 1 + res;
+        }
+
+        return dp[amount];
+    }
+    #endregion
+
     // 416. Partition Equal Subset Sum
     // Given an integer array nums, return true if you can partition the array into two subsets such that the sum of the elements in both subsets is equal or false otherwise.
     #region 416. Partition Equal Subset Sum
