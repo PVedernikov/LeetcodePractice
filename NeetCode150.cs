@@ -4874,6 +4874,7 @@ public class NeetCode150
     // You can swim from a square to another 4-directionally adjacent square if and only if the elevation of both squares individually are at most t.
     // You can swim infinite distances in zero time. Of course, you must stay within the boundaries of the grid during your swim.
     // Return the minimum time until you can reach the bottom right square (n - 1, n - 1) if you start at the top left square (0, 0).
+    // HARD
     #region 778. Swim in Rising Water
     // Dijkstra, Priority Queue
     // Идея: стоимость пути равна максимальной высоте клетки на пути
@@ -4922,6 +4923,75 @@ public class NeetCode150
         }
 
         return cache[n - 1, n - 1];
+    }
+    #endregion
+
+    // 269. Alien Dictionary
+    // There is a new alien language that uses the English alphabet. However, the order of the letters is unknown to you.
+    // You are given a list of strings words from the alien language's dictionary.
+    // Now it is claimed that the strings in words are sorted lexicographically by the rules of this new language.
+    // If this claim is incorrect, and the given arrangement of string in words cannot correspond to any order of letters, return "".
+    // Otherwise, return a string of the unique letters in the new alien language sorted in lexicographically increasing order by the new language's rules.
+    // If there are multiple solutions, return any of them.
+    //
+    // Topological sort
+    // HARD
+    #region 269. Alien Dictionary
+    public string foreignDictionary(string[] words)
+    {
+        var n = words.Length;
+        var adj = new Dictionary<char, HashSet<char>>();
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < words[i].Length; j++)
+            {
+                if (!adj.ContainsKey(words[i][j]))
+                {
+                    adj[words[i][j]] = new HashSet<char>();
+                }
+            }
+        }
+
+        for (int i = 0; i < n - 1; i++)
+        {
+            var w1 = words[i];
+            var w2 = words[i + 1]; // срасниваем только соседние слова, нет смысла вравнивать всех со всеми
+            var len = Math.Min(w1.Length, w2.Length);
+            var c = 0;
+            while (c < len && w1[c] == w2[c]) c++; // пропускаем одинаковые буквы
+            if (c >= len && w1.Length > w2.Length) return string.Empty; // Если второе слово префикс первого, то возвращаем false по условию задачи
+            if (c < len)
+            {
+                adj[w1[c]].Add(w2[c]);
+            }
+        }
+
+        var result = new List<char>();
+        var added = new HashSet<char>();
+        var visited = new HashSet<char>();
+        foreach (var ch in adj.Keys)
+        {
+            if (!dfs(ch)) return string.Empty;
+        }
+
+        bool dfs(char c)
+        {
+            if (added.Contains(c)) return true; // TODO: можно обойтись без added, для этого нужно снимать флаг с visited каким-то образом. Изучить как.
+            // засекли цикл, значит определить алфавит невозможно, т.к. топологическая сортировка возможна только в ориентированных графах без циклов
+            if (visited.Contains(c)) return false; 
+            
+            visited.Add(c);
+            foreach (char cc in adj[c])
+            {
+                if (!dfs(cc)) return false;
+            }
+            result.Add(c);
+            added.Add(c);
+            
+            return true;
+        }
+
+        return new string(result.ToArray().Reverse().ToArray());
     }
     #endregion
 
