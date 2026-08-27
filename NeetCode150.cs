@@ -5400,6 +5400,30 @@ public class NeetCode150
 
     #region 2-D Dynamic Programming
 
+    // 62. Unique Paths
+    // There is a robot on an m x n grid. The robot is initially located at the top-left corner (i.e., grid[0][0]).
+    // The robot tries to move to the bottom-right corner (i.e., grid[m - 1][n - 1]).
+    // The robot can only move either down or right at any point in time.
+    // Given the two integers m and n, return the number of possible unique paths that the robot can take to reach the bottom-right corner.
+    // The test cases are generated so that the answer will be less than or equal to 2 * 10^9.
+    #region 62. Unique Paths
+
+    public int UniquePaths(int m, int n)
+    {
+        var cache = new int[m, n];
+        cache[m - 1, n - 1] = 1;
+        return dfs(0, 0);
+
+        int dfs(int i, int j)
+        {
+            if (i >= m || j >= n) return 0;
+            if (cache[i, j] > 0) return cache[i, j];
+            cache[i, j] = dfs(i + 1, j) + dfs(i, j + 1);
+            return cache[i, j];
+        }
+    }
+    #endregion
+
     // 309. Best Time to Buy and Sell Stock with Cooldown
     // You are given an array prices where prices[i] is the price of a given stock on the ith day.
     // Find the maximum profit you can achieve. You may complete as many transactions as you like
@@ -5598,7 +5622,6 @@ public class NeetCode150
         return dp[n1, n2];
     }
     #endregion
-
 
     // 329. Longest Increasing Path in a Matrix
     // Given an m x n integers matrix, return the length of the longest increasing path in matrix.
