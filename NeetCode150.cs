@@ -5362,6 +5362,118 @@ public class NeetCode150
     }
     #endregion
 
+    // 152. Maximum Product Subarray
+    // Given an integer array nums, find a subarray that has the largest product, and return the product.
+    // The test cases are generated so that the answer will fit in a 32-bit integer.
+    // Note that the product of an array with a single element is the value of that element.
+    // Найти максимальное произведение подмассива (непрерывной последовательности) 
+    #region 152. Maximum Product Subarray
+    // Идея: Kadane’s Algorithm, но нужно хранить еще и минимальное значение из-за отрицательных чисел
+    // Т.к. при следующем умножении отрицательное значение может стать положительным и максимальным
+    public int MaxProduct(int[] nums)
+    {
+        var n = nums.Length;
+        var result = nums[0];
+        var max = nums[0];
+        var min = nums[0];
+        for (int i = 1; i < n; i++)
+        {
+            var minProduct = min * nums[i];
+            var maxProduct = max * nums[i];
+            max = Math.Max(nums[i], maxProduct);
+            max = Math.Max(max, minProduct);
+            min = Math.Min(nums[i], minProduct);
+            min = Math.Min(min, maxProduct);
+            result = Math.Max(result, max);
+        }
+
+        return result;
+    }
+    #endregion
+
+    // 139. Word Break
+    // Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
+    // Note that the same word in the dictionary may be reused multiple times in the segmentation.
+    #region 139. Word Break
+    // Идея: DFS + memoization
+    public bool WordBreak(string s, List<string> wordDict)
+    {
+        var n = s.Length;
+        var cache = new bool?[n];
+        return dfs(0);
+
+        bool dfs(int i)
+        {
+            if (i >= n) return true;
+            if (cache[i].HasValue) return cache[i].Value;
+
+            foreach (var word in wordDict)
+            {
+                var len = word.Length;
+                if (len <= n - i)
+                {
+                    var match = true;
+                    for (int k = 0; k < len; k++)
+                    {
+                        if (s[i + k] != word[k])
+                        {
+                            match = false;
+                            break;
+                        }
+                    }
+
+                    if (match && dfs(i + len))
+                    {
+                        cache[i] = true;
+                        return true;
+                    }
+                }
+            }
+
+            cache[i] = false;
+            return false;
+        }
+    }
+    #endregion
+
+    // 300. Longest Increasing Subsequence
+    // Given an integer array nums, return the length of the longest strictly increasing subsequence.
+    // A subsequence is a sequence that can be derived from the given sequence by deleting some or no elements without changing the relative order of the remaining characters.
+    // - For example, "cat" is a subsequence of "crabt".
+    #region 300. Longest Increasing Subsequence
+    // NOT OPTIMAL, но оптимальное решение очень мудреное
+    public int LengthOfLIS(int[] nums)
+    {
+        var n = nums.Length;
+        var cache = new int[n + 1, n + 1];
+        for (int i = 0; i <= n; i++)
+        {
+            for (int j = 0; j <= n; j++)
+            {
+                cache[i, j] = -1;
+            }
+        }
+
+        return dfs(0, n);
+
+        // какаую самую длинную последовательность можно составить, начиная с элемента i
+        // при условии, что предыдущим элементом был j (если j = n, то предыдущего элемента не было)
+        int dfs(int i, int j) 
+        {
+            if (i >= n) return 0;
+            if (cache[i, j] >= 0) return cache[i, j];
+
+            var res = dfs(i + 1, j); // not include this
+            if (j == n || nums[j] < nums[i])
+            {
+                res = Math.Max(res, 1 + dfs(i + 1, i)); // include this
+            }
+            cache[i, j] = res;
+            return res;
+        }
+    }
+    #endregion
+
     // 416. Partition Equal Subset Sum
     // Given an integer array nums, return true if you can partition the array into two subsets such that the sum of the elements in both subsets is equal or false otherwise.
     #region 416. Partition Equal Subset Sum
