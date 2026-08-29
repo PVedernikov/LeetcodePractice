@@ -6040,6 +6040,26 @@ public class NeetCode150
 
     #region Greedy
 
+    // 53. Maximum Subarray
+    // Given an array of integers nums, find the subarray with the largest sum and return the sum.
+    // A subarray is a contiguous non-empty sequence of elements within an array.
+    #region 53. Maximum Subarray
+    // Kadane’s algorithm
+    public int MaxSubArray(int[] nums)
+    {
+        var max = nums[0];
+        var result = nums[0];
+
+        for (int i = 1; i < nums.Length; i++)
+        {
+            max = Math.Max(nums[i], max + nums[i]);
+            result = Math.Max(result, max);
+        }
+
+        return result;
+    }
+    #endregion
+
     // 55. Jump Game
     // You are given an integer array nums. You are initially positioned at the array's first index,
     // and each element in the array represents your maximum jump length at that position

@@ -983,7 +983,7 @@ public static class LeetCodeBlind75
     // Т.е. вернуть максимальное произведение непрерывной подпоследовательности массива
     // Трюк в том, что из-за отрицательных чисел нужно хранить и минимальное произведение на текущем шаге
     // т.к. в случае отричательного числа минимальное произведение может стать максимальным
-    // Kaden's Algorithm but modified to track min product as well
+    // Kadane’s algorithm but modified to track min product as well
     public static int MaxProduct(int[] nums)
     {
         var result = nums[0];
