@@ -5536,6 +5536,33 @@ public class NeetCode150
     }
     #endregion
 
+    // 1143. Longest Common Subsequence
+    // Given two strings text1 and text2, return the length of their longest common subsequence. If there is no common subsequence, return 0.
+    // A subsequence of a string is a new string generated from the original string with some characters (can be none) deleted without changing the relative order of the remaining characters.
+    // - For example, "ace" is a subsequence of "abcde".
+    // A common subsequence of two strings is a subsequence that is common to both strings.
+    #region 1143. Longest Common Subsequence
+    // 2D DP
+    // Complexity: O(m*n)
+    public int LongestCommonSubsequence(string text1, string text2)
+    {
+        var m = text1.Length;
+        var n = text2.Length;
+        var dp = new int[m + 1, n + 1];
+
+        for (int i = 1; i <= m; i++)
+        {
+            for (int j = 1; j <= n; j++)
+            {
+                dp[i, j] = text1[i - 1] == text2[j - 1]
+                    ? dp[i - 1, j - 1] + 1
+                    : Math.Max(dp[i - 1, j], dp[i, j - 1]);
+            }
+        }
+        return dp[m, n];
+    }
+    #endregion
+
     // 309. Best Time to Buy and Sell Stock with Cooldown
     // You are given an array prices where prices[i] is the price of a given stock on the ith day.
     // Find the maximum profit you can achieve. You may complete as many transactions as you like
