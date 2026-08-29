@@ -6115,6 +6115,26 @@ public class NeetCode150
         return result;
     }
 
+    // Greedy solution, cleaner, but less intuitive
+    // O(n) time complexity
+    public int JumpGreedy(int[] nums)
+    {
+        var n = nums.Length;
+        var result = 0;
+        var currMax = 0; // Куда можно допрыгнуть прямо сейчас
+        var nextMax = 0; // Куда можем допрыгнуть следующим прыжком
+        for (int i = 0; i < n - 1; i++)
+        {
+            nextMax = Math.Max(nextMax, i + nums[i]);
+            if (i == currMax) // Мы посмотрели все доступные варианты до currMax, теперь прыгаем дальше
+            {
+                result++;
+                currMax = nextMax;
+            }
+        }
+        return result;
+    }
+
     // DP solution
     // NOT OPTIMAL
     // O(n^2) time complexity
@@ -6139,6 +6159,7 @@ public class NeetCode150
 
         return dp[n - 1];
     }
+
     #endregion
 
     // 134. Gas Station
