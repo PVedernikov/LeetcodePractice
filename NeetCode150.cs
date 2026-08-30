@@ -6435,6 +6435,47 @@ public class NeetCode150
 
     #region Intervals
 
+    // 57. Insert Interval
+    // You are given an array of non-overlapping intervals intervals where intervals[i] = [start_i, end_i] represents the start and the end time of the ith interval.
+    // intervals is initially sorted in ascending order by start_i.
+    // You are given another interval newInterval = [start, end].
+    // Insert newInterval into intervals such that intervals is still sorted in ascending order by start_i and also intervals still does not have any overlapping intervals.
+    // You may merge the overlapping intervals if needed.
+    // Return intervals after adding newInterval.
+    // Note: Intervals are non-overlapping if they have no common point. For example, [1,2] and [3,4] are non-overlapping, but [1,2] and [2,3] are overlapping.
+    #region 57. Insert Interval
+    public int[][] Insert(int[][] intervals, int[] newInterval)
+    {
+        var n = intervals.Length;
+        var result = new List<int[]>();
+        var inserted = false;
+        for (int i = 0; i < n; i++)
+        {
+            if (intervals[i][0] > newInterval[1] && !inserted)
+            {
+                result.Add(newInterval);
+                inserted = true;
+            }
+
+            if (intervals[i][0] > newInterval[1] || intervals[i][1] < newInterval[0])
+            {
+                result.Add(intervals[i]);
+            }
+            else if (!inserted)
+            {
+                newInterval[0] = Math.Min(newInterval[0], intervals[i][0]);
+                newInterval[1] = Math.Max(newInterval[1], intervals[i][1]);
+            }
+        }
+        if (!inserted)
+        {
+            result.Add(newInterval);
+        }
+
+        return result.ToArray();
+    }
+    #endregion
+
     // 1851. Minimum Interval to Include Each Query
     // HARD
     // You are given a 2D integer array intervals, where intervals[i] = [lefti, righti] describes the ith interval starting at lefti and ending at righti (inclusive).
