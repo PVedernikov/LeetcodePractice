@@ -6476,6 +6476,37 @@ public class NeetCode150
     }
     #endregion
 
+    // 56. Merge Intervals
+    // Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals,
+    // and return an array of the non-overlapping intervals that cover all the intervals in the input.
+    // You may return the answer in any order.
+    // Note: Intervals are non-overlapping if they have no common point. For example, [1, 2] and [3, 4] are non-overlapping, but [1, 2] and [2, 3] are overlapping.
+    #region 56. Merge Intervals
+    public int[][] Merge(int[][] intervals)
+    {
+        var n = intervals.Length;
+        Array.Sort(intervals, (a, b) => a[0].CompareTo(b[0]));
+        var result = new List<int[]>();
+        var curr = intervals[0];
+        for (int i = 1; i < n; i++)
+        {
+            var next = intervals[i];
+            if (curr[1] < next[0])
+            {
+                result.Add(curr);
+                curr = next;
+            }
+            else
+            {
+                curr[1] = Math.Max(curr[1], next[1]);
+            }
+        }
+        result.Add(curr);
+        return result.ToArray();
+    }
+    #endregion
+
+
     // 1851. Minimum Interval to Include Each Query
     // HARD
     // You are given a 2D integer array intervals, where intervals[i] = [lefti, righti] describes the ith interval starting at lefti and ending at righti (inclusive).
