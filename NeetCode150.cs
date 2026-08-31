@@ -6744,6 +6744,91 @@ public class NeetCode150
     }
     #endregion
 
+
+    // 73. Set Matrix Zeroes
+    // Given an m x n matrix of integers matrix, if an element is 0, set its entire row and column to 0's.
+    // You must update the matrix in-place.
+    // Follow up: Could you solve it using O(1) space?
+    // Идея: храним нужные строки в первом столбце, а столбцы в первой строке, т.е. используем первую строку и столбец как кеш.
+    // Отдельно запоминаем, нужно ли заполнить нулями первый столбец и первую строку
+    #region 73. Set Matrix Zeroes
+    public void SetZeroes(int[][] matrix)
+    {
+        var m = matrix.Length;
+        var n = matrix[0].Length;
+
+        var firstRow = false;
+        for (int j = 0; j < n; j++)
+        {
+            if (matrix[0][j] == 0)
+            {
+                firstRow = true;
+                break;
+            }
+        }
+
+        var firstCol = false;
+        for (int i = 0; i < m; i++)
+        {
+            if (matrix[i][0] == 0)
+            {
+                firstCol = true;
+                break;
+            }
+        }
+
+        for (int i = 1; i < m; i++)
+        {
+            for (int j = 1; j < n; j++)
+            {
+                if (matrix[i][j] == 0)
+                {
+                    matrix[0][j] = 0;
+                    matrix[i][0] = 0;
+                }
+            }
+        }
+
+        for (int i = 1; i < m; i++)
+        {
+            if (matrix[i][0] == 0)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+
+        for (int j = 0; j < n; j++)
+        {
+            if (matrix[0][j] == 0)
+            {
+                for (int i = 0; i < m; i++)
+                {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+
+        if (firstRow)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                matrix[0][j] = 0;
+            }
+        }
+
+        if (firstCol)
+        {
+            for (int i = 0; i < m; i++)
+            {
+                matrix[i][0] = 0;
+            }
+        }
+    }
+
+    #endregion
     // 202. Happy Number
     // Write an algorithm to determine if a number n is happy.
     // A happy number is a number defined by the following process:
