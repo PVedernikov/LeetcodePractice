@@ -5368,7 +5368,7 @@ public class NeetCode150
     // Note that the product of an array with a single element is the value of that element.
     // Найти максимальное произведение подмассива (непрерывной последовательности) 
     #region 152. Maximum Product Subarray
-    // Идея: Kadane’s Algorithm, но нужно хранить еще и минимальное значение из-за отрицательных чисел
+    // Идея: Kadane's Algorithm, но нужно хранить еще и минимальное значение из-за отрицательных чисел
     // Т.к. при следующем умножении отрицательное значение может стать положительным и максимальным
     public int MaxProduct(int[] nums)
     {
@@ -6082,7 +6082,6 @@ public class NeetCode150
     }
     #endregion
 
-
     // 45. Jump Game II
     // You are given a 0-indexed array of integers nums of length n. You are initially positioned at index 0.
     // Each element nums[i] represents the maximum length of a forward jump from index i.
@@ -6476,6 +6475,7 @@ public class NeetCode150
     }
     #endregion
 
+
     // 56. Merge Intervals
     // Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals,
     // and return an array of the non-overlapping intervals that cover all the intervals in the input.
@@ -6506,6 +6506,84 @@ public class NeetCode150
     }
     #endregion
 
+    // 435. Non-overlapping Intervals
+    // Given an array of intervals intervals where intervals[i] = [start_i, end_i],
+    // return the minimum number of intervals you need to remove to make the rest of the intervals non-overlapping.
+    // Note: Intervals are non-overlapping even if they have a common point.
+    // For example, [1, 3] and [2, 4] are overlapping, but [1, 2] and [2, 3] are non-overlapping.
+    #region 435. Non-overlapping Intervals
+    // Greedy
+    public int EraseOverlapIntervals(int[][] intervals)
+    {
+        var n = intervals.Length;
+        Array.Sort(intervals, (a, b) => a[1].CompareTo(b[1]));
+        var prevEnd = int.MinValue;
+        var result = 0;
+        foreach (var interval in intervals)
+        {
+            if (prevEnd <= interval[0])
+            {
+                prevEnd = interval[1];
+            }
+            else
+            {
+                result++;
+            }
+        }
+
+        return result;
+    }
+    #endregion
+
+    // 252. Meeting Rooms
+    // Given an array of meeting time interval objects consisting of start and end times [[start_1,end_1],[start_2,end_2],...] (start_i < end_i),
+    // determine if a person could add all meetings to their schedule without any conflicts.
+    // The intervals may be provided in any order.
+    // Note: (0,8),(8,10) is not considered a conflict at 8
+    #region 252. Meeting Rooms
+    // Идея простая: сортируем все интервалы и смотрим, есть ли пересекающиеся
+    public bool CanAttendMeetings(List<Interval> intervals)
+    {
+        var intrvls = intervals.OrderBy(x => x.start);
+        var prevEnd = int.MinValue;
+        foreach (var interval in intrvls)
+        {
+            if (interval.start < prevEnd) return false;
+            prevEnd = interval.end;
+        }
+        return true;
+    }
+    #endregion
+
+    // 253. Meeting Rooms II
+    // Given an array of meeting time interval objects consisting of start and end times [[start_1,end_1],[start_2,end_2],...] (start_i < end_i),
+    // find the minimum number of rooms required to schedule all meetings without any conflicts.
+    // Note: (0,8),(8,10) is NOT considered a conflict at 8.
+    #region 253. Meeting Rooms II
+    // Идея: сортируем интервалы по времени начала.
+    // Идем последовательно по интервалам, и кладем их в min-heap. Параллельно удаляем из кучи интервалы, которые уже закончились
+    // Максимальный размеру кучи - ответ
+    public int MinMeetingRooms(List<Interval> intervals)
+    {
+        var intrvls = intervals.OrderBy(x => x.start);
+
+        var result = 0;
+        var heap = new PriorityQueue<Interval, int>();
+
+        foreach (var interval in intrvls)
+        {
+            heap.Enqueue(interval, interval.end);
+            while (heap.Count > 0 && heap.Peek().end <= interval.start)
+            {
+                heap.Dequeue();
+            }
+            result = Math.Max(result, heap.Count);
+        }
+
+        return result;
+    }
+
+    #endregion
 
     // 1851. Minimum Interval to Include Each Query
     // HARD
@@ -6523,6 +6601,7 @@ public class NeetCode150
     // и удаляем из PriorityQueue все интервалы, которые заканчиваются до точки запроса.
     // Если PriorityQueue не пустой, то верхний элемент - это минимальный интервал, который покрывает запрос.
     #region 1851. Minimum Interval to Include Each Query
+
     #region with custom comparator
     public int[] MinInterval(int[][] intervals, int[] queries)
     {
@@ -6836,4 +6915,14 @@ public class NeetCode150
     #endregion
 
     #endregion
+}
+
+public class Interval
+{
+public int start, end;
+    public Interval(int start, int end)
+    {
+        this.start = start;
+        this.end = end;
+    }
 }

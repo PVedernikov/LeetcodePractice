@@ -1,0 +1,8 @@
+﻿Задачи, которые вызвали сложность, и которые стоит перерешать в будущем:
+
+435. Non-overlapping Intervals - не понятно, почему работает решение. Greedy!!!
+45. Jump Game II - мудреное Greedy-решение
+152. Maximum Product Subarray - не стандартный Kadane's Algorithm
+332. Reconstruct Itinerary - Эйлеров путь, редкая задача
+743. Network Delay Time - важно распознасть Дейкстру
+22. Generate Parentheses - не решил нормально пока
