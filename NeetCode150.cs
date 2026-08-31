@@ -6722,6 +6722,7 @@ public class NeetCode150
     // You must rotate the matrix in-place. Do not allocate another 2D matrix and do the rotation.
     #region 48. Rotate Image
     // Главное, не запутиться в интексах. Возможно, удобнее рещшать через offset, а не через l, r.
+    // В LeetCodeBlind75 более понятно, смотри там.
     public void Rotate(int[][] matrix)
     {
         var n = matrix.Length;
