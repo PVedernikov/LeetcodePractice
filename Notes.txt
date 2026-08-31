@@ -8,3 +8,5 @@
 22. Generate Parentheses - не решил нормально пока
 778. Swim in Rising Water - распознать Дейкстру, но там нетивиальная Дейкстра
 300. Longest Increasing Subsequence
+239. Sliding Window Maximum - monotonic queue
+1851. Minimum Interval to Include Each Query
