@@ -6717,6 +6717,32 @@ public class NeetCode150
 
     #region Math & Geometry
 
+    // 48. Rotate Image
+    // Given a square n x n matrix of integers matrix, rotate it by 90 degrees clockwise.
+    // You must rotate the matrix in-place. Do not allocate another 2D matrix and do the rotation.
+    #region 48. Rotate Image
+    // Главное, не запутиться в интексах. Возможно, удобнее рещшать через offset, а не через l, r.
+    public void Rotate(int[][] matrix)
+    {
+        var n = matrix.Length;
+        var l = 0;
+        var r = n - 1;
+        while (l < r)
+        {
+            for (int i = l; i < r; i++)
+            {
+                var tl = matrix[l][i];
+                matrix[l][i] = matrix[r + l - i][l];
+                matrix[r + l - i][l] = matrix[r][r + l - i];
+                matrix[r][r + l - i] = matrix[i][r];
+                matrix[i][r] = tl;
+            }
+            l++;
+            r--;
+        }
+    }
+    #endregion
+
     // 202. Happy Number
     // Write an algorithm to determine if a number n is happy.
     // A happy number is a number defined by the following process:
