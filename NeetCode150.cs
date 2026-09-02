@@ -6745,6 +6745,48 @@ public class NeetCode150
     #endregion
 
 
+    // 54. Spiral Matrix
+    // Given an m x n matrix of integers matrix, return a list of all elements within the matrix in spiral order.
+    #region 54. Spiral Matrix
+    // TODO: Blind75 solution is more elegant, check it out. Idea: set left, right, top, bottom boundaries and move them inwards.
+    public List<int> SpiralOrder(int[][] matrix)
+    {
+        var m = matrix.Length;
+        var n = matrix[0].Length;
+        var min = Math.Min(m, n);
+        var offset = min / 2;
+        offset += min % 2; // for odd dimensions to cover middle
+        var result = new List<int>();
+
+        for (int d = 0; d < offset; d++)
+        {
+            var top = d;
+            var left = d;
+            var bottom = m - 1 - d;
+            var right = n - 1 - d;
+
+            for (int j = left; j <= right; j++)
+            {
+                result.Add(matrix[top][j]);
+            }
+            for (int i = top + 1; i <= bottom; i++)
+            {
+                result.Add(matrix[i][right]);
+            }
+            for (int j = right - 1; j >= left && top < bottom; j--)
+            {
+                result.Add(matrix[bottom][j]);
+            }
+            for (int i = bottom - 1; i > top && left < right; i--)
+            {
+                result.Add(matrix[i][left]);
+            }
+        }
+
+        return result;
+    }
+    #endregion
+
     // 73. Set Matrix Zeroes
     // Given an m x n matrix of integers matrix, if an element is 0, set its entire row and column to 0's.
     // You must update the matrix in-place.
@@ -6829,6 +6871,7 @@ public class NeetCode150
     }
 
     #endregion
+ 
     // 202. Happy Number
     // Write an algorithm to determine if a number n is happy.
     // A happy number is a number defined by the following process:
@@ -6858,6 +6901,86 @@ public class NeetCode150
             n = newN;
         }
         return false;
+    }
+    #endregion
+
+    // 66. Plus One
+    // You are given an integer array digits, where each digits[i] is the ith digit of a large integer.
+    // It is ordered from most significant to least significant digit, and it will not contain any leading zero.
+    // Return the digits of the given integer after incrementing it by one.
+    #region 66. Plus One
+    // Меняем исходный массив
+    public int[] PlusOne(int[] digits)
+    {
+        var n = digits.Length;
+        var carry = true;
+        for (int i = n - 1; i >= 0; i--)
+        {
+            if (digits[i] == 9)
+            {
+                digits[i] = 0;
+            }
+            else
+            {
+                digits[i] = digits[i] + 1;
+                carry = false;
+                break;
+            }
+        }
+
+        if (carry) // оказалить все девятки, нужно добавить 1 в начало массива
+        {
+            var result = new int[n + 1];
+            result[0] = 1;
+            return result;
+        }
+
+        return digits;
+    }
+
+    // Без изменения исходного массива
+    public int[] PlusOne_mutate(int[] digits)
+    {
+        var n = digits.Length;
+        var size = n + 1;
+        for (int i = n - 1; i >= 0; i--)
+        {
+            if (digits[i] < 9)
+            {
+                size = n;
+                break;
+            }
+        }
+
+        var result = new int[size];
+        if (size > n)
+        {
+            result[0] = 1;
+            return result;
+        }
+
+        var carry = true;
+        for (int i = n - 1; i >= 0; i--)
+        {
+            if (carry)
+            {
+                if (digits[i] == 9)
+                {
+                    result[i] = 0;
+                }
+                else
+                {
+                    result[i] = digits[i] + 1;
+                    carry = false;
+                }
+            }
+            else
+            {
+                result[i] = digits[i];
+            }
+        }
+
+        return result;
     }
     #endregion
 

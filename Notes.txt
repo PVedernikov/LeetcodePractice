@@ -10,3 +10,4 @@
 300. Longest Increasing Subsequence
 239. Sliding Window Maximum - monotonic queue
 1851. Minimum Interval to Include Each Query
+2013. Detect Squares - понять как правильно хранить квадраты и как их искать. Учловия задачи читать внимательно!!!
