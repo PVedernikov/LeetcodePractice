@@ -3827,6 +3827,226 @@ public class NeetCode150
     #endregion
     #endregion
 
+    #region Tries
+
+    // 208. Implement Trie (Prefix Tree)
+    // A prefix tree (also known as a trie) is a tree data structure used to efficiently store and retrieve keys in a set of strings.
+    // Some applications of this data structure include auto-complete and spell checker systems.
+    // Implement the PrefixTree class:
+    // - PrefixTree() Initializes the prefix tree object.
+    // - void insert(String word) Inserts the string word into the prefix tree.
+    // - boolean search(String word) Returns true if the string word is in the prefix tree (i.e., was inserted before), and false otherwise.
+    // - boolean startsWith(String prefix) Returns true if there is a previously inserted string word that has the prefix prefix, and false otherwise.
+    #region 208. Implement Trie (Prefix Tree)
+    // this is good solution, use it.
+    public class PrefixTree
+    {
+        private PrefixTree[] chars = new PrefixTree[26];
+
+        private bool isEnd = false;
+
+        public PrefixTree() { }
+
+        public void Insert(string word)
+        {
+            var current = this;
+            var n = word.Length;
+            for (int i = 0; i < n; i++)
+            {
+                var j = word[i] - 'a';
+                if (current.chars[j] is null)  current.chars[j] = new PrefixTree();
+                current = current.chars[j];
+            }
+            current.isEnd = true;
+        }
+
+        public bool Search(string word)
+        {
+            var current = this;
+            var n = word.Length;
+            for (int i = 0; i < n; i++)
+            {
+                var j = word[i] - 'a';
+                if (current.chars[j] is null) return false;
+                current = current.chars[j];
+            }
+            return current.isEnd;
+        }
+
+        public bool StartsWith(string prefix)
+        {
+            var current = this;
+            var n = prefix.Length;
+            for (int i = 0; i < n; i++)
+            {
+                var j = prefix[i] - 'a';
+                if (current.chars[j] is null) return false;
+                current = current.chars[j];
+            }
+            return true;
+        }
+    }
+
+    // Рекурсивное решение, но можно решить итеративно.
+    public class PrefixTree_recursive
+    {
+        private PrefixTree_recursive[] next = new PrefixTree_recursive[26];
+        private bool isEnd = false;
+        public PrefixTree_recursive()
+        {
+        }
+
+        public void Insert(string word)
+        {
+            Insert(word, 0);
+        }
+
+        private void Insert(string word, int i)
+        {
+            var n = word.Length;
+            if (i < 0 || i >= n) return;
+
+            var j = word[i] - 'a';
+            if (next[j] is null)
+            {
+                next[j] = new PrefixTree_recursive();
+            }
+
+            if (i == n - 1)
+            {
+                next[j].isEnd = true;
+                return;
+            }
+
+            next[j].Insert(word, i + 1);
+        }
+
+        public bool Search(string word)
+        {
+            return Search(word, 0);
+        }
+        private bool Search(string word, int i)
+        {
+            var n = word.Length;
+            if (i < 0 || i >= n) return false;
+            var j = word[i] - 'a';
+            if (i == n - 1)
+                return next[j] is not null
+                    && next[j].isEnd;
+
+            if (next[j] is null) return false;
+            return next[j].Search(word, i + 1);
+        }
+
+        public bool StartsWith(string prefix)
+        {
+            return StartsWith(prefix, 0);
+        }
+        private bool StartsWith(string prefix, int i)
+        {
+            var n = prefix.Length;
+            if (i < 0 || i >= n) return false;
+            var j = prefix[i] - 'a';
+            if (i == n - 1) return next[j] is not null;
+            if (next[j] is null) return false;
+            return next[j].StartsWith(prefix, i + 1);
+        }
+    }
+    #endregion
+
+    // 211. Design Add and Search Words Data Structure
+    // Design a data structure that supports adding new words and searching for existing words.
+    // Implement the WordDictionary class:
+    // - void addWord(word) Adds word to the data structure.
+    // - bool search(word) Returns true if there is any string in the data structure that matches word or false otherwise.
+    //   word may contain dots '.' where dots can be matched with any letter.
+    #region 211. Design Add and Search Words Data Structure
+    
+    // Рекурсивное решение, но можно решить итеративно.
+    public class WordDictionary
+    {
+        private WordDictionary[] next = new WordDictionary[26];
+        private bool isEnd = false;
+
+        public WordDictionary() { }
+
+        public void AddWord(string word)
+        {
+            AddWord(word, 0);
+        }
+
+        private void AddWord(string word, int i)
+        {
+            var n = word.Length;
+            if (i < 0 || i >= n) return;
+            var j = word[i] - 'a';
+
+            if (next[j] is null)
+                next[j] = new WordDictionary();
+
+            if (i == n - 1)
+            {
+                next[j].isEnd = true;
+                return;
+            }
+
+            next[j].AddWord(word, i + 1);
+        }
+
+        public bool Search(string word)
+        {
+            return Search(word, 0);
+        }
+
+        private bool Search(string word, int i)
+        {
+            var n = word.Length;
+            if (i < 0 || i >= n) return false;
+
+            if (word[i] == '.')
+            {
+                if (i == n - 1)
+                {
+                    for (int j = 0; j < 26; j++)
+                    {
+                        if (next[j] is not null
+                            && next[j].isEnd)
+                            return true;
+                    }
+                    return false;
+                }
+                else
+                {
+                    for (int j = 0; j < 26; j++)
+                    {
+                        if (next[j] is not null
+                            && next[j].Search(word, i + 1))
+                            return true;
+                    }
+                    return false;
+                }
+            }
+            else
+            {
+                var j = word[i] - 'a';
+                if (next[j] is null) return false;
+                if (i == n - 1)
+                    return next[j].isEnd;
+
+                return next[j].Search(word, i + 1);
+            }
+        }
+    }
+
+    #endregion
+
+    // TODO: 212. Word Search II
+    #region
+    #endregion
+
+
+    #endregion
+
     #region Graphs
 
     // 200. Number of Islands
