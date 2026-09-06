@@ -3839,6 +3839,7 @@ public class NeetCode150
     // - boolean startsWith(String prefix) Returns true if there is a previously inserted string word that has the prefix prefix, and false otherwise.
     #region 208. Implement Trie (Prefix Tree)
     // this is good solution, use it.
+    // TODO: дополнительная идея, хранить в самом ноде готовое слово, если нода isEnd = true
     public class PrefixTree
     {
         private PrefixTree[] chars = new PrefixTree[26];
@@ -4040,8 +4041,87 @@ public class NeetCode150
 
     #endregion
 
-    // TODO: 212. Word Search II
-    #region
+    // 212. Word Search II
+    // Given a 2-D grid of characters board and a list of strings words, return all words that are present in the grid.
+    // For a word to be present it must be possible to form the word with a path in the board with horizontally or vertically neighboring cells.
+    // The same cell may not be used more than once in a word.
+    // HARD
+    #region 212. Word Search II
+    public List<string> FindWords(char[][] board, string[] words)
+    {
+        var m = board.Length;
+        var n = board[0].Length;
+        var visited = new bool[m, n];
+        var di = new int[] { 0, 0, 1, -1 };
+        var dj = new int[] { 1, -1, 0, 0 };
+        var result = new List<string>();
+        var trie = new Trie212_NC150();
+        for (int i = 0; i < words.Length; i++)
+        {
+            trie.Insert(words[i]);
+        }
+
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                dfs(i, j, trie);
+            }
+        }
+
+        return result;
+
+        void dfs(int bi, int bj, Trie212_NC150 node)
+        {
+            if (visited[bi, bj]) return;
+            var c = board[bi][bj] - 'a';
+            if (node.chars[c] is null) return;
+            var nextNode = node.chars[c];
+            visited[bi, bj] = true;
+            if (!string.IsNullOrEmpty(nextNode.word))
+            {
+                result.Add(nextNode.word);
+                // Обнуляем признак конца слова, чтобы не добавлять его в результат повторно, если мы снова наткнемся на него в другой части доски
+                // TODO: реализовать полное удаление слова из Trie
+                nextNode.word = string.Empty; 
+            }
+
+            for (int d = 0; d < 4; d++)
+            {
+                var bii = bi + di[d];
+                var bjj = bj + dj[d];
+                if (bii < 0 || bii >= m || bjj < 0 || bjj >= n) continue;
+                dfs(bii, bjj, nextNode);
+            }
+
+            visited[bi, bj] = false;
+        }
+    }
+
+    public class Trie212_NC150
+    {
+        public Trie212_NC150[] chars = new Trie212_NC150[26];
+        public string word = string.Empty; // Служит признаком конца слова, если не пустая строка, значит это конец слова и в ноде хранится само слово
+        public Trie212_NC150() { }
+
+        public void Insert(string word)
+        {
+            var current = this;
+            var n = word.Length;
+            for (int i = 0; i < n; i++)
+            {
+                var j = word[i] - 'a';
+                if (current.chars[j] is null)
+                {
+                    current.chars[j] = new Trie212_NC150();
+                }
+                current = current.chars[j];
+            }
+            current.word = word;
+        }
+    }
+    
+
     #endregion
 
 
@@ -7368,6 +7448,25 @@ public class NeetCode150
         }
     }
     #endregion
+
+    #endregion
+
+    #region Bit Manipulation
+
+    // 191. Number of 1 Bits
+    // Given a positive integer n, write a function that returns the number of set bits in its binary representation (also known as the Hamming weight).
+    #region 191. Number of 1 Bits
+    public int HammingWeight(uint n)
+    {
+        int result = 0;
+        for (int i = 0; i < 32; i++)
+        {
+            result += (n & (1u << i)) != 0 ? 1 : 0; // 1u is just to make sure we are using unsigned int for the shift, no practical difference here
+        }
+        return result;
+    }
+    #endregion
+
 
     #endregion
 }

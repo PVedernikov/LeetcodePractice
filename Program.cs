@@ -2508,13 +2508,20 @@ internal class Program
         //Console.WriteLine(Convert.ToString(50, 2));
         //Console.WriteLine((char)('A' - 'A' + 'a'));
 
-        Console.WriteLine((int)'(');
-        Console.WriteLine((int)'{');
-        Console.WriteLine((int)'[');
+        //Console.WriteLine((int)'(');
+        //Console.WriteLine((int)'{');
+        //Console.WriteLine((int)'[');
 
-        Console.WriteLine(')' - '(');
-        Console.WriteLine('}' - '{');
-        Console.WriteLine(']' - '[');
+        //Console.WriteLine(')' - '(');
+        //Console.WriteLine('}' - '{');
+        //Console.WriteLine(']' - '[');
+
+        Solution.FindWords([
+  ['a','b','c','d'],
+  ['s','a','a','t'],
+  ['a','c','k','e'],
+  ['a','c','d','n']
+], ["bat", "cat", "back", "backend", "stack"]);
     }
 }
 
@@ -2709,5 +2716,148 @@ public class TextEditor
             Number = 0,
             Chars = Array.Empty<char>()
         };
+    }
+}
+
+
+public static class Solution
+{
+    public static List<string> FindWords(char[][] board, string[] words)
+    {
+        var m = board.Length;
+        var n = board[0].Length;
+        var visited = new bool[m, n];
+        var di = new int[] { 0, 0, 1, -1 };
+        var dj = new int[] { 1, -1, 0, 0 };
+        var wordsLen = words.Length;
+        var result = new List<string>();
+        var trie = new Trie();
+        for (int i = 0; i < wordsLen; i++)
+        {
+            trie.Insert(words[i]);
+        }
+
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                dfs(i, j, trie, new List<char>());
+            }
+        }
+
+        return result;
+
+        void dfs(int bi, int bj, Trie node, List<char> wrd)
+        {
+            if (node is not null && node.isEnd)
+            {
+                // remove word from trie here
+                var str = new string(wrd.ToArray());
+                trie.Remove(str);
+                result.Add(str);
+            }
+
+            if (visited[bi, bj]) return;
+            var c = board[bi][bj] - 'a';
+            if (node.chars[c] is null) return;
+
+            visited[bi, bj] = true;
+            wrd.Add(board[bi][bj]);
+            for (int d = 0; d < 4; d++)
+            {
+                var bii = bi + di[d];
+                var bjj = bj + dj[d];
+                if (bii < 0 || bii >= m || bjj < 0 || bjj >= n) continue;
+                dfs(bii, bjj, node.chars[c], wrd);
+            }
+            wrd.RemoveAt(wrd.Count - 1);
+            visited[bi, bj] = false;
+        }
+    }
+
+
+
+    public class Trie
+    {
+        public Trie[] chars = new Trie[26];
+
+        public bool isEnd = false;
+
+        public int count = 0;
+
+        public Trie() { }
+
+        public void Insert(string word)
+        {
+            var current = this;
+            var n = word.Length;
+            for (int i = 0; i < n; i++)
+            {
+                var j = word[i] - 'a';
+                if (current.chars[j] is null)
+                {
+                    current.count++;
+                    current.chars[j] = new Trie();
+                }
+                current = current.chars[j];
+            }
+            current.isEnd = true;
+        }
+
+        public void Remove(string word)
+        {
+            var current = this;
+            var n = word.Length;
+            var stack = new Stack<(Trie, int)>();
+            for (int i = 0; i < n; i++)
+            {
+                var j = word[i] - 'a';
+                if (current.chars[j] is null) return;
+                stack.Push((current, j));
+                current = current.chars[j];
+            }
+            current.isEnd = false;
+            if (current.count > 0) return;
+
+            while (stack.Count > 0)
+            {
+                (var curr, var j) = stack.Pop();
+                if (curr.count <= 1)
+                {
+                    curr.count = 0;
+                    curr.chars[j] = null;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+        }
+        // public bool Search(string word)
+        // {
+        //     var current = this;
+        //     var n = word.Length;
+        //     for (int i = 0; i < n; i++)
+        //     {
+        //         var j = word[i] - 'a';
+        //         if (current.chars[j] is null) return false;
+        //         current = current.chars[j];
+        //     }
+        //     return current.isEnd;
+        // }
+
+        // public bool StartsWith(string prefix)
+        // {
+        //     var current = this;
+        //     var n = prefix.Length;
+        //     for (int i = 0; i < n; i++)
+        //     {
+        //         var j = prefix[i] - 'a';
+        //         if (current.chars[j] is null) return false;
+        //         current = current.chars[j];
+        //     }
+        //     return true;
+        // }
     }
 }
