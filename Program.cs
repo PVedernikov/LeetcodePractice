@@ -2516,12 +2516,16 @@ internal class Program
         //Console.WriteLine('}' - '{');
         //Console.WriteLine(']' - '[');
 
-        Solution.FindWords([
-  ['a','b','c','d'],
-  ['s','a','a','t'],
-  ['a','c','k','e'],
-  ['a','c','d','n']
-], ["bat", "cat", "back", "backend", "stack"]);
+        long cache = 0;
+        Console.WriteLine((int)(1 << 2));
+        Console.WriteLine((int)(1 << -2));
+
+        //        Solution.FindWords([
+        //  ['a','b','c','d'],
+        //  ['s','a','a','t'],
+        //  ['a','c','k','e'],
+        //  ['a','c','d','n']
+        //], ["bat", "cat", "back", "backend", "stack"]);
     }
 }
 

@@ -7453,6 +7453,23 @@ public class NeetCode150
 
     #region Bit Manipulation
 
+    // 136. Single Number
+    // Given a non-empty array of integers nums, every element appears twice except for one. Find that single one.
+    // You must implement a solution with a linear runtime complexity and use only constant extra space.
+    #region 136. Single Number
+    // Идея: повторые номера применятся дважды и вернут биты к исходному значению, а уникальный номер применится один раз и останется в результате
+    public int SingleNumber(int[] nums)
+    {
+        int result = 0;
+        for (int i = 0; i < nums.Length; i++)
+        {
+            result ^= nums[i];
+        }
+
+        return result;
+    }
+    #endregion
+
     // 191. Number of 1 Bits
     // Given a positive integer n, write a function that returns the number of set bits in its binary representation (also known as the Hamming weight).
     #region 191. Number of 1 Bits
