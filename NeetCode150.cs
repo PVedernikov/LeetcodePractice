@@ -7512,6 +7512,27 @@ public class NeetCode150
     }
     #endregion
 
+    // 190. Reverse Bits
+    // Given a 32-bit unsigned integer n, reverse the bits of the binary representation of n and return the result.
+    // Example 1:
+    // Input: n = 00000000000000000000000000010101
+    // Output: 2818572288 (10101000000000000000000000000000)
+    #region 190. Reverse Bits
+    public uint ReverseBits(uint n)
+    {
+        uint result = 0;
+        for (int i = 0; i < 32; i++)
+        {
+            if ((n & (1u << i)) > 0)
+            {
+                result |= ((1u << 31) >> i);
+                //result |= 1u << (31 - i);
+            }
+        }
+        return result;
+    }
+    #endregion
+
     #endregion
 }
 

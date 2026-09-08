@@ -2516,9 +2516,12 @@ internal class Program
         //Console.WriteLine('}' - '{');
         //Console.WriteLine(']' - '[');
 
-        long cache = 0;
-        Console.WriteLine((int)(1 << 2));
-        Console.WriteLine((int)(1 << -2));
+        var n = uint.MaxValue - 2;
+        Console.WriteLine(Helper.GetBitsString(3221159936));
+        Console.WriteLine(Helper.GetBitsString(1u << 4));
+        Console.WriteLine(Helper.GetBitsString(n & (1u << 4)));
+        Console.WriteLine(Helper.GetBitsString((n & (1u << 4)) << (31 - 8)));
+
 
         //        Solution.FindWords([
         //  ['a','b','c','d'],
