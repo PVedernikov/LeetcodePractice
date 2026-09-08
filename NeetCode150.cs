@@ -7484,6 +7484,33 @@ public class NeetCode150
     }
     #endregion
 
+    // 338. Counting Bits
+    // Given an integer n, count the number of 1's in the binary representation of every number in the range [0, n].
+    // Return an array output where output[i] is the number of 1's in the binary representation of i.
+    #region 338. Counting Bits
+    // Идея: количество бит в числе i равно количеству бит в числе i/2 плюс младший бит числа i, если он есть
+    public int[] CountBits(int n)
+    {
+        var result = new int[n + 1];
+        for (int i = 1; i <= n; i++)
+        {
+            result[i] = result[i / 2] + i % 2;
+        }
+
+        return result;
+        /*
+        0 -    0
+        1 -    1
+        2 -   10
+        3 -   11
+        4 -  100
+        5 -  101
+        6 -  110
+        7 -  111
+        8 - 1000
+        */
+    }
+    #endregion
 
     #endregion
 }

@@ -2533,6 +2533,7 @@ public static class LeetCodeBlind75
     // Идея: вычитать из числа i степень двойки pow2 (максимальная степень, которая меньше i).
     // Фактически мы убираем старшую единицу, оставшееся число уже должно быть посчитано.
     // Соответственно берем result[i] = 1 + result[i - pow2]. По ходу обновляем pow2.
+    // Note: решение в NeetCode150 лучше.
     #region 338. Counting Bits
 
     public static int[] CountBits(int n)
