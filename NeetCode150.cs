@@ -2700,6 +2700,40 @@ public class NeetCode150
     }
     #endregion
 
+    // 105. Construct Binary Tree from Preorder and Inorder Traversal
+    // You are given two integer arrays preorder and inorder.
+    // - preorder is the preorder traversal of a binary tree
+    // - inorder is the inorder traversal of the same tree
+    // - Both arrays are of the same size and consist of unique values.
+    // Rebuild the binary tree from the preorder and inorder traversals and return its root.
+    #region 105. Construct Binary Tree from Preorder and Inorder Traversal
+    // Идея: при preorder обходе root всегда 0-й элемент.
+    // Далее, имея inorder, можно вычислить, где root находится в нем. Соответственно, всё что слева - это левое поддерево, а всё что справа - правое поддерево.
+    // Вычисляем размер левого поддерева, чтобы понять, где в preorder начинается правое поддерево (левое начинается сразу за корнем).
+    public TreeNode BuildTree(int[] preorder, int[] inorder)
+    {
+        var n = preorder.Length;
+        var indexesIn = new Dictionary<int, int>();
+        for (int i = 0; i < n; i++)
+        {
+            indexesIn[inorder[i]] = i; // Запоминаем индекс каждого элемента в inorder, чтобы быстро находить его
+        }
+        return dfs(0, 0, n - 1);
+
+        TreeNode dfs(int preI, int l, int r) // preI - индекс корня в preorder, l и r - границы подмассива в inorder
+        {
+            if (l > r) return null; // Пустое поддерево
+            var root = new TreeNode(preorder[preI]);
+            var m = indexesIn[root.val]; // Находим индекс корня в inorder
+            var len = m - l; // Размер левого поддерева
+            root.left = dfs(preI + 1, l, m - 1); // Левое поддерево
+            root.right = dfs(preI + len + 1, m + 1, r); // Правое поддерево
+
+            return root;
+        }
+    }
+    #endregion
+
     // 124. Binary Tree Maximum Path Sum
     // A path in a binary tree is a sequence of nodes where each pair of adjacent nodes in the sequence has an edge connecting them.
     // A node can only appear in the sequence at most once. Note that the path does not need to pass through the root.
@@ -2754,7 +2788,75 @@ public class NeetCode150
     //    }
     //}
     #endregion
-    
+
+    // 297. Serialize and Deserialize Binary Tree
+    // Implement an algorithm to serialize and deserialize a binary tree.
+    // Serialization is the process of converting an in-memory structure into a sequence of bits so that it can be stored or sent across a network
+    // to be reconstructed later in another computer environment.
+    // You just need to ensure that a binary tree can be serialized to a string and this string can be deserialized to the original tree structure.
+    // There is no additional restriction on how your serialization/deserialization algorithm should work.
+    // Note: The input/output format in the examples is the same as how NeetCode serializes a binary tree. You do not necessarily need to follow this format.
+    // HARD
+    #region 297. Serialize and Deserialize Binary Tree
+    // Идея: BFS, похоже, что легче всего сохранять дерево поуровнево
+    public class Codec
+    {
+        // Encodes a tree to a single string.
+        public string Serialize(TreeNode root)
+        {
+            var result = new List<string>();
+            var queue = new Queue<TreeNode>();
+            queue.Enqueue(root);
+            while (queue.Count > 0)
+            {
+                var node = queue.Dequeue();
+                if (node is null)
+                {
+                    result.Add("#");
+                    continue;
+                }
+                result.Add(node.val.ToString());
+                queue.Enqueue(node.left);
+                queue.Enqueue(node.right);
+            }
+
+            return string.Join(",", result.ToArray());
+        }
+
+        // Decodes your encoded data to tree.
+        public TreeNode Deserialize(string data)
+        {
+            var nodes = data.Split(",");
+            var n = nodes.Length;
+            if (n == 0 || nodes[0] == "#") return null;
+            var result = new TreeNode(int.Parse(nodes[0]));
+            var queue = new Queue<TreeNode>();
+            queue.Enqueue(result);
+
+            var i = 1;
+            while (queue.Count > 0)
+            {
+                var node = queue.Dequeue();
+                if (nodes[i] != "#")
+                {
+                    node.left = new TreeNode(int.Parse(nodes[i]));
+                    queue.Enqueue(node.left);
+                }
+
+                i++;
+                if (nodes[i] != "#")
+                {
+                    node.right = new TreeNode(int.Parse(nodes[i]));
+                    queue.Enqueue(node.right);
+                }
+                i++;
+            }
+
+            return result;
+        }
+    }
+    #endregion
+
     #endregion
 
     #region Heap / Priority Queue
@@ -7583,6 +7685,31 @@ public class NeetCode150
         }
 
         return a;
+    }
+    #endregion
+
+    // 7. Reverse Integer
+    // You are given a signed 32-bit integer x.
+    // Return x after reversing each of its digits. After reversing, if x goes outside the signed 32-bit integer range [-2^31, 2^31 - 1], then return 0 instead.
+    // Solve the problem without using integers that are outside the signed 32-bit integer range.
+    #region 7. Reverse Integer
+    public int Reverse(int x)
+    {
+        var result = 0;
+        var maxPref = int.MaxValue / 10;
+        var maxLast = int.MaxValue % 10;
+        var minPref = int.MinValue / 10;
+        var minLast = int.MinValue % 10;
+        while (x != 0)
+        {
+            var d = x % 10;
+            if (result > maxPref || (result == maxPref && d > maxLast)) return 0;
+            if (result < minPref || (result == minPref && d < minLast)) return 0;
+            result = result * 10 + d;
+            x /= 10;
+        }
+
+        return result;
     }
     #endregion
 
