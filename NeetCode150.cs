@@ -7533,6 +7533,59 @@ public class NeetCode150
     }
     #endregion
 
+    // 268. Missing Number
+    // Given an array nums containing n integers in the range [0, n] without any duplicates, return the single number in the range that is missing from nums.
+    // Follow-up: Could you implement a solution using only O(1) extra space complexity and O(n) runtime complexity?
+    #region 268. Missing Number
+    // Идея та же самая, что и в 136. Single Number
+    public int MissingNumber(int[] nums)
+    {
+        var n = nums.Length;
+        int result = 0;
+        for (int i = 0; i <= n; i++)
+        {
+            result ^= i;
+        }
+
+        for (int i = 0; i < n; i++)
+        {
+            result ^= nums[i];
+        }
+
+        return result;
+    }
+
+    // Тоже хорошее решение через арифметическую прогрессию, но может быть переполнение int, если n большое
+    public int MissingNumber_old(int[] nums)
+    {
+        var n = nums.Length;
+        var target = (n * n + n) / 2;
+        for (int i = 0; i < n; i++)
+        {
+            target -= nums[i];
+        }
+
+        return target;
+    }
+    #endregion
+
+    // 371. Sum of Two Integers
+    // Given two integers a and b, return the sum of the two integers without using the operators + and -.
+    #region 371. Sum of Two Integers
+    public int GetSum(int a, int b)
+    {
+        while (b != 0) // b can be negative
+        {
+            var sum = a ^ b;
+            var carry = (a & b) << 1;
+            a = sum;
+            b = carry;
+        }
+
+        return a;
+    }
+    #endregion
+
     #endregion
 }
 
