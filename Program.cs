@@ -2516,33 +2516,8 @@ internal class Program
         //Console.WriteLine('}' - '{');
         //Console.WriteLine(']' - '[');
 
-        Console.WriteLine(Helper.GetBitsString(3 << 1));
-
-        var result = GetSum(1, 1);
-        Console.WriteLine(Helper.GetBitsString(result));
-        int GetSum(int a, int b)
-        {
-            Console.WriteLine($"a: {Helper.GetBitsString(a)}");
-            Console.WriteLine($"b: {Helper.GetBitsString(b)}");
-            while (b > 0)
-            {
-                var sum = a ^ b;
-                Console.WriteLine($"sum: {Helper.GetBitsString(sum)}");
-                var carry = (a & b) << 1;
-                Console.WriteLine($"carry: {Helper.GetBitsString(carry)}");
-                a = sum;
-                b = carry;
-            }
-
-            return a;
-        }
-    //        Solution.FindWords([
-    //  ['a','b','c','d'],
-    //  ['s','a','a','t'],
-    //  ['a','c','k','e'],
-    //  ['a','c','d','n']
-    //], ["bat", "cat", "back", "backend", "stack"]);
-}
+        //Console.WriteLine(Helper.GetBitsString(3 << 1));
+    }
 }
 
 

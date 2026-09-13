@@ -119,4 +119,56 @@ public class LeetCodeGeneral
         return result * n;
     }
     #endregion
+
+    // 1514. Path with Maximum Probability
+    // You are given an undirected weighted graph of n nodes (0-indexed), represented by an edge list where edges[i] = [a, b] is an undirected edge
+    // connecting the nodes a and b with a probability of success of traversing that edge succProb[i].
+    // Given two nodes start and end, find the path with the maximum probability of success to go from start to end and return its success probability.
+    // If there is no path from start to end, return 0. Your answer will be accepted if it differs from the correct answer by at most 1e-5.
+    // Note: вероятность успеха пути - это произведение вероятностей успеха всех рёбер на этом пути.
+    // Almost classic Dijkstra's algorithm
+    #region 1514. Path with Maximum Probability
+    public double MaxProbability(int n, int[][] edges, double[] succProb, int start_node, int end_node)
+    {
+        var adj = new List<(int i, double p)>[n];
+        for (int i = 0; i < edges.Length; i++)
+        {
+            var a = edges[i][0];
+            var b = edges[i][1];
+            if (adj[a] is null) adj[a] = new List<(int i, double p)>();
+            if (adj[b] is null) adj[b] = new List<(int i, double p)>();
+            adj[a].Add((b, succProb[i]));
+            adj[b].Add((a, succProb[i]));
+        }
+        var probability = new double[n];
+        var heap = new PriorityQueue<int, double>();
+        heap.Enqueue(start_node, -1.0);
+        probability[start_node] = 1.0;
+        while (heap.Count > 0)
+        {
+            //var a = heap.Dequeue();
+            heap.TryDequeue(out int a, out double p);
+            p = -p;
+            // оптимизация: если мы уже нашли путь с большей вероятностью, нет смысла идти дальше
+            // но без этого тоже работает
+            if (probability[a] > p) continue; 
+
+            if (a == end_node) return probability[a]; // early exit
+
+            if (adj[a] is null) continue;
+
+            foreach (var b in adj[a])
+            {
+                var newP = probability[a] * b.p;
+                if (probability[b.i] < newP)
+                {
+                    probability[b.i] = newP;
+                    heap.Enqueue(b.i, -probability[b.i]);
+                }
+            }
+        }
+
+        return probability[end_node];
+    }
+    #endregion
 }
