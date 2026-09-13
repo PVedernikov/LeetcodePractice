@@ -171,4 +171,79 @@ public class LeetCodeGeneral
         return probability[end_node];
     }
     #endregion
+
+    // 2642. Design Graph With Shortest Path Calculator
+    // There is a directed weighted graph that consists of n nodes numbered from 0 to n - 1.
+    // The edges of the graph are initially represented by the given array edges where edges[i] = [fromi, toi, edgeCosti]
+    // meaning that there is an edge from fromi to toi with the cost edgeCosti.
+    // Implement the Graph class:
+    // - Graph(int n, int[][] edges) initializes the object with n nodes and the given edges.
+    // - addEdge(int[] edge) adds an edge to the list of edges where edge = [from, to, edgeCost].
+    //   It is guaranteed that there is no edge between the two nodes before adding this one.
+    // - int shortestPath(int node1, int node2) returns the minimum cost of a path from node1 to node2.
+    //   If no path exists, return -1. The cost of a path is the sum of the costs of the edges in the path.
+    // HARD
+    // Classic Dijkstra's algorithm
+    #region 2642. Design Graph With Shortest Path Calculator
+    public class Graph
+    {
+        private int _n;
+        private List<(int, int)>[] _adj;
+        public Graph(int n, int[][] edges)
+        {
+            _n = n;
+            _adj = new List<(int, int)>[n];
+            for (int i = 0; i < edges.Length; i++)
+            {
+                var a = edges[i][0];
+                var b = edges[i][1];
+                var cost = edges[i][2];
+                if (_adj[a] is null) _adj[a] = new List<(int, int)>();
+
+                _adj[a].Add((b, cost));
+            }
+        }
+
+        public void AddEdge(int[] edge)
+        {
+            var a = edge[0];
+            var b = edge[1];
+            var cost = edge[2];
+            if (_adj[a] is null) _adj[a] = new List<(int, int)>();
+            _adj[a].Add((b, cost));
+        }
+
+        public int ShortestPath(int node1, int node2)
+        {
+            var cost = new int[_n];
+            for (int i = 0; i < _n; i++)
+            {
+                cost[i] = int.MaxValue;
+            }
+            cost[node1] = 0;
+            var heap = new PriorityQueue<int, int>();
+            heap.Enqueue(node1, 0);
+            while (heap.Count > 0)
+            {
+                heap.TryDequeue(out int a, out int aCost);
+                if (aCost > cost[a]) continue;
+                if (a == node2) return aCost;
+                if (_adj[a] is null) continue;
+
+                foreach (var (b, costB) in _adj[a])
+                {
+                    var newCost = cost[a] + costB;
+                    if (cost[b] > newCost)
+                    {
+                        cost[b] = newCost;
+                        heap.Enqueue(b, newCost);
+                    }
+                }
+            }
+
+            return cost[node2] == int.MaxValue ? -1 : cost[node2];
+        }
+    }
+    #endregion
+
 }
