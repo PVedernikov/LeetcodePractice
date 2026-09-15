@@ -246,4 +246,69 @@ public class LeetCodeGeneral
     }
     #endregion
 
+    // 3112. Minimum Time to Visit Disappearing Nodes
+    // There is an undirected graph of n nodes.
+    // You are given a 2D array edges, where edges[i] = [ui, vi, lengthi] describes an edge between node ui and node vi with a traversal time of lengthi units.
+    // Additionally, you are given an array disappear, where disappear[i] denotes the time when the node i disappears from the graph and you won't be able to visit it.
+    // Note that the graph might be disconnected and might contain multiple edges.
+    // Return the array answer, with answer[i] denoting the minimum units of time required to reach node i from node 0.
+    // If node i is unreachable from node 0 then answer[i] is -1.
+    #region 3112. Minimum Time to Visit Disappearing Nodes
+    // Classic Dijkstra's algorithm с доп условием
+    public int[] MinimumTime(int n, int[][] edges, int[] disappear)
+    {
+        var adj = new List<(int, int)>[n];
+        for (int i = 0; i < edges.Length; i++)
+        {
+            var a = edges[i][0];
+            var b = edges[i][1];
+            var t = edges[i][2];
+            if (adj[a] is null) adj[a] = new List<(int, int)>();
+            if (adj[b] is null) adj[b] = new List<(int, int)>();
+            adj[a].Add((b, t));
+            adj[b].Add((a, t));
+        }
+
+        var times = new int[n];
+        for (int i = 1; i < n; i++)
+        {
+            times[i] = int.MaxValue;
+        }
+        var heap = new PriorityQueue<int, int>();
+
+        heap.Enqueue(0, 0);
+        while (heap.Count > 0)
+        {
+            heap.TryDequeue(out int a, out int t);
+            if (adj[a] is null) continue;
+            if (times[a] < t) continue;
+
+            foreach (var (b, tb) in adj[a])
+            {
+                var newT = times[a] + tb;
+                if (newT < disappear[b] && newT < times[b])
+                {
+                    times[b] = newT;
+                    heap.Enqueue(b, newT);
+                }
+            }
+        }
+
+        for (int i = 1; i < n; i++)
+        {
+            if (times[i] == int.MaxValue)
+            {
+                times[i] = -1;
+            }
+        }
+        return times;
+    }
+    #endregion
+
+    // 1976. Number of Ways to Arrive at Destination
+    #region 1976. Number of Ways to Arrive at Destination
+    // Dijkstra's algorithm with counting the number of ways to reach each node
+    // TODO
+    #endregion
+
 }
