@@ -311,4 +311,74 @@ public class LeetCodeGeneral
     // TODO
     #endregion
 
+    // 1334. Find the City With the Smallest Number of Neighbors at a Threshold Distance
+    // There are n cities numbered from 0 to n-1. Given the array edges where edges[i] = [fromi, toi, weighti]
+    // represents a bidirectional and weighted edge between cities fromi and toi, and given the integer distanceThreshold.
+    // Return the city with the smallest number of cities that are reachable through some path and whose distance is at most distanceThreshold,
+    // If there are multiple such cities, return the city with the greatest number.
+    // Notice that the distance of a path connecting cities i and j is equal to the sum of the edges' weights along that path.
+    #region 1334. Find the City With the Smallest Number of Neighbors at a Threshold Distance
+    // Dijkstra's algorithm 
+    public int FindTheCity(int n, int[][] edges, int distanceThreshold)
+    {
+        var adj = new List<(int, int)>[n];
+        for (int i = 0; i < edges.Length; i++)
+        {
+            var a = edges[i][0];
+            var b = edges[i][1];
+            var t = edges[i][2];
+            if (adj[a] is null) adj[a] = new List<(int, int)>();
+            if (adj[b] is null) adj[b] = new List<(int, int)>();
+            adj[a].Add((b, t));
+            adj[b].Add((a, t));
+        }
+        var min = int.MaxValue;
+        var index = -1;
+        for (int i = n - 1; i >= 0; i--)
+        {
+            var times = new int[n];
+            for (int j = 0; j < n; j++)
+            {
+                times[j] = int.MaxValue;
+            }
+            times[i] = 0;
+
+            var heap = new PriorityQueue<int, int>();
+            heap.Enqueue(i, 0);
+            while (heap.Count > 0)
+            {
+                heap.TryDequeue(out var a, out var ta);
+                if (ta > times[a] || ta > distanceThreshold || adj[a] is null) continue;
+
+                foreach (var (b, tb) in adj[a])
+                {
+                    var newT = ta + tb;
+                    if (newT < times[b])
+                    {
+                        times[b] = newT;
+                        heap.Enqueue(b, newT);
+                    }
+                }
+            }
+
+            var count = 0;
+            for (int j = 0; j < n; j++)
+            {
+                if (j != i && times[j] <= distanceThreshold)
+                {
+                    count++;
+                }
+            }
+
+            if (count < min)
+            {
+                min = count;
+                index = i;
+            }
+        }
+
+        return index;
+    }
+    #endregion
+
 }
