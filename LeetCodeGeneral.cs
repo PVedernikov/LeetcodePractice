@@ -460,4 +460,55 @@ public class LeetCodeGeneral
         return result;
     }
     #endregion
+
+    // 3341. Find Minimum Time to Reach Last Room I
+    // There is a dungeon with n x m rooms arranged as a grid.
+    // You are given a 2D array moveTime of size n x m, where moveTime[i][j] represents the minimum time in seconds after which the room opens and can be moved to.
+    // You start from the room (0, 0) at time t = 0 and can move to an adjacent room. Moving between adjacent rooms takes exactly one second.
+    // Return the minimum time to reach the room (n - 1, m - 1).
+    // Two rooms are adjacent if they share a common wall, either horizontally or vertically.
+    // Dijkstra's algorithm 
+    #region 3341. Find Minimum Time to Reach Last Room I
+    public int MinTimeToReach(int[][] moveTime)
+    {
+        var m = moveTime.Length;
+        var n = moveTime[0].Length;
+        var time = new int[m, n];
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                time[i, j] = int.MaxValue;
+            }
+        }
+        time[0, 0] = 0; // Не важно, во сколько откроется комната [0,0], можно из нее идти сразу, судя по тестам
+        var di = new int[] { 1, -1, 0, 0 };
+        var dj = new int[] { 0, 0, 1, -1 };
+        var heap = new PriorityQueue<(int i, int j), int>();
+        //heap.Enqueue((0, 0), moveTime[0][0]); // Не важно, во сколько откроется комната [0,0], можно из нее идти сразу, судя по тестам
+        heap.Enqueue((0, 0), 0); // Поэтому правильно так
+        while (heap.Count > 0)
+        {
+            heap.TryDequeue(out var a, out var t);
+            if (t > time[a.i, a.j]) continue;
+            if (a.i == m - 1 && a.j == n - 1) break;
+
+            for (int d = 0; d < 4; d++)
+            {
+                var bi = a.i + di[d];
+                var bj = a.j + dj[d];
+                if (bi < 0 || bi >= m || bj < 0 || bj >= n) continue;
+                var newTime = Math.Max(t, moveTime[bi][bj]) + 1; // +1 шаг требуется для перехода между комнатами
+                if (time[bi, bj] > newTime)
+                {
+                    time[bi, bj] = newTime;
+                    heap.Enqueue((bi, bj), newTime);
+                }
+            }
+        }
+        return time[m - 1, n - 1] == int.MaxValue
+            ? -1
+            : time[m - 1, n - 1];
+    }
+    #endregion
 }
