@@ -383,8 +383,81 @@ public class LeetCodeGeneral
 
 
     // 882. Reachable Nodes In Subdivided Graph
-    // HARD
+    // You are given an undirected graph (the "original graph") with n nodes labeled from 0 to n - 1.
+    // You decide to subdivide each edge in the graph into a chain of nodes, with the number of new nodes varying between each edge.
+    // The graph is given as a 2D array of edges where edges[i] = [ui, vi, cnti] indicates that there is an edge between nodes ui and vi in the original graph,
+    // and cnti is the total number of new nodes that you will subdivide the edge into. Note that cnti == 0 means you will not subdivide the edge.
+    // To subdivide the edge [ui, vi], replace it with (cnti + 1) new edges and cnti new nodes.
+    // The new nodes are x1, x2, ..., xcnti, and the new edges are [ui, x1], [x1, x2], [x2, x3], ..., [xcnti-1, xcnti], [xcnti, vi].
+    // In this new graph, you want to know how many nodes are reachable from the node 0, where a node is reachable if the distance is maxMoves or less.
+    // Given the original graph and maxMoves, return the number of nodes that are reachable from node 0 in the new graph.
+    // По-русски: дан граф с вершинами. Для каждого ребра графа дано колчиство вершин, которые нужно добавить на это ребро, разделив ими ребро.
+    // Например, есть ребро [u, v, 2] - в итоговом графе имеем u-1-2-v, то есть 4 вершины и 3 ребра.
+    // HARD, Dijkstra
     #region 882. Reachable Nodes In Subdivided Graph
-    // TODO
+    // Идея: НЕ строить новый граф с новыми вершинами, т.к. их много и это будет дорого по времени
+    // Нужно считать cnti как расстояние между вершинами, или более точно, дополнительное количество шагов, которые нужно сделать, чтобы добраться из ui в vi
+    // Сначала обходим исходный граф Дейкстрой, находим за какое количество шагов можно дойти до каждой вершины
+    // Далее, имея количество шагов для каждой вершины, для каждого ребра считаем сколько новых вершин на этом ребре достижимы
+    public int ReachableNodes(int[][] edges, int maxMoves, int n)
+    {
+        var adj = new List<(int, int)>[n];
+        for (int i = 0; i < edges.Length; i++)
+        {
+            var a = edges[i][0];
+            var b = edges[i][1];
+            var c = edges[i][2];
+            if (adj[a] is null) adj[a] = new List<(int, int)>();
+            if (adj[b] is null) adj[b] = new List<(int, int)>();
+            adj[a].Add((b, c));
+            adj[b].Add((a, c));
+        }
+
+        var dist = new int[n];
+        for (int i = 1; i < n; i++)
+        {
+            dist[i] = int.MaxValue;
+        }
+
+        var heap = new PriorityQueue<int, int>();
+        heap.Enqueue(0, 0);
+        while (heap.Count > 0)
+        {
+            heap.TryDequeue(out var a, out var ca);
+            //if (ca >= maxMoves) break; // с этим условием работает, но мне оно кажется каким-то мутным, поэтому закомментировал
+            if (ca > dist[a] || adj[a] is null) continue;
+
+            foreach (var (b, cb) in adj[a])
+            {
+                var newC = ca + cb + 1;
+                if (dist[b] > newC)
+                {
+                    dist[b] = newC;
+                    heap.Enqueue(b, newC);
+                }
+            }
+        }
+
+        var result = 0;
+        for (int i = 0; i < edges.Length; i++) // считаем, до скольких новых вершин на каждом ребре мы можем дойти
+        {
+            var a = edges[i][0];
+            var b = edges[i][1];
+            var c = edges[i][2];
+            var aLeft = 0;
+            var bLeft = 0;
+            if (dist[a] <= maxMoves) aLeft = maxMoves - dist[a];
+            if (dist[b] <= maxMoves) bLeft = maxMoves - dist[b];
+
+            result += Math.Min(bLeft + aLeft, c);
+        }
+
+        for (int i = 0; i < n; i++) // отдельно считаем, до каких исходных вершин мы дошли
+        {
+            if (dist[i] <= maxMoves) result++;
+        }
+
+        return result;
+    }
     #endregion
 }
