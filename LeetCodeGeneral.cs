@@ -511,4 +511,55 @@ public class LeetCodeGeneral
             : time[m - 1, n - 1];
     }
     #endregion
+
+    // 2290. Minimum Obstacle Removal to Reach Corner
+    // You are given a 0-indexed 2D integer array grid of size m x n. Each cell has one of two values:
+    // - 0 represents an empty cell,
+    // - 1 represents an obstacle that may be removed.
+    // You can move up, down, left, or right from and to an empty cell.
+    // Return the minimum number of obstacles to remove so you can move from the upper left corner (0, 0) to the lower right corner (m - 1, n - 1).
+    // HARD
+    // TODO: есть какое-то более оптимальное решение через BFS 1-0.
+    #region 2290. Minimum Obstacle Removal to Reach Corner
+    // Dijkstra's algorithm 
+    public int MinimumObstacles(int[][] grid)
+    {
+        var m = grid.Length;
+        var n = grid[0].Length;
+        var di = new int[] { 1, -1, 0, 0 };
+        var dj = new int[] { 0, 0, 1, -1 };
+        var dist = new int[m, n];
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                dist[i, j] = int.MaxValue;
+            }
+        }
+        dist[0, 0] = 0;
+        
+        var heap = new PriorityQueue<(int i, int j), int>();
+        heap.Enqueue((0, 0), dist[0, 0]);
+        while (heap.Count > 0)
+        {
+            heap.TryDequeue(out var a, out var da);
+            if (da > dist[a.i, a.j]) continue;
+            if (a.i == m - 1 && a.j == n - 1) break;
+            for (int d = 0; d < 4; d++)
+            {
+                var ii = a.i + di[d];
+                var jj = a.j + dj[d];
+                if (ii < 0 || ii >= m || jj < 0 || jj >= n) continue;
+                var newDist = da + grid[ii][jj];
+                if (dist[ii, jj] > newDist)
+                {
+                    dist[ii, jj] = newDist;
+                    heap.Enqueue((ii, jj), newDist);
+                }
+            }
+        }
+
+        return dist[m - 1, n - 1];
+    }
+    #endregion
 }
