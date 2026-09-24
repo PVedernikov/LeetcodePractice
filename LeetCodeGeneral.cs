@@ -562,4 +562,78 @@ public class LeetCodeGeneral
         return dist[m - 1, n - 1];
     }
     #endregion
+
+    // 2662. Minimum Cost of a Path With Special Roads
+    // You are given an array start where start = [startX, startY] represents your initial position (startX, startY) in a 2D space.
+    // You are also given the array target where target = [targetX, targetY] represents your target position (targetX, targetY).
+    // The cost of going from a position (x1, y1) to any other position in the space (x2, y2) is |x2 - x1| + |y2 - y1|.
+    // There are also some special roads. You are given a 2D array specialRoads where specialRoads[i] = [x1i, y1i, x2i, y2i, costi]
+    // indicates that the ith special road goes in one direction from (x1i, y1i) to (x2i, y2i) with a cost equal to costi.
+    // You can use each special road any number of times.
+    // Return the minimum cost required to go from (startX, startY) to (targetX, targetY).
+    // Dijkstra's algorithm 
+    // Нестандартный Дейкстра: по-сути граф нужно строить налету
+    // TODO: мой алгоритм слишом буквальный, есть какой-то попроще, говорят. Изучить.
+    #region 2662. Minimum Cost of a Path With Special Roads
+    // Идея: граф строится налету
+    // Из текущей точки есть три варианта:
+    // - Дойти сразу до target
+    // - Дойти до ближайшей specialRoad
+    // - Если текущая точка оказалась началом specialRoad, то можем также дойти до конца specialRoad
+    public int MinimumCost(int[] start, int[] target, int[][] specialRoads)
+    {
+        var dist = new Dictionary<(int x, int y), int>();
+        dist[(start[0], start[1])] = 0;
+        var c0 = dst(start[0], start[1], target[0], target[1]);
+        dist[(target[0], target[1])] = c0;
+
+        var heap = new PriorityQueue<(int x, int y), int>(); 
+        heap.Enqueue((start[0], start[1]), 0);
+        while (heap.Count > 0)
+        {
+            heap.TryDequeue(out var curr, out var dcurr);
+            if (dist.ContainsKey(curr) && dist[curr] < dcurr) continue;
+            var tdst = dcurr + dst(curr.x, curr.y, target[0], target[1]); // Вариант пойти сразу в target
+            if (tdst < dist[(target[0], target[1])])
+            {
+                dist[(target[0], target[1])] = tdst;
+                heap.Enqueue((target[0], target[1]), tdst);
+            }
+            for (int i = 0; i < specialRoads.Length; i++)
+            {
+                var road = specialRoads[i];
+                var ax = road[0];
+                var ay = road[1];
+                var bx = road[2];
+                var by = road[3];
+                var cost = road[4];
+                if (ax == curr.x && ay == curr.y) // Вариант, когда текущая точка оказалась началом specialRoad
+                {
+                    var c = dcurr + cost;
+                    if (!dist.ContainsKey((bx, by)) || dist[(bx, by)] > c)
+                    {
+                        dist[(bx, by)] = c;
+                        heap.Enqueue((bx, by), c);
+                    }
+                }
+                else // Вариант, когда можем дойти до ближайшей specialRoad
+                {
+                    var c = dcurr + dst(curr.x, curr.y, ax, ay);
+                    if (!dist.ContainsKey((ax, ay)) || dist[(ax, ay)] > c)
+                    {
+                        dist[(ax, ay)] = c;
+                        heap.Enqueue((ax, ay), c);
+                    }
+                }
+            }
+        }
+
+        return dist[(target[0], target[1])];
+
+        int dst(int x1, int y1, int x2, int y2)
+        {
+            return Math.Abs(x2 - x1) + Math.Abs(y2 - y1);
+        }
+    }
+    #endregion
 }
