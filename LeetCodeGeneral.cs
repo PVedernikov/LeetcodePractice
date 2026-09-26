@@ -636,4 +636,117 @@ public class LeetCodeGeneral
         }
     }
     #endregion
+
+    // 3970. Shortest Path With At Most K Consecutive Identical Characters
+    // You are given an integer n representing the number of nodes in a directed weighted graph, numbered from 0 to n - 1.
+    // This is represented by a 2D integer array edges, where edges[i] = [ui, vi, wi] represents a directed edge from node ui to node vi with weight wi.
+    // You are also given a string labels of length n, where labels[i] is the character assigned to node i, and an integer k.
+    // Return the minimum total edge weight of a path from node 0 to node n - 1
+    // such that the concatenation of the labels of the nodes along the path contains at most k consecutive identical characters.
+    // If no valid path exists, return -1.
+    #region 3970. Shortest Path With At Most K Consecutive Identical Characters
+    // Идея: хранить только расстояние для каждой вершны недостаточно
+    // Нужно хранить с привязкой к количеству одинаковых символов в текущем пути
+    public int ShortestPath(int n, int[][] edges, string labels, int k)
+    {
+        var adj = new List<(int, int)>[n];
+        foreach (var e in edges)
+        {
+            var a = e[0];
+            var b = e[1];
+            var w = e[2];
+            if (adj[a] is null) adj[a] = new List<(int, int)>();
+            adj[a].Add((b, w));
+        }
+
+        var dist = new int[n, k];
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < k; j++)
+            {
+                dist[i, j] = int.MaxValue;
+            }
+        }
+
+        dist[0, 0] = 0;
+
+        var heap = new PriorityQueue<(int a, int d, int c), int>();
+        heap.Enqueue((0, 0, 0), 0);
+        while (heap.Count > 0)
+        {
+            (var a, var da, var ka) = heap.Dequeue();
+            if (dist[a, ka] < da || adj[a] is null) continue;
+            // if (a == n - 1) return da; // Мутная оптимизация
+
+            foreach (var (b, db) in adj[a])
+            {
+                var kb = labels[a] == labels[b] ? ka + 1 : 0;
+                if (kb >= k) continue;
+                var newD = da + db;
+                if (newD < dist[b, kb])
+                {
+                    dist[b, kb] = newD;
+                    heap.Enqueue((b, newD, kb), newD);
+                }
+            }
+        }
+
+        var result = int.MaxValue;
+        for (int j = 0; j < k; j++)
+        {
+            result = Math.Min(result, dist[n - 1, j]);
+        }
+        return result == int.MaxValue ? -1 : result;
+    }
+
+    // Более оптимальная, но менее очевидная версия
+    public int ShortestPath_earlyExit(int n, int[][] edges, string labels, int k)
+    {
+        var adj = new List<(int, int)>[n];
+        foreach (var e in edges)
+        {
+            var a = e[0];
+            var b = e[1];
+            var w = e[2];
+            if (adj[a] is null) adj[a] = new List<(int, int)>();
+            adj[a].Add((b, w));
+        }
+
+        var dist = new int[n, k];
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < k; j++)
+            {
+                dist[i, j] = int.MaxValue;
+            }
+        }
+        dist[0, 0] = 0;
+
+        var heap = new PriorityQueue<(int a, int d, int c), int>();
+        heap.Enqueue((0, 0, 0), 0);
+        while (heap.Count > 0)
+        {
+            (var a, var da, var ka) = heap.Dequeue();
+            if (dist[a, ka] < da) continue;
+            if (a == n - 1) return da;
+            if (adj[a] is null) continue;
+
+            foreach (var (b, db) in adj[a])
+            {
+                var kb = labels[a] == labels[b] ? ka + 1 : 0;
+                if (kb >= k) continue;
+                var newD = da + db;
+                if (newD < dist[b, kb])
+                {
+                    dist[b, kb] = newD;
+                    heap.Enqueue((b, newD, kb), newD);
+                }
+            }
+        }
+
+        return -1;
+    }
+    #endregion
 }
