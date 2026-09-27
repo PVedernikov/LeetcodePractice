@@ -749,4 +749,72 @@ public class LeetCodeGeneral
         return -1;
     }
     #endregion
+
+    // 505. The Maze II
+    // There is a ball in a maze with empty spaces (represented as 0) and walls (represented as 1).
+    // The ball can go through the empty spaces by rolling up, down, left or right, but it won't stop rolling until hitting a wall.
+    // When the ball stops, it could choose the next direction.
+    // Given the m x n maze, the ball's start position and the destination, where start = [startrow, startcol] and destination = [destinationrow, destinationcol],
+    // return the shortest distance for the ball to stop at the destination.
+    // If the ball cannot stop at destination, return -1.
+    // The distance is the number of empty spaces traveled by the ball from the start position (excluded) to the destination (included).
+    // You may assume that the borders of the maze are all walls (see examples).
+    // 
+    // Dijkstra's algorithm, grid graph, неявный граф.
+    // ВАЖНО: если граф неявный, не пытаться построить его полностью заранее, как правило лучше строить налету
+    #region 505. The Maze II
+    public int ShortestDistance(int[][] maze, int[] start, int[] destination)
+    {
+        var m = maze.Length;
+        var n = maze[0].Length;
+        var di = new int[] { 1, -1, 0, 0 };
+        var dj = new int[] { 0, 0, 1, -1 };
+        var dist = new int[m, n];
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                dist[i, j] = int.MaxValue;
+            }
+        }
+        dist[start[0], start[1]] = 0;
+        var heap = new PriorityQueue<(int i, int j), int>();
+        heap.Enqueue((start[0], start[1]), 0);
+        while (heap.Count > 0)
+        {
+            heap.TryDequeue(out var a, out var da);
+            if (da > dist[a.i, a.j]) continue;
+            if (a.i == destination[0] && a.j == destination[1]) return da;
+
+            for (int d = 0; d < 4; d++)
+            {
+                var bi = a.i;
+                var bj = a.j;
+                var db = da;
+                var wi = a.i + di[d];
+                var wj = a.j + dj[d];
+
+                // find wall, катимся до стены в этом направлении
+                while (wi >= 0 && wi < m && wj >= 0 && wj < n && maze[wi][wj] == 0)
+                {
+                    bi = wi;
+                    bj = wj;
+                    db++;
+                    wi += di[d];
+                    wj += dj[d];
+                }
+
+                if (db == da) continue; // не нашли следущую клетку в эту сторону (сразу уперлись в стену)
+
+                if (db < dist[bi, bj])
+                {
+                    dist[bi, bj] = db;
+                    heap.Enqueue((bi, bj), db);
+                }
+            }
+        }
+
+        return -1;
+    }
+    #endregion
 }

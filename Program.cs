@@ -2517,6 +2517,9 @@ internal class Program
         //Console.WriteLine(']' - '[');
 
         //Console.WriteLine(Helper.GetBitsString(3 << 1));
+        var heap = new PriorityQueue<(int i, int j), int>();
+        heap.Enqueue((0, 0), 0);
+        heap.TryDequeue(out var a, out var c);
     }
 }
 
