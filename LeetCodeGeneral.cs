@@ -817,4 +817,80 @@ public class LeetCodeGeneral
         return -1;
     }
     #endregion
+
+
+    // 3650. Minimum Cost Path with Edge Reversals
+    // You are given a directed, weighted graph with n nodes labeled from 0 to n - 1,
+    // and an array edges where edges[i] = [ui, vi, wi] represents a directed edge from node ui to node vi with cost wi.
+    // Each node ui has a switch that can be used at most once: when you arrive at ui and have not yet used its switch,
+    // you may activate it on one of its incoming edges vi → ui reverse that edge to ui → vi and immediately traverse it.
+    // The reversal is only valid for that single move, and using a reversed edge costs 2 * wi.
+    // Return the minimum total cost to travel from node 0 to node n - 1. If it is not possible, return -1.
+    // Dijkstra's algorithm
+    // В условии непонятн написано: switch можно использовать для КАЖДОЙ вершины один раз, а не один раз за весь путь.
+    #region 3650. Minimum Cost Path with Edge Reversals
+    // Идея: switch представляет собой обратный список связанности с двойной стоимостью
+    public int MinCost(int n, int[][] edges)
+    {
+        var adj = new List<(int i, int d)>[n];
+        var rev = new List<(int i, int d)>[n];
+
+        foreach (var e in edges)
+        {
+            var a = e[0];
+            var b = e[1];
+            var w = e[2];
+            if (adj[a] is null) adj[a] = new List<(int i, int d)>();
+            if (rev[b] is null) rev[b] = new List<(int i, int d)>();
+
+            adj[a].Add((b, w));
+            rev[b].Add((a, w + w)); // этот список у нас будет заменять switch
+        }
+
+        var dist = new int[n];
+        for (int i = 1; i < n; i++)
+        {
+            dist[i] = int.MaxValue;
+        }
+
+        var heap = new PriorityQueue<int, int>();
+        heap.Enqueue(0, 0);
+        while (heap.Count > 0)
+        {
+            heap.TryDequeue(out var a, out var ad);
+            if (ad > dist[a]) continue;
+            if (a == n - 1) return ad;
+            if (adj[a] is not null)
+            {
+                foreach (var b in adj[a])
+                {
+                    var newD = ad + b.d;
+                    if (newD < dist[b.i])
+                    {
+                        dist[b.i] = newD;
+                        heap.Enqueue(b.i, newD);
+                    }
+                }
+            }
+            if (rev[a] is not null) 
+            {
+                // Рассматриваем обратные ребра, т.е. используем switch
+                // Мы так можем делать, т.к. в оптимальном пути не может быть два перехода из одной и той же вершины
+                // Иначе мы имели бы цикл, который можно просто выкинуть
+                // Таким образом мы гарантируем, что switch для этой вершины выполнится максимум один раз.
+                foreach (var b in rev[a])
+                {
+                    var newD = ad + b.d;
+                    if (newD < dist[b.i])
+                    {
+                        dist[b.i] = newD;
+                        heap.Enqueue(b.i, newD);
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+    #endregion
 }
