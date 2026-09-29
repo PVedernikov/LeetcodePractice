@@ -957,4 +957,9 @@ public class LeetCodeGeneral
         return -1;
     }
     #endregion
+
+    // 3342. Find Minimum Time to Reach Last Room II
+    // TODO
+    #region 3342. Find Minimum Time to Reach Last Room II
+    #endregion
 }
