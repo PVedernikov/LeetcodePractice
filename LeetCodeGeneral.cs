@@ -893,4 +893,68 @@ public class LeetCodeGeneral
         return -1;
     }
     #endregion
+
+    // 2093. Minimum Cost to Reach City With Discounts
+    // A series of highways connect n cities numbered from 0 to n - 1.
+    // You are given a 2D integer array highways where highways[i] = [city1i, city2i, tolli] indicates that there is a highway that connects city1i and city2i,
+    // allowing a car to go from city1i to city2i and vice versa for a cost of tolli.
+    // You are also given an integer discounts which represents the number of discounts you have.
+    // You can use a discount to travel across the ith highway for a cost of tolli / 2 (integer division).
+    // Each discount may only be used once, and you can only use at most one discount per highway.
+    // Return the minimum total cost to go from city 0 to city n - 1, or -1 if it is not possible to go from city 0 to city n - 1.
+    // Dijkstra's algorithm
+    #region 2093. Minimum Cost to Reach City With Discounts
+    public int MinimumCost(int n, int[][] highways, int discounts)
+    {
+        var adj = new List<(int, int)>[n];
+        foreach (var h in highways)
+        {
+            var a = h[0];
+            var b = h[1];
+            var t = h[2];
+            if (adj[a] is null) adj[a] = new List<(int, int)>();
+            if (adj[b] is null) adj[b] = new List<(int, int)>();
+            adj[a].Add((b, t));
+            adj[b].Add((a, t));
+        }
+
+        var dist = new int[n, discounts + 1];
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j <= discounts; j++)
+                dist[i, j] = int.MaxValue;
+        }
+        dist[0, 0] = 0;
+        var heap = new PriorityQueue<(int i, int disc), int>();
+        heap.Enqueue((0, 0), 0);
+        while (heap.Count > 0)
+        {
+            heap.TryDequeue(out var a, out var ad);
+            if (ad > dist[a.i, a.disc]) continue;
+            if (a.i == n - 1) return ad;
+            if (adj[a.i] is null) continue;
+
+            foreach (var (bi, bd) in adj[a.i])
+            {
+                var newD = ad + bd;
+                if (newD < dist[bi, a.disc])
+                {
+                    dist[bi, a.disc] = newD;
+                    heap.Enqueue((bi, a.disc), newD);
+                }
+                if (a.disc < discounts)
+                {
+                    var newDDisc = ad + (bd / 2);
+                    if (newDDisc < dist[bi, a.disc + 1])
+                    {
+                        dist[bi, a.disc + 1] = newDDisc;
+                        heap.Enqueue((bi, a.disc + 1), newDDisc);
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+    #endregion
 }
