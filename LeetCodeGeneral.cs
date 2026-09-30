@@ -959,7 +959,60 @@ public class LeetCodeGeneral
     #endregion
 
     // 3342. Find Minimum Time to Reach Last Room II
-    // TODO
+    // There is a dungeon with n x m rooms arranged as a grid.
+    // You are given a 2D array moveTime of size n x m, where moveTime[i][j] represents the minimum time in seconds when you can start moving to that room.
+    // You start from the room (0, 0) at time t = 0 and can move to an adjacent room.
+    // Moving between adjacent rooms takes one second for one move and two seconds for the next, alternating between the two.
+    // Return the minimum time to reach the room (n - 1, m - 1).
+    // Two rooms are adjacent if they share a common wall, either horizontally or vertically.
+    // Dijkstra's algorithm, grid
     #region 3342. Find Minimum Time to Reach Last Room II
+    // TODO: в куче odd не нужен, т.к. в клетку можно прийти только за четное колчичество шагов
+    // т.е. из клетки всегда стоимость перехода постоянная (либо всегда 1, либо всегда 2)
+    // Это можно определить по (i+j)%2 + 1, то есть хранить и передавать odd необязательно
+    public int MinTimeToReach2(int[][] moveTime)
+    {
+        var m = moveTime.Length;
+        var n = moveTime[0].Length;
+
+        var dist = new int[m, n, 2];
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                dist[i, j, 0] = int.MaxValue;
+                dist[i, j, 1] = int.MaxValue;
+            }
+        }
+        dist[0, 0, 0] = 0;
+
+        var di = new int[] { 1, -1, 0, 0 };
+        var dj = new int[] { 0, 0, 1, -1 };
+        var heap = new PriorityQueue<(int i, int j, int odd), int>();
+        heap.Enqueue((0, 0, 0), 0);
+        while (heap.Count > 0)
+        {
+            heap.TryDequeue(out var a, out var at);
+            if (at > dist[a.i, a.j, a.odd]) continue;
+            if (a.i == m - 1 && a.j == n - 1) return at;
+
+            for (int d = 0; d < 4; d++)
+            {
+                var bi = a.i + di[d];
+                var bj = a.j + dj[d];
+                if (bi < 0 || bi >= m || bj < 0 || bj >= n) continue;
+
+                var bOdd = (a.odd + 1) % 2;
+                var newT = Math.Max(at, moveTime[bi][bj]) + a.odd + 1;
+                if (newT < dist[bi, bj, bOdd])
+                {
+                    dist[bi, bj, bOdd] = newT;
+                    heap.Enqueue((bi, bj, bOdd), newT);
+                }
+            }
+        }
+
+        return -1;
+    }
     #endregion
 }
