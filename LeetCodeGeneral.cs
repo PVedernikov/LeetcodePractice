@@ -1015,4 +1015,85 @@ public class LeetCodeGeneral
         return -1;
     }
     #endregion
+
+    // 2976. Minimum Cost to Convert String I
+    // You are given two 0-indexed strings source and target, both of length n and consisting of lowercase English letters.
+    // You are also given two 0-indexed character arrays original and changed, and an integer array cost,
+    // where cost[i] represents the cost of changing the character original[i] to the character changed[i].
+    // You start with the string source. In one operation, you can pick a character x from the string
+    // and change it to the character y at a cost of z if there exists any index j such that cost[j] == z, original[j] == x, and changed[j] == y.
+    // Return the minimum cost to convert the string source to the string target using any number of operations. If it is impossible to convert source to target, return -1.
+    // Note that there may exist indices i, j such that original[j] == original[i] and changed[j] == changed[i].
+    // Dijkstra's algorithm
+    #region 2976. Minimum Cost to Convert String I
+    // TODO: потенциальная оптимизация: после вычисления путей от 'a', например, до 'z', у нас уже есть все оптимальные пути от 'a' до других символов
+    // Потенциально их сразу можно поместить в кеш.
+    public long MinimumCost(string source, string target, char[] original, char[] changed, int[] cost)
+    {
+        var adj = new List<(int i, int c)>[26];
+        for (int i = 0; i < original.Length; i++)
+        {
+            var a = original[i] - 'a';
+            var b = changed[i] - 'a';
+            var c = cost[i];
+
+            if (adj[a] is null) adj[a] = new List<(int i, int c)>();
+            adj[a].Add((b, c));
+        }
+        var cache = new Dictionary<(int, int), int>();
+        long result = 0;
+        for (int i = 0; i < source.Length; i++)
+        {
+            var start = source[i] - 'a';
+            var end = target[i] - 'a';
+
+            if (cache.ContainsKey((start, end)))
+            {
+                result += cache[(start, end)];
+                continue;
+            }
+
+            var dist = new int[26];
+            for (int j = 0; j < 26; j++)
+            {
+                dist[j] = int.MaxValue;
+            }
+            dist[start] = 0;
+            var heap = new PriorityQueue<int, int>();
+            heap.Enqueue(start, 0);
+            var found = false;
+            while (heap.Count > 0)
+            {
+                heap.TryDequeue(out var a, out var ad);
+                if (ad > dist[a]) continue;
+                if (a == end)
+                {
+                    cache[(start, end)] = ad;
+                    result += ad;
+                    found = true;
+                    break;
+                }
+                if (adj[a] is null) continue;
+
+                foreach (var b in adj[a])
+                {
+                    var newD = ad + b.c;
+                    if (newD < dist[b.i])
+                    {
+                        dist[b.i] = newD;
+                        heap.Enqueue(b.i, newD);
+                    }
+                }
+            }
+
+            if (!found)
+            {
+                return -1;
+            }
+        }
+
+        return result;
+    }
+    #endregion
+
 }
