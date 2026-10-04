@@ -1465,7 +1465,52 @@ public class LeetCodeGeneral
     #endregion
 
     // 1059. All Paths from Source Lead to Destination
+    // Given the edges of a directed graph where edges[i] = [ai, bi] indicates there is an edge between nodes ai and bi, and two nodes source and destination of this graph,
+    // determine whether or not all paths starting from source eventually, end at destination, that is:
+    // - At least one path exists from the source node to the destination node
+    // - If a path exists from the source node to a node with no outgoing edges, then that node is equal to destination.
+    // - The number of possible paths from source to destination is a finite number. (то есть, нет циклов)
+    // Return true if and only if all roads from source lead to destination.
+    // Cycle detection in directed graph, DFS
     #region 1059. All Paths from Source Lead to Destination
-    // TODO
+    public bool LeadsToDestination(int n, int[][] edges, int source, int destination)
+    {
+        var adj = new List<int>[n];
+        foreach (var e in edges)
+        {
+            var a = e[0];
+            var b = e[1];
+            if (adj[a] is null) adj[a] = new List<int>();
+            adj[a].Add(b);
+        }
+
+        var cache = new bool?[n];
+        return dfs(source);
+
+        bool dfs(int a)
+        {
+            if (cache[a].HasValue) return cache[a].Value;
+
+            cache[a] = false;
+            if (adj[a] is null)
+            {
+                if (a == destination)
+                {
+                    cache[a] = true;
+                    return true;
+                }
+
+                return false;
+            }
+
+            foreach (var b in adj[a])
+            {
+                if (!dfs(b)) return false;
+            }
+
+            cache[a] = true;
+            return true;
+        }
+    }
     #endregion
 }
