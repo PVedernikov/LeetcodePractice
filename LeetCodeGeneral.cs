@@ -1189,4 +1189,88 @@ public class LeetCodeGeneral
         return false;
     }
     #endregion
+
+
+    // 802. Find Eventual Safe States
+    // There is a directed graph of n nodes with each node labeled from 0 to n - 1.
+    // The graph is represented by a 0-indexed 2D integer array graph where graph[i] is an integer array of nodes adjacent to node i,
+    // meaning there is an edge from node i to each node in graph[i].
+    // A node is a terminal node if there are no outgoing edges.
+    // A node is a safe node if every possible path starting from that node leads to a terminal node (or another safe node).
+    // Return an array containing all the safe nodes of the graph. The answer should be sorted in ascending order.
+    // Cycle detection in directed graph, DFS
+    #region 802. Find Eventual Safe States
+    // Идея: если вершина небезопасна, значит есть цикл, который так или иначе снова к ней вернется
+    public IList<int> EventualSafeNodes(int[][] graph)
+    {
+        var n = graph.Length;
+        var isSafe = new bool?[n];
+        for (int i = 0; i < n; i++)
+        {
+            dfs(i);
+        }
+
+        var result = new List<int>();
+        for (int i = 0; i < n; i++)
+        {
+            if (isSafe[i] == true) result.Add(i);
+        }
+        return result;
+
+        bool dfs(int a)
+        {
+            if (isSafe[a].HasValue) return isSafe[a].Value; // либо вершина уже проверена и безопасна, либо цикл
+            isSafe[a] = false; // изначально считаем, что вершина не безопасна
+
+            foreach (var b in graph[a])
+            {
+                if (!dfs(b)) return false;
+            }
+
+            isSafe[a] = true;
+            return true;
+        }
+    }
+    public IList<int> EventualSafeNodes_HashMap(int[][] graph)
+    {
+        var n = graph.Length;
+        var cache = new Dictionary<int, bool>();
+
+        for (int i = 0; i < n; i++)
+        {
+            dfs(i);
+        }
+
+        var result = new List<int>();
+        for (int i = 0; i < n; i++)
+        {
+            if (cache[i]) result.Add(i);
+        }
+        return result;
+
+        bool dfs(int a)
+        {
+            if (cache.TryGetValue(a, out bool isSafe))
+            {
+                return isSafe; // либо вершина уже проверена и безопасна, либо цикл
+            }
+            cache[a] = false; // изначально считаем, что вершина не безопасна
+            var res = true;
+            foreach (var b in graph[a])
+            {
+                if (!dfs(b)) res = false;
+            }
+
+            cache[a] = res;
+            return res;
+        }
+    }
+    #endregion
+
+
+    // 2360. Longest Cycle in a Graph
+    // TODO
+    #region 2360. Longest Cycle in a Graph
+    // TODO
+    #endregion
 }
