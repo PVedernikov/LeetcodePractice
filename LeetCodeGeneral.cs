@@ -1103,6 +1103,7 @@ public class LeetCodeGeneral
     // The added edge has two different vertices chosen from 1 to n, and was not an edge that already existed.
     // The graph is represented as an array edges of length n where edges[i] = [ai, bi] indicates that there is an edge between nodes ai and bi in the graph.
     // Return an edge that can be removed so that the resulting graph is a tree of n nodes. If there are multiple answers, return the answer that occurs last in the input.
+    // Union-Find - bad example
     #region 684. Redundant Connection
     public int[] FindRedundantConnection(int[][] edges)
     {
@@ -1269,8 +1270,202 @@ public class LeetCodeGeneral
 
 
     // 2360. Longest Cycle in a Graph
-    // TODO
+    // HARD
     #region 2360. Longest Cycle in a Graph
+    // TODO
+    #endregion
+
+
+    // 990. Satisfiability of Equality Equations
+    // You are given an array of strings equations that represent relationships between variables
+    // where each string equations[i] is of length 4 and takes one of two different forms: "xi==yi" or "xi!=yi".
+    // Here, xi and yi are lowercase letters (not necessarily different) that represent one-letter variable names.
+    // Return true if it is possible to assign integers to variable names so as to satisfy all the given equations, or false otherwise.
+    // Union-Find
+    #region 990. Satisfiability of Equality Equations
+    public bool EquationsPossible(string[] equations)
+    {
+        var parent = new int[26];
+        var size = new int[26];
+        for (int i = 0; i < 26; i++)
+        {
+            parent[i] = i;
+            size[i] = 1;
+        }
+
+        var notEqual = new List<(int, int)>();
+        foreach (var e in equations)
+        {
+            var a = e[0] - 'a';
+            var b = e[3] - 'a';
+            var isEqual = e[1] == '=';
+            if (!isEqual)
+            {
+                if (a == b) return false;
+                notEqual.Add((a, b));
+                continue;
+            }
+            union(a, b);
+        }
+
+        foreach (var (a, b) in notEqual)
+        {
+            if (equal(a, b)) return false;
+        }
+
+        return true;
+
+        int find(int a)
+        {
+            if (parent[a] != a)
+                parent[a] = find(parent[a]);
+
+            return parent[a];
+        }
+
+        void union(int a, int b)
+        {
+            var pa = find(a);
+            var pb = find(b);
+
+            if (pa == pb) return;
+            if (size[pa] < size[pb])
+                (pa, pb) = (pb, pa);
+
+            parent[pb] = pa;
+            size[pa] += size[pb];
+        }
+
+        bool equal(int a, int b)
+        {
+            var pa = find(a);
+            var pb = find(b);
+            return pa == pb;
+        }
+    }
+    #endregion
+
+    // 457. Circular Array Loop
+    // You are playing a game involving a circular array of non-zero integers nums.
+    // Each nums[i] denotes the number of indices forward/backward you must move if you are located at index i:
+    // - If nums[i] is positive, move nums[i] steps forward, and
+    // - If nums[i] is negative, move abs(nums[i]) steps backward.
+    // Since the array is circular, you may assume that moving forward from the last element puts you on the first element,
+    // and moving backwards from the first element puts you on the last element.
+    // A cycle in the array consists of a sequence of indices seq of length k where:
+    // - Following the movement rules above results in the repeating index sequence: seq[0] -> seq[1] -> ... -> seq[k - 1] -> seq[0] -> ...
+    // - Every nums[seq[j]] is either all positive or all negative.
+    // - k > 1
+    // Return true if there is a cycle in nums, or false otherwise.
+    // Cycle detection in directed graph, slow/fast pointers
+    #region 457. Circular Array Loop
+    // Not optimal
+    // Target: Complexity O(n), Space: O(1)
+    public bool CircularArrayLoop(int[] nums)
+    {
+        var n = nums.Length;
+        var visited = new bool[n];
+        for (int i = 0; i < n; i++)
+        {
+            if (visited[i]) continue;
+            var negative = nums[i] < 0;
+            var slow = i;
+            var fast = next(i);
+            if (slow == fast) continue;
+            var result = true;
+            while (slow != fast)
+            {
+                if ((negative && nums[fast] > 0) || (!negative && nums[fast] < 0))
+                {
+                    result = false;
+                    break;
+                }
+                visited[fast] = true;
+                var nextFast = next(fast);
+                if (fast == nextFast)
+                {
+                    result = false;
+                    break;
+                }
+                if ((negative && nums[nextFast] > 0) || (!negative && nums[nextFast] < 0))
+                {
+                    result = false;
+                    break;
+                }
+                visited[nextFast] = true;
+                fast = next(nextFast);
+                if (fast == nextFast)
+                {
+                    result = false;
+                    break;
+                }
+
+                slow = next(slow);
+            }
+
+            if (result) return true;
+        }
+
+        return false;
+
+        int next(int i)
+        {
+            var next = i + nums[i];
+            while (next < 0) next += n;
+            while (next >= n) next -= n;
+            return next;
+        }
+    }
+    #endregion
+
+
+    // 207. Course Schedule
+    // There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1.
+    // You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai.
+    // - For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
+    // Return true if you can finish all courses. Otherwise, return false.
+    // Cycle detection in directed graph, DFS
+    #region 207. Course Schedule
+    public bool CanFinish(int numCourses, int[][] prerequisites)
+    {
+        var n = numCourses;
+        var adj = new List<int>[n];
+        foreach (var e in prerequisites)
+        {
+            var a = e[1];
+            var b = e[0];
+            if (adj[a] is null) adj[a] = new List<int>();
+            adj[a].Add(b);
+        }
+
+        var canFinish = new bool?[n];
+        for (int i = 0; i < n; i++)
+        {
+            if (!dfs(i)) return false;
+        }
+
+        return true;
+
+        bool dfs(int a)
+        {
+            if (canFinish[a].HasValue) return canFinish[a].Value;
+
+            canFinish[a] = false;
+            if (adj[a] is not null)
+            {
+                foreach (var b in adj[a])
+                {
+                    if (!dfs(b)) return false;
+                }
+            }
+            canFinish[a] = true;
+            return true;
+        }
+    }
+    #endregion
+
+    // 1059. All Paths from Source Lead to Destination
+    #region 1059. All Paths from Source Lead to Destination
     // TODO
     #endregion
 }
