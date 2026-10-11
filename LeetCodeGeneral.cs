@@ -1270,9 +1270,50 @@ public class LeetCodeGeneral
 
 
     // 2360. Longest Cycle in a Graph
+    // You are given a directed graph of n nodes numbered from 0 to n - 1, where each node has at most one outgoing edge.
+    // The graph is represented with a given 0-indexed array edges of size n, indicating that there is a directed edge from node i to node edges[i].
+    // If there is no outgoing edge from node i, then edges[i] == -1.
+    // Return the length of the longest cycle in the graph. If no cycle exists, return -1.
+    // A cycle is a path that starts and ends at the same node.
     // HARD
     #region 2360. Longest Cycle in a Graph
-    // TODO
+    // TODO: решить без рекурсии
+    // Идея: поскольку из каждой вершины существует только один путь, то не нем может быть не более одного цикла
+    // Идем по пути, как только встречаем вершину, которая уже была посещена, значит мы нашли цикл и вершину , на которой цикл замыкается
+    // Возвращаем вершину, на которой замыкается цикл и длину пути до нее. 
+    // Выше по стеку, как только снова встречаем эту вершину, нам становится известна длина цикла, обновляем глобальный результат
+    public int LongestCycle(int[] edges)
+    {
+        var n = edges.Length;
+        var visited = new bool[n];
+        var result = -1;
+        for (int i = 0; i < n; i++)
+        {
+            dfs(i);
+        }
+
+        return result;
+
+        (int b, int dist) dfs(int a)
+        {
+            if (a < 0) return (-1, -1);
+            if (visited[a]) return (a, 0);
+            visited[a] = true;
+
+            var (bi, bd) = dfs(edges[a]);
+            if (bd < 0)
+            {
+                return (-1, -1);
+            }
+            bd += 1;
+            if (bi == a)
+            {
+                result = Math.Max(result, bd);
+            }
+
+            return (bi, bd);
+        }
+    }
     #endregion
 
 
@@ -1417,7 +1458,6 @@ public class LeetCodeGeneral
         }
     }
     #endregion
-
 
     // 207. Course Schedule
     // There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1.
