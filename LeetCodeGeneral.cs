@@ -1557,7 +1557,71 @@ public class LeetCodeGeneral
 
     // 2077. Paths in Maze That Lead to Same Room
     #region 2077. Paths in Maze That Lead to Same Room
+    // TODO, дичь
+    #endregion
 
+    // 1136. Parallel Courses
+    // You are given an integer n, which indicates that there are n courses labeled from 1 to n.
+    // You are also given an array relations where relations[i] = [prevCoursei, nextCoursei],
+    // representing a prerequisite relationship between course prevCoursei and course nextCoursei:
+    // course prevCoursei has to be taken before course nextCoursei.
+    // In one semester, you can take any number of courses as long as you have taken all the prerequisites in the previous semester for the courses you are taking.
+    // Return the minimum number of semesters needed to take all courses. If there is no way to take all the courses, return -1.
+    // Topological sort, cycle detection in directed graph, DFS
+    #region 1136. Parallel Courses
+    // Идея: минимальное количество семестров равно максимальнй длине пути в графе. Если есть цикл, то вернуть -1
+    public int MinimumSemesters(int n, int[][] relations)
+    {
+        var adj = new List<int>[n];
+        foreach (var e in relations)
+        {
+            var a = e[0] - 1;
+            var b = e[1] - 1;
+            if (adj[a] is null) adj[a] = new List<int>();
+            adj[a].Add(b);
+        }
+        var dist = new int?[n];
+        var result = -1;
+        for (int i = 0; i < n; i++)
+        {
+            var r = dfs(i);
+            if (r < 0) return -1;
+            result = Math.Max(result, r);
+        }
+
+        return result;
+
+        int dfs(int a)
+        {
+            if (dist[a].HasValue) return dist[a].Value;
+            if (adj[a] is null)
+            {
+                dist[a] = 1;
+                return 1;
+            }
+
+            dist[a] = -1;
+            var dst = -1;
+            foreach (var b in adj[a])
+            {
+                var res = dfs(b);
+                if (res < 0) return -1;
+
+                dst = Math.Max(dst, res + 1);
+            }
+
+            dist[a] = dst;
+            return dst;
+        }
+    }
+    #endregion
+
+    // 
+    #region
+    #endregion
+
+    // 
+    #region
     #endregion
 
 }
