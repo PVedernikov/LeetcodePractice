@@ -1276,6 +1276,7 @@ public class LeetCodeGeneral
     // Return the length of the longest cycle in the graph. If no cycle exists, return -1.
     // A cycle is a path that starts and ends at the same node.
     // HARD
+    // Cycle detection in directed graph, DFS
     #region 2360. Longest Cycle in a Graph
     // TODO: решить без рекурсии
     // Идея: поскольку из каждой вершины существует только один путь, то не нем может быть не более одного цикла
@@ -1553,4 +1554,10 @@ public class LeetCodeGeneral
         }
     }
     #endregion
+
+    // 2077. Paths in Maze That Lead to Same Room
+    #region 2077. Paths in Maze That Lead to Same Room
+
+    #endregion
+
 }
