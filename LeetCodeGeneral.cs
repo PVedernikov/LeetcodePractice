@@ -1616,12 +1616,105 @@ public class LeetCodeGeneral
     }
     #endregion
 
-    // 
-    #region
+    // 2115. Find All Possible Recipes from Given Supplies
+    // You have information about n different recipes. You are given a string array recipes and a 2D string array ingredients.
+    // The ith recipe has the name recipes[i], and you can create it if you have all the needed ingredients from ingredients[i].
+    // A recipe can also be an ingredient for other recipes, i.e., ingredients[i] may contain a string that is in recipes.
+    // You are also given a string array supplies containing all the ingredients that you initially have, and you have an infinite supply of all of them.
+    // Return a list of all the recipes that you can create. You may return the answer in any order.
+    // Note that two recipes may contain each other in their ingredients.
+    // Cycle detection in directed graph, DFS, Topological sort
+    #region 2115. Find All Possible Recipes from Given Supplies
+    public IList<string> FindAllRecipes(string[] recipes, IList<IList<string>> ingredients, string[] supplies)
+    {
+        var adj = new Dictionary<string, IList<string>>();
+        for (int i = 0; i < ingredients.Count; i++)
+        {
+            adj[recipes[i]] = ingredients[i];
+        }
+
+        foreach (var s in supplies)
+        {
+            adj[s] = null;
+        }
+
+        var isValid = new Dictionary<string, bool>();
+        var result = new List<string>();
+
+        foreach (var r in recipes)
+        {
+            if (dfs(r))
+            {
+                result.Add(r);
+            }
+        }
+
+        return result;
+
+        bool dfs(string a)
+        {
+            if (isValid.ContainsKey(a)) return isValid[a];
+            if (!adj.ContainsKey(a))
+            {
+                isValid[a] = false;
+                return false;
+            }
+            if (adj[a] is null || adj[a].Count == 0)
+            {
+                isValid[a] = true;
+                return true;
+            }
+            isValid[a] = false;
+
+            foreach (var b in adj[a])
+            {
+                if (!dfs(b)) return false;
+            }
+
+            isValid[a] = true;
+            return true;
+        }
+    }
+    #endregion
+
+    // 565. Array Nesting
+    // You are given an integer array nums of length n where nums is a permutation of the numbers in the range [0, n - 1].
+    // You should build a set s[k] = {nums[k], nums[nums[k]], nums[nums[nums[k]]], ... } subjected to the following rule:
+    // - The first element in s[k] starts with the selection of the element nums[k] of index = k.
+    // - The next element in s[k] should be nums[nums[k]], and then nums[nums[nums[k]]], and so on.
+    // - We stop adding right before a duplicate element occurs in s[k].
+    // Return the longest length of a set s[k].
+    // Cycle detection in directed graph, DFS
+    #region 565. Array Nesting
+    // TODO: реализовать итеративное решение, вроде как оно должно быть проще. Важный нюанс: в этом решении есть риск переполнения стека
+    public int ArrayNesting(int[] nums)
+    {
+        var n = nums.Length;
+        var dist = new int?[n];
+        var result = 0;
+        for (int i = 0; i < n; i++)
+        {
+            result = Math.Max(result, dfs(i));
+        }
+
+        return result;
+
+        int dfs(int a)
+        {
+            if (dist[a].HasValue) return dist[a].Value;
+            dist[a] = 0;
+            var res = dfs(nums[a]) + 1;
+            dist[a] = res;
+            return res;
+        }
+    }
     #endregion
 
     // 
     #region
     #endregion
 
+    // 
+    #region
+    #endregion
 }
