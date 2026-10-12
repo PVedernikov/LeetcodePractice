@@ -1710,6 +1710,12 @@ public class LeetCodeGeneral
     }
     #endregion
 
+    // 1335. Minimum Difficulty of a Job Schedule
+    // HARD
+    #region 1335. Minimum Difficulty of a Job Schedule
+    // TODO
+    #endregion
+
     // 
     #region
     #endregion
