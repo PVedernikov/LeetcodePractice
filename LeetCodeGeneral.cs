@@ -1813,6 +1813,52 @@ public class LeetCodeGeneral
     }
     #endregion
 
+    // 886. Possible Bipartition
+    // We want to split a group of n people (labeled from 1 to n) into two groups of any size.
+    // Each person may dislike some other people, and they should not go into the same group.
+    // Given the integer n and the array dislikes where dislikes[i] = [ai, bi] indicates that the person labeled ai does not like the person labeled bi,
+    // return true if it is possible to split everyone into two groups in this way.
+    #region 886. Possible Bipartition
+    public bool PossibleBipartition(int n, int[][] dislikes)
+    {
+        var adj = new List<int>[n];
+        foreach (var e in dislikes)
+        {
+            var a = e[0] - 1;
+            var b = e[1] - 1;
+            if (adj[a] is null) adj[a] = new List<int>();
+            if (adj[b] is null) adj[b] = new List<int>();
+            adj[a].Add(b);
+            adj[b].Add(a);
+        }
+
+        var group = new bool?[n]; // первая группа - true, вторая группа - false, null - не распределена
+        for (int i = 0; i < n; i++)
+        {
+            if (group[i].HasValue) continue;
+            if (!dfs(i, true)) return false;
+        }
+
+        return true;
+
+        bool dfs(int a, bool isFirst)
+        {
+            if (group[a].HasValue) return group[a] == isFirst;
+
+            group[a] = isFirst;
+            if (adj[a] is null) return true;
+
+            foreach (var b in adj[a])
+            {
+                if (group[b].HasValue && group[b] != isFirst) continue;
+                if (!dfs(b, !isFirst)) return false;
+            }
+
+            return true;
+        }
+    }
+    #endregion
+
     // 
     #region
     #endregion
