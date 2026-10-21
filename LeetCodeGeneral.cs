@@ -1859,8 +1859,91 @@ public class LeetCodeGeneral
     }
     #endregion
 
-    // 
-    #region
+    // 2204. Distance to a Cycle in Undirected Graph
+    // You are given a positive integer n representing the number of nodes in a connected undirected graph containing exactly one cycle.
+    // The nodes are numbered from 0 to n - 1 (inclusive).
+    // You are also given a 2D integer array edges, where edges[i] = [node1i, node2i] denotes that there is a bidirectional edge connecting node1i and node2i in the graph.
+    // The distance between two nodes a and b is defined to be the minimum number of edges that are needed to go from a to b.
+    // Return an integer array answer of size n, where answer[i] is the minimum distance between the ith node and any node in the cycle.
+    // Граф содержит ровно один цикл, нужно найти расстояние от всех вершин до этого цигла.
+    #region 2204. Distance to a Cycle in Undirected Graph
+    // TODO: реализовать каноничное решение через BFS без рекурсии.
+    public int[] DistanceToCycle(int n, int[][] edges)
+    {
+        var adj = new List<int>[n];
+        foreach (var e in edges)
+        {
+            var a = e[0];
+            var b = e[1];
+            if (adj[a] is null) adj[a] = new List<int>();
+            if (adj[b] is null) adj[b] = new List<int>();
+            adj[a].Add(b);
+            adj[b].Add(a);
+        }
+        var dist = new int[n];
+        for (int i = 0; i < n; i++)
+        {
+            dist[i] = -1;
+        }
+
+        detectCycle(0, -1);
+
+        for (int i = 0; i < n; i++)
+        {
+            if (dist[i] == 0)
+            {
+                dfs(i, 0);
+            }
+        }
+
+        return dist;
+
+        void dfs(int a, int dst)
+        {
+            if (dist[a] < 0)
+            {
+                dist[a] = dst;
+            }
+
+            if (adj[a] is null) return;
+
+            foreach (var b in adj[a])
+            {
+                if (dist[b] < 0)
+                {
+                    dfs(b, dst + 1);
+                }
+            }
+        }
+
+        int detectCycle(int a, int prev)
+        {
+            if (dist[a] >= 0) return a;
+            if (adj[a] is null) return -1;
+            dist[a] = 0;
+
+            foreach (var b in adj[a])
+            {
+                if (b != prev)
+                {
+                    var node = detectCycle(b, a);
+                    if (node >= 0)
+                    {
+                        if (node == a)
+                        {
+                            return -1;
+                        }
+                        else
+                        {
+                            return node;
+                        }
+                    }
+                }
+            }
+            dist[a] = -1;
+            return -1;
+        }
+    }
     #endregion
 
     // 1335. Minimum Difficulty of a Job Schedule
