@@ -1867,8 +1867,75 @@ public class LeetCodeGeneral
     // Return an integer array answer of size n, where answer[i] is the minimum distance between the ith node and any node in the cycle.
     // Граф содержит ровно один цикл, нужно найти расстояние от всех вершин до этого цигла.
     #region 2204. Distance to a Cycle in Undirected Graph
-    // TODO: реализовать каноничное решение через BFS без рекурсии.
+    // Iterative, BFS, optimal
+    // Идея: сначала последовательно удаляем листья (считаем степени вершин в массиве degree), после этого в degree все вершины будут 0, кроме вершин цикла
+    // После этого запускаем BFS из вершин цикла
     public int[] DistanceToCycle(int n, int[][] edges)
+    {
+        var adj = new List<int>[n];
+        foreach (var e in edges)
+        {
+            var a = e[0];
+            var b = e[1];
+            if (adj[a] is null) adj[a] = new List<int>();
+            if (adj[b] is null) adj[b] = new List<int>();
+            adj[a].Add(b);
+            adj[b].Add(a);
+        }
+        var degree = new int[n];
+        var queue = new Queue<int>();
+        for (int i = 0; i < n; i++)
+        {
+            degree[i] = adj[i] is null ? 0 : adj[i].Count;
+            if (degree[i] == 1) queue.Enqueue(i); // Добавляем в очередь только листья
+        }
+        // Удаляем листья
+        while (queue.Count > 0)
+        {
+            var a = queue.Dequeue();
+            degree[a] = 0;
+            if (adj[a] is null) continue;
+            foreach (var b in adj[a])
+            {
+                if (degree[b] > 0) degree[b]--;
+                if (degree[b] == 1) queue.Enqueue(b); // Нашли лист
+            }
+        }
+        // BFS
+        var result = new int[n];
+        for (int i = 0; i < n; i++)
+        {
+            if (degree[i] > 0)
+            {
+                queue.Enqueue(i); // Добавляем в очередь только элементы цикла
+                result[i] = 0;
+            }
+            else
+            {
+                result[i] = -1;
+            }
+        }
+
+        while (queue.Count > 0)
+        {
+            var a = queue.Dequeue();
+            if (adj[a] is null) continue;
+            foreach (var b in adj[a])
+            {
+                if (result[b] < 0)
+                {
+                    result[b] = result[a] + 1;
+                    queue.Enqueue(b);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    // Recursive
+    // Идея: сначала находим цикл, потом от вершин цикла dfs
+    public int[] DistanceToCycle_Recursive(int n, int[][] edges)
     {
         var adj = new List<int>[n];
         foreach (var e in edges)
@@ -1916,7 +1983,7 @@ public class LeetCodeGeneral
             }
         }
 
-        int detectCycle(int a, int prev)
+        int detectCycle(int a, int prev) // после этого вершины, которые принадлежат циклу, будут иметь dist = 0, остальные - dist = -1
         {
             if (dist[a] >= 0) return a;
             if (adj[a] is null) return -1;
