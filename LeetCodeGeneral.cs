@@ -2013,6 +2013,56 @@ public class LeetCodeGeneral
     }
     #endregion
 
+
+    // 1438. Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit
+    // You are given an array of integers nums and an integer limit.
+    // Return the size of the longest non-empty subarray such that the absolute difference between every pair of elements in this subarray is less than or equal to limit.
+    // Two pointers, sliding window, monotonic queue
+    #region 1438. Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit
+    public int LongestSubarray(int[] nums, int limit)
+    {
+        var n = nums.Length;
+        var result = 1;
+        var minQ = new LinkedList<int>();
+        var maxQ = new LinkedList<int>();
+        minQ.AddFirst(0);
+        maxQ.AddFirst(0);
+        var l = 0;
+        for (int r = 1; r < n; r++)
+        {
+            while (maxQ.Count > 0 && nums[maxQ.Last.Value] <= nums[r])
+            {
+                maxQ.RemoveLast();
+            }
+            while (minQ.Count > 0 && nums[minQ.Last.Value] >= nums[r])
+            {
+                minQ.RemoveLast();
+            }
+            maxQ.AddLast(r);
+            minQ.AddLast(r);
+
+            var diff = nums[maxQ.First.Value] - nums[minQ.First.Value];
+            while (l <= r && diff > limit)
+            {
+                l++;
+                while (maxQ.Count > 0 && maxQ.First.Value < l)
+                {
+                    maxQ.RemoveFirst();
+                }
+                while (minQ.Count > 0 && minQ.First.Value < l)
+                {
+                    minQ.RemoveFirst();
+                }
+                diff = nums[maxQ.First.Value] - nums[minQ.First.Value];
+            }
+
+            result = Math.Max(result, r - l + 1);
+        }
+
+        return result;
+    }
+    #endregion
+
     // 1335. Minimum Difficulty of a Job Schedule
     // HARD
     #region 1335. Minimum Difficulty of a Job Schedule
