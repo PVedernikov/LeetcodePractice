@@ -2063,6 +2063,52 @@ public class LeetCodeGeneral
     }
     #endregion
 
+    // 2762. Continuous Subarrays
+    // You are given a 0-indexed integer array nums. A subarray of nums is called continuous if:
+    // - Let i, i + 1, ..., j be the indices in the subarray. Then, for each pair of indices i <= i1, i2 <= j, 0 <= |nums[i1] - nums[i2]| <= 2.
+    // Return the total number of continuous subarrays.
+    // A subarray is a contiguous non-empty sequence of elements within an array.
+    #region 2762. Continuous Subarrays
+    public long ContinuousSubarrays(int[] nums)
+    {
+        var n = nums.Length;
+        var maxQ = new LinkedList<int>();
+        var minQ = new LinkedList<int>();
+        var l = 0;
+        long result = 0;
+        for (int r = 0; r < n; r++)
+        {
+            while (maxQ.Count > 0 && nums[maxQ.Last.Value] <= nums[r]) maxQ.RemoveLast();
+            while (minQ.Count > 0 && nums[minQ.Last.Value] >= nums[r]) minQ.RemoveLast();
+            maxQ.AddLast(r);
+            minQ.AddLast(r);
+            var diff = nums[maxQ.First.Value] - nums[minQ.First.Value];
+            while (l < r && diff > 2)
+            {
+                l++;
+                while (maxQ.Count > 0 && maxQ.First.Value < l) maxQ.RemoveFirst();
+                while (minQ.Count > 0 && minQ.First.Value < l) minQ.RemoveFirst();
+                diff = nums[maxQ.First.Value] - nums[minQ.First.Value];
+            }
+
+            result += r - l + 1; // Вот тут неочевидно, но смысл в том, что вместе с новым элементом r,
+                                 // мы можем образовать r-l+1 новых подмассивов, которые заканчиваются на r.
+                                 // Например, если l=2 и r=4, то новые подмассивы: [nums[2], nums[3], nums[4]], [nums[3], nums[4]], [nums[4]]
+        }
+
+        return result;
+    }
+    #endregion
+
+    // 
+    #region
+    #endregion
+
+    // 
+    #region
+    #endregion
+
+
     // 1335. Minimum Difficulty of a Job Schedule
     // HARD
     #region 1335. Minimum Difficulty of a Job Schedule
