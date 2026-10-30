@@ -2100,14 +2100,154 @@ public class LeetCodeGeneral
     }
     #endregion
 
-    // 
-    #region
+    // 3589. Count Prime-Gap Balanced Subarrays
+    // You are given an integer array nums and an integer k.
+    // A subarray is called prime-gap balanced if:
+    // - It contains at least two prime numbers, and
+    // - The difference between the maximum and minimum prime numbers in that subarray is less than or equal to k.
+    // Return the count of prime-gap balanced subarrays in nums.
+    // Note:
+    // - A subarray is a contiguous non-empty sequence of elements within an array.
+    // - A prime number is a natural number greater than 1 with only two factors, 1 and itself.
+    // Monotonic queue, two pointers
+    #region 3589. Count Prime-Gap Balanced Subarrays
+    public int PrimeSubarray(int[] nums, int k)
+    {
+        var n = nums.Length;
+        var prime = new HashSet<int>();
+        var notPrime = new HashSet<int>();
+        var maxQ = new LinkedList<int>();
+        var minQ = new LinkedList<int>();
+
+        var l = 0;
+        var result = 0;
+        var prevPrimeI = -1;
+        var lastPrimeI = -1;
+        for (int r = 0; r < n; r++)
+        {
+            if (isPrimeNumber(nums[r]))
+            {
+                while (maxQ.Count > 0 && nums[maxQ.Last.Value] <= nums[r]) maxQ.RemoveLast();
+                while (minQ.Count > 0 && nums[minQ.Last.Value] >= nums[r]) minQ.RemoveLast();
+                maxQ.AddLast(r);
+                minQ.AddLast(r);
+                prevPrimeI = lastPrimeI;
+                lastPrimeI = r;
+
+                while (nums[maxQ.First.Value] - nums[minQ.First.Value] > k)
+                {
+                    l++;
+                    while (maxQ.Count > 0 && maxQ.First.Value < l) maxQ.RemoveFirst();
+                    while (minQ.Count > 0 && minQ.First.Value < l) minQ.RemoveFirst();
+                }
+            }
+
+            // Если последнее lastPrimeI и предпоследнее prevPrimeI простые числа в окне [l, r], то окно валидно
+            // Поскольку lastPrimeI гарантировано prevPrimeI < lastPrimeI <= r, то нужно проверить только prevPrimeI
+            if (prevPrimeI >= l) 
+            {
+                result += prevPrimeI - l + 1;
+            }
+        }
+        return result;
+
+        bool isPrimeNumber(int number)
+        {
+            if (prime.Contains(number)) return true;
+            if (notPrime.Contains(number)) return false;
+            if (number <= 1) return false;
+            if (number == 2) return true;
+            for (int div = 2; div * div <= number; div++)
+            {
+                if (number % div == 0)
+                {
+                    notPrime.Add(number);
+                    return false;
+                }
+            }
+            prime.Add(number);
+            return true;
+        }
+    }
+
+    // Предыдущее решение такое же, только более чистое, но его сложнее читать
+    // В этом решений более понятен смысл
+    public int PrimeSubarray_firstSubmit(int[] nums, int k)
+    {
+        var n = nums.Length;
+        var prime = new HashSet<int>();
+        var notPrime = new HashSet<int>();
+
+        var maxQ = new LinkedList<int>();
+        var minQ = new LinkedList<int>();
+        var l = 0;
+        var primeCount = 0;
+        var result = 0;
+        var lastP = -1;
+        var prevP = -1;
+        for (int r = 0; r < n; r++)
+        {
+            if (isPrime(nums[r]))
+            {
+                while (maxQ.Count > 0 && nums[maxQ.Last.Value] <= nums[r]) maxQ.RemoveLast();
+                while (minQ.Count > 0 && nums[minQ.Last.Value] >= nums[r]) minQ.RemoveLast();
+                maxQ.AddLast(r);
+                minQ.AddLast(r);
+                primeCount++;
+                prevP = lastP;
+                lastP = r;
+            }
+
+            if (primeCount >= 2)
+            {
+                var gap = nums[maxQ.First.Value] - nums[minQ.First.Value];
+                while (l < r && gap > k && primeCount >= 2)
+                {
+                    if (isPrime(nums[l]))
+                    {
+                        primeCount--;
+                    }
+                    l++;
+                    while (maxQ.Count > 0 && maxQ.First.Value < l) maxQ.RemoveFirst();
+                    while (minQ.Count > 0 && minQ.First.Value < l) minQ.RemoveFirst();
+                    gap = nums[maxQ.First.Value] - nums[minQ.First.Value];
+                }
+
+                if (primeCount >= 2 && gap <= k)
+                {
+                    result += prevP - l + 1;
+                }
+            }
+        }
+        return result;
+
+        bool isPrime(int nn)
+        {
+            if (prime.Contains(nn)) return true;
+            if (notPrime.Contains(nn)) return false;
+            if (nn <= 1) return false;
+            if (nn == 2) return true;
+            for (int jj = 2; jj * jj <= nn; jj++)
+            {
+                if (nn % jj == 0)
+                {
+                    notPrime.Add(nn);
+                    return false;
+                }
+            }
+            prime.Add(nn);
+            return true;
+        }
+    }
     #endregion
 
     // 
     #region
     #endregion
 
+    // 
+    #region
+    #endregion
 
     // 1335. Minimum Difficulty of a Job Schedule
     // HARD
