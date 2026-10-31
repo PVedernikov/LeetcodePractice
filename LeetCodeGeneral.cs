@@ -2241,8 +2241,35 @@ public class LeetCodeGeneral
     }
     #endregion
 
-    // 
-    #region
+    // 2944. Minimum Number of Coins for Fruits
+    // You are given an 0-indexed integer array prices where prices[i] denotes the number of coins needed to purchase the (i + 1)th fruit.
+    // The fruit market has the following reward for each fruit:
+    // - If you purchase the (i + 1)th fruit at prices[i] coins, you can get any number of the next i fruits for free.
+    // Note that even if you can take fruit j for free, you can still purchase it for prices[j - 1] coins to receive its reward.
+    // Return the minimum number of coins needed to acquire all the fruits.
+    #region 2944. Minimum Number of Coins for Fruits
+    // TODO: NOT OPTIMAL, реализовать monotonic queue решение. Идея: двигаться справа налево, сужая границы очереди minQ
+    public int MinimumCoins(int[] prices)
+    {
+        var n = prices.Length;
+        var dp = new int?[n];
+
+        return dfs(0);
+
+        int dfs(int i)
+        {
+            if (i >= n || i < 0) return 0;
+            if (dp[i].HasValue) return dp[i].Value;
+            if (i == n - 1) return prices[i];
+            var min = int.MaxValue;
+            for (int j = 1; j <= i + 2 && i + j <= n; j++)
+            {
+                min = Math.Min(min, dfs(i + j));
+            }
+            dp[i] = prices[i] + min;
+            return dp[i].Value;
+        }
+    }
     #endregion
 
     // 
