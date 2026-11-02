@@ -2247,6 +2247,7 @@ public class LeetCodeGeneral
     // - If you purchase the (i + 1)th fruit at prices[i] coins, you can get any number of the next i fruits for free.
     // Note that even if you can take fruit j for free, you can still purchase it for prices[j - 1] coins to receive its reward.
     // Return the minimum number of coins needed to acquire all the fruits.
+    // DP + monotonic queue, O(n)
     #region 2944. Minimum Number of Coins for Fruits
     // OPTIMAL, monotonic queue + DP, O(n)
     public int MinimumCoins(int[] prices)
@@ -2301,6 +2302,68 @@ public class LeetCodeGeneral
 
     // 
     #region
+    #endregion
+
+    // 1696. Jump Game VI
+    // You are given a 0-indexed integer array nums and an integer k.
+    // You are initially standing at index 0. In one move, you can jump at most k steps forward without going outside the boundaries of the array.
+    // That is, you can jump from index i to any index in the range [i + 1, min(n - 1, i + k)] inclusive.
+    // You want to reach the last index of the array (index n - 1). Your score is the sum of all nums[j] for each index j you visited in the array.
+    // Return the maximum score you can get.
+    // DP + monotonic queue, O(n)
+    #region 1696. Jump Game VI
+    // Идея: вместо того, чтобы для каждой позиции i вычислять дальнейший оптимальный путь
+    // вычисляем оптимальный путь с конца, и храним результаты в очереди maxQ, убирая из нее по пути индексы, которые уже вышли из диапазона
+    public int MaxResult(int[] nums, int k)
+    {
+        var n = nums.Length;
+        var dp = new int[n];
+        dp[0] = nums[0];
+        var maxQ = new LinkedList<int>();
+        maxQ.AddLast(0);
+        for (int i = 1; i < n; i++)
+        {
+            var minI = Math.Max(0, i - k);
+            while (maxQ.Count > 0 && maxQ.First.Value < minI)
+            {
+                maxQ.RemoveFirst();
+            }
+
+            dp[i] = nums[i] + dp[maxQ.First.Value];
+            while (maxQ.Count > 0 && dp[maxQ.Last.Value] <= dp[i])
+            {
+                maxQ.RemoveLast();
+            }
+            maxQ.AddLast(i);
+        }
+
+        return dp[n - 1];
+    }
+
+    // Это очевидное DP решение, но оно не проходит по времени, т.к. на каждом шаге мы вычисляемя все дальнейшие пути, и берем оптимальный.
+    // То есть, задача: оптимизаровать поиск оптимального пути, чтобы не вычислять все возможные варианты.
+    // public int MaxResult(int[] nums, int k)
+    // {
+    //     var n = nums.Length;
+    //     var dp = new int?[n];
+
+    //     return dfs(0);
+
+    //     int dfs(int i)
+    //     {
+    //         if (i >= n || i < 0) return int.MinValue;
+    //         if (i == n - 1) return nums[n - 1];
+    //         if (dp[i].HasValue) return dp[i].Value;
+    //         var max = int.MinValue;
+    //         for (int j = 1; j <= k && i + j < n; j++)
+    //         {
+    //             max = Math.Max(max, dfs(i + j));
+    //         }
+
+    //         dp[i] = nums[i] + max;
+    //         return dp[i].Value;
+    //     }
+    // }
     #endregion
 
     // 1335. Minimum Difficulty of a Job Schedule
