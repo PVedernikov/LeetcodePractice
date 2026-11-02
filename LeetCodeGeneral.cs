@@ -2248,8 +2248,35 @@ public class LeetCodeGeneral
     // Note that even if you can take fruit j for free, you can still purchase it for prices[j - 1] coins to receive its reward.
     // Return the minimum number of coins needed to acquire all the fruits.
     #region 2944. Minimum Number of Coins for Fruits
-    // TODO: NOT OPTIMAL, реализовать monotonic queue решение. Идея: двигаться справа налево, сужая границы очереди minQ
+    // OPTIMAL, monotonic queue + DP, O(n)
     public int MinimumCoins(int[] prices)
+    {
+        var n = prices.Length;
+        var dp = new int[n + 1];
+        //for (int i = 0; i <= n; i++) dp[i] = int.MaxValue; // Это не обязательно, т.к. мы dp, которые мы используем всегда уже будут вычислены
+        //dp[n] = 0;
+        var minQ = new LinkedList<int>();
+        minQ.AddLast(n);
+        for (int i = n - 1; i >= 0; i--)
+        {
+            var maxI = Math.Min(n, i + i + 2);
+            while (minQ.Count > 0 && minQ.First.Value > maxI)
+            {
+                minQ.RemoveFirst();
+            }
+            dp[i] = prices[i] + dp[minQ.First.Value];
+            while (minQ.Count > 0 && dp[minQ.Last.Value] >= dp[i])
+            {
+                minQ.RemoveLast();
+            }
+            minQ.AddLast(i);
+        }
+
+        return dp[0];
+    }
+
+    // TODO: NOT OPTIMAL, реализовать monotonic queue решение. Идея: двигаться справа налево, сужая границы очереди minQ
+    public int MinimumCoins_recursiveDP(int[] prices)
     {
         var n = prices.Length;
         var dp = new int?[n];
