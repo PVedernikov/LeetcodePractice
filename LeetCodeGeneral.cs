@@ -2375,6 +2375,7 @@ public class LeetCodeGeneral
     // Monotonic queue, two pointers, sliding window
     // HARD
     #region 2398. Maximum Number of Robots Within Budget
+    // Идея: monotonic queue используем, чтобы не вычислять каждый раз максимум, а сумму обслуживаем по мере продвижения.
     public int MaximumRobots(int[] chargeTimes, int[] runningCosts, long budget)
     {
         var n = chargeTimes.Length;
@@ -2396,8 +2397,8 @@ public class LeetCodeGeneral
                 k = r - l + 1;
                 while (maxQ.Count > 0 && maxQ.First.Value < l) maxQ.RemoveFirst();
             }
-            var add = chargeTimes[maxQ.First.Value] + (k * sum) > budget ? 0 : k;
-            result = Math.Max(result, add);
+            var robots = chargeTimes[maxQ.First.Value] + (k * sum) > budget ? 0 : k; // После сжатия окна (когда у нас один робот при l==r) оно все еще может быть невалидным, в этом 0
+            result = Math.Max(result, robots);
         }
 
         return (int)result;
