@@ -2366,6 +2366,52 @@ public class LeetCodeGeneral
     // }
     #endregion
 
+    // 2398. Maximum Number of Robots Within Budget
+    // You have n robots. You are given two 0-indexed integer arrays, chargeTimes and runningCosts, both of length n.
+    // The ith robot costs chargeTimes[i] units to charge and costs runningCosts[i] units to run. You are also given an integer budget.
+    // The total cost of running k chosen robots is equal to max(chargeTimes) + k * sum(runningCosts),
+    // where max(chargeTimes) is the largest charge cost among the k robots and sum(runningCosts) is the sum of running costs among the k robots.
+    // Return the maximum number of consecutive robots you can run such that the total cost does not exceed budget.
+    // Monotonic queue, two pointers, sliding window
+    // HARD
+    #region 2398. Maximum Number of Robots Within Budget
+    public int MaximumRobots(int[] chargeTimes, int[] runningCosts, long budget)
+    {
+        var n = chargeTimes.Length;
+        var maxQ = new LinkedList<int>();
+        var l = 0;
+        long sum = 0;
+        long result = 0;
+        for (int r = 0; r < n; r++)
+        {
+            sum += runningCosts[r];
+            while (maxQ.Count > 0 && chargeTimes[maxQ.Last.Value] <= chargeTimes[r]) maxQ.RemoveLast();
+            maxQ.AddLast(r);
+
+            var k = r - l + 1;
+            while (l < r && chargeTimes[maxQ.First.Value] + (k * sum) > budget)
+            {
+                sum -= runningCosts[l];
+                l++;
+                k = r - l + 1;
+                while (maxQ.Count > 0 && maxQ.First.Value < l) maxQ.RemoveFirst();
+            }
+            var add = chargeTimes[maxQ.First.Value] + (k * sum) > budget ? 0 : k;
+            result = Math.Max(result, add);
+        }
+
+        return (int)result;
+    }
+    #endregion
+
+    // 
+    #region
+    #endregion
+
+    // 
+    #region
+    #endregion
+
     // 1335. Minimum Difficulty of a Job Schedule
     // HARD
     #region 1335. Minimum Difficulty of a Job Schedule
