@@ -2438,7 +2438,9 @@ public class LeetCodeGeneral
                 var yi = points[maxQ.First.Value][1];
                 var xj = points[j][0];
                 var yj = points[j][1];
-                var formula = yi + yj + Math.Abs(xi - xj);
+                //var formula = yi + yj + Math.Abs(xi - xj);
+                // Так как xi < xj, то Math.Abs(xi - xj) = xj - xi
+                var formula = yi + yj + xj - xi;
                 result = Math.Max(result, formula);
             }
 
