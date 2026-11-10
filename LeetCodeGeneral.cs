@@ -2460,6 +2460,37 @@ public class LeetCodeGeneral
     #region
     #endregion
 
+    // 1425. Constrained Subsequence Sum
+    // Given an integer array nums and an integer k, return the maximum sum of a non-empty subsequence of that array
+    // such that for every two consecutive integers in the subsequence, nums[i] and nums[j], where i < j, the condition j - i <= k is satisfied.
+    // A subsequence of an array is obtained by deleting some number of elements (can be zero) from the array,
+    // leaving the remaining elements in their original order.
+    #region 1425. Constrained Subsequence Sum
+    public int ConstrainedSubsetSum(int[] nums, int k)
+    {
+        var n = nums.Length;
+        var dp = new int[n];
+        var maxQ = new LinkedList<int>();
+        var result = int.MinValue;
+        for (int j = 0; j < n; j++)
+        {
+            while (maxQ.Count > 0 && j - maxQ.First.Value > k) maxQ.RemoveFirst();
+
+            dp[j] = nums[j];
+            if (maxQ.Count > 0)
+            {
+                var i = maxQ.First.Value;
+                dp[j] = Math.Max(dp[j], dp[i] + nums[j]);
+            }
+            while (maxQ.Count > 0 && dp[maxQ.Last.Value] <= dp[j]) maxQ.RemoveLast();
+            maxQ.AddLast(j);
+            result = Math.Max(result, dp[j]);
+        }
+
+        return result;
+    }
+    #endregion
+
     // 
     #region
     #endregion
