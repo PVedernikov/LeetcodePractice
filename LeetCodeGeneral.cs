@@ -2405,6 +2405,55 @@ public class LeetCodeGeneral
     }
     #endregion
 
+    // 1499. Max Value of Equation
+    // You are given an array points containing the coordinates of points on a 2D plane, sorted by the x-values,
+    // where points[i] = [xi, yi] such that xi < xj for all 1 <= i < j <= points.length.
+    // You are also given an integer k.
+    // Return the maximum value of the equation yi + yj + |xi - xj| where |xi - xj| <= k and 1 <= i < j <= points.length.
+    // It is guaranteed that there exists at least one pair of points that satisfy the constraint |xi - xj| <= k.
+    // Monotonic queue, two pointers, sliding window
+    // HARD
+    #region 1499. Max Value of Equation
+    // Идея: нам нужно обеспечить условие, что i < j
+    // Поэтому порядок действий такой:
+    // - сначала приводим диапазон в соответствие с новой точкой j
+    // - потом вычисляем формулу для j и текущего максимального i
+    // - добавляем j в очередь
+    public int FindMaxValueOfEquation(int[][] points, int k)
+    {
+        var n = points.Length;
+        var maxQ = new LinkedList<int>();
+        maxQ.AddLast(0);
+        var result = int.MinValue;
+        for (var j = 1; j < n; j++)
+        {
+            while (maxQ.Count > 0 && Math.Abs(points[maxQ.First.Value][0] - points[j][0]) > k)
+            {
+                maxQ.RemoveFirst();
+            }
+
+            if (maxQ.Count > 0)
+            {
+                var xi = points[maxQ.First.Value][0];
+                var yi = points[maxQ.First.Value][1];
+                var xj = points[j][0];
+                var yj = points[j][1];
+                var formula = yi + yj + Math.Abs(xi - xj);
+                result = Math.Max(result, formula);
+            }
+
+            var maxJ = points[j][1] - points[j][0];
+            while (maxQ.Count > 0 && points[maxQ.Last.Value][1] - points[maxQ.Last.Value][0] <= maxJ)
+            {
+                maxQ.RemoveLast();
+            }
+            maxQ.AddLast(j);
+        }
+
+        return result;
+    }
+    #endregion
+
     // 
     #region
     #endregion
