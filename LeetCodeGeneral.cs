@@ -2456,15 +2456,13 @@ public class LeetCodeGeneral
     }
     #endregion
 
-    // 
-    #region
-    #endregion
-
     // 1425. Constrained Subsequence Sum
     // Given an integer array nums and an integer k, return the maximum sum of a non-empty subsequence of that array
     // such that for every two consecutive integers in the subsequence, nums[i] and nums[j], where i < j, the condition j - i <= k is satisfied.
     // A subsequence of an array is obtained by deleting some number of elements (can be zero) from the array,
     // leaving the remaining elements in their original order.
+    // Monotonic queue, two pointers, sliding window, DP?
+    // HARD
     #region 1425. Constrained Subsequence Sum
     public int ConstrainedSubsetSum(int[] nums, int k)
     {
@@ -2489,6 +2487,46 @@ public class LeetCodeGeneral
 
         return result;
     }
+    #endregion
+
+    // 862. Shortest Subarray with Sum at Least K
+    // Given an integer array nums and an integer k, return the length of the shortest non-empty subarray of nums with a sum of at least k.
+    // If there is no such subarray, return -1.
+    // A subarray is a contiguous part of an array.
+    // Monotonic queue, prefix sum
+    // HARD
+    #region 862. Shortest Subarray with Sum at Least K
+    public int ShortestSubarray(int[] nums, int k)
+    {
+        var n = nums.Length;
+        var result = int.MaxValue;
+        var sum = new long[n + 1];
+        var minQ = new LinkedList<int>();
+        minQ.AddLast(0);
+        for (var r = 1; r <= n; r++)
+        {
+            sum[r] = sum[r - 1] + nums[r - 1];
+
+            while (minQ.Count > 0 && sum[r] <= sum[minQ.Last.Value])
+            {
+                minQ.RemoveLast();
+            }
+            minQ.AddLast(r);
+
+            while (minQ.Count > 0 && sum[r] - sum[minQ.First.Value] >= k)
+            {
+                result = Math.Min(result, r - minQ.First.Value);
+                minQ.RemoveFirst();
+            }
+
+        }
+
+        return result == int.MaxValue ? -1 : result;
+    }
+    #endregion
+
+    // 
+    #region
     #endregion
 
     // 
