@@ -2525,6 +2525,47 @@ public class LeetCodeGeneral
     }
     #endregion
 
+    // 918. Maximum Sum Circular Subarray
+    // Given a circular integer array nums of length n, return the maximum possible sum of a non-empty subarray of nums.
+    // A circular array means the end of the array connects to the beginning of the array. Formally, the next element of nums[i] is nums[(i + 1) % n] and the previous element of nums[i] is nums[(i - 1 + n) % n].
+    // A subarray may only include each element of the fixed buffer nums at most once. Formally, for a subarray nums[i], nums[i + 1], ..., nums[j], there does not exist i <= k1, k2 <= j with k1 % n == k2 % n.
+    #region 918. Maximum Sum Circular Subarray
+    // Monotonic queue, prefix sum
+    // TODO: другая идея: Kadane's algorithm, но нужно вычислить максимальный подмассив и минимальный подмассив, затем вычесть одно из другого.
+    public int MaxSubarraySumCircular(int[] nums)
+    {
+        var n = nums.Length;
+        var sum = new int[n + n + 1];
+        sum[0] = 0;
+        for (int i = 1; i <= n + n; i++)
+        {
+            sum[i] = sum[i - 1] + nums[i % n];
+        }
+
+        var minQ = new LinkedList<int>();
+        minQ.AddLast(0);
+        var result = int.MinValue;
+        for (int i = 1; i <= n + n; i++)
+        {
+            while (minQ.Count > 0 && i - minQ.First.Value > n)
+            {
+                minQ.RemoveFirst();
+            }
+            if (minQ.First.Value < i)
+            {
+                result = Math.Max(result, sum[i] - sum[minQ.First.Value]);
+            }
+            while (minQ.Count > 0 && sum[minQ.Last.Value] >= sum[i])
+            {
+                minQ.RemoveLast();
+            }
+            minQ.AddLast(i);
+        }
+
+        return result;
+    }
+    #endregion
+
     // 
     #region
     #endregion
