@@ -2566,8 +2566,53 @@ public class LeetCodeGeneral
     }
     #endregion
 
-    // 
-    #region
+    // 3420. Count Non-Decreasing Subarrays After K Operations
+    // You are given an array nums of n integers and an integer k.
+    // For each subarray of nums, you can apply up to k operations on it. In each operation, you increment any element of the subarray by 1.
+    // Note that each subarray is considered independently, meaning changes made to one subarray do not persist to another.
+    // Return the number of subarrays that you can make non-decreasing ​​​​​after performing at most k operations.
+    // An array is said to be non-decreasing if each element is greater than or equal to its previous element, if it exists.
+    // Monotonic queue, two pointers, sliding window
+    // HARD
+    #region 3420. Count Non-Decreasing Subarrays After K Operations
+    // Скорее всего не оптимально
+    public long CountNonDecreasingSubarrays(int[] nums, int k)
+    {
+        var n = nums.Length;
+        var maxQ = new LinkedList<int>();
+        long result = 0;
+        var l = 0;
+        long count = 0;
+        for (int r = 0; r < n; r++)
+        {
+            while (maxQ.Count > 0 && nums[maxQ.Last.Value] <= nums[r]) maxQ.RemoveLast();
+            maxQ.AddLast(r);
+            count += nums[maxQ.First.Value] - nums[r];
+            while (count > k)
+            {
+                l++;
+                while (maxQ.Count > 0 && maxQ.First.Value < l) maxQ.RemoveFirst();
+                count = 0;
+                var maxL = int.MinValue;
+                // this needs optimization probably
+                for (int i = l; i <= r; i++)
+                {
+                    if (nums[i] > maxL)
+                    {
+                        maxL = nums[i];
+                    }
+                    else
+                    {
+                        count += maxL - nums[i];
+                    }
+                }
+            }
+
+            result += r - l + 1;
+        }
+
+        return result;
+    }
     #endregion
 
     // 
