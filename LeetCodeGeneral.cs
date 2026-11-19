@@ -2575,7 +2575,7 @@ public class LeetCodeGeneral
     // Monotonic queue, two pointers, sliding window
     // HARD
     #region 3420. Count Non-Decreasing Subarrays After K Operations
-    // Скорее всего не оптимально
+    // Скорее всего не оптимально. Другая идея: идти справа налево
     public long CountNonDecreasingSubarrays(int[] nums, int k)
     {
         var n = nums.Length;
@@ -2613,6 +2613,102 @@ public class LeetCodeGeneral
 
         return result;
     }
+    #endregion
+
+    // 2467. Most Profitable Path in a Tree
+    // There is an undirected tree with n nodes labeled from 0 to n - 1, rooted at node 0.
+    // You are given a 2D integer array edges of length n - 1 where edges[i] = [ai, bi] indicates that there is an edge between nodes ai and bi in the tree.
+    // At every node i, there is a gate. You are also given an array of even integers amount, where amount[i] represents:
+    // - the price needed to open the gate at node i, if amount[i] is negative, or,
+    // - the cash reward obtained on opening the gate at node i, otherwise.
+    // The game goes on as follows:
+    // - Initially, Alice is at node 0 and Bob is at node bob.
+    // - At every second, Alice and Bob each move to an adjacent node. Alice moves towards some leaf node, while Bob moves towards node 0.
+    // - For every node along their path, Alice and Bob either spend money to open the gate at that node, or accept the reward. Note that:
+    //     - If the gate is already open, no price will be required, nor will there be any cash reward.
+    //     - If Alice and Bob reach the node simultaneously, they share the price/reward for opening the gate there.
+    //       In other words, if the price to open the gate is c, then both Alice and Bob pay c / 2 each.
+    //       Similarly, if the reward at the gate is c, both of them receive c / 2 each.
+    // - If Alice reaches a leaf node, she stops moving. Similarly, if Bob reaches node 0, he stops moving.
+    //   Note that these events are independent of each other.
+    // Return the maximum net income Alice can have if she travels towards the optimal leaf node.
+
+    #region 2467. Most Profitable Path in a Tree
+    public int MostProfitablePath(int[][] edges, int bob, int[] amount)
+    {
+        var n = amount.Length;
+        var adj = new List<int>[n];
+        foreach (var e in edges)
+        {
+            var a = e[0];
+            var b = e[1];
+            if (adj[a] is null) adj[a] = new List<int>();
+            if (adj[b] is null) adj[b] = new List<int>();
+            adj[a].Add(b);
+            adj[b].Add(a);
+        }
+        var parent = new int[n];
+        var parentStack = new Stack<(int, int)>();
+        parentStack.Push((0, 0));
+        while (parentStack.Count > 0)
+        {
+            var (node, p) = parentStack.Pop();
+            parent[node] = p;
+            if (adj[node] is null) continue;
+            foreach (var ch in adj[node])
+            {
+                if (ch != p)
+                {
+                    parentStack.Push((ch, node));
+                }
+            }
+        }
+
+        var visited = new bool[n];
+        var queue = new Queue<(int, int)>();
+        queue.Enqueue((0, 0));
+        var nodeB = bob;
+        var result = int.MinValue;
+        while (queue.Count > 0)
+        {
+            var sn = queue.Count;
+            for (int i = 0; i < sn; i++)
+            {
+                var (nodeA, amountA) = queue.Dequeue();
+                var newAmountA = amountA;
+                if (!visited[nodeA])
+                {
+                    newAmountA += nodeA == nodeB ? amount[nodeA] / 2 : amount[nodeA];
+                }
+
+                var added = false;
+                if (adj[nodeA] is not null)
+                {
+                    foreach (var nextA in adj[nodeA])
+                    {
+                        if (nextA != parent[nodeA])
+                        {
+                            added = true;
+                            queue.Enqueue((nextA, newAmountA));
+                        }
+                    }
+                }
+
+                if (!added)
+                {
+                    result = Math.Max(result, newAmountA);
+                }
+            }
+            visited[nodeB] = true;
+            nodeB = parent[nodeB];
+        }
+
+        return result;
+    }
+    #endregion
+
+    // 
+    #region
     #endregion
 
     // 
