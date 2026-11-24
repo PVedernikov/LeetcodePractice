@@ -2707,6 +2707,58 @@ public class LeetCodeGeneral
     }
     #endregion
 
+    // 1031. Maximum Sum of Two Non-Overlapping Subarrays
+    // Given an integer array nums and two integers firstLen and secondLen,
+    // return the maximum sum of elements in two non-overlapping subarrays with lengths firstLen and secondLen.
+    // The array with length firstLen could occur before or after the array with length secondLen, but they have to be non-overlapping.
+    // A subarray is a contiguous part of an array.
+    #region 1031. Maximum Sum of Two Non-Overlapping Subarrays
+    // TODO: not optimal
+    public int MaxSumTwoNoOverlap(int[] nums, int firstLen, int secondLen)
+    {
+        var n = nums.Length;
+        var queue1 = new List<(int l, int r, int sum)>();
+        var queue2 = new List<(int l, int r, int sum)>();
+        var l1 = 0;
+        var l2 = 0;
+        var sum1 = 0;
+        var sum2 = 0;
+        for (int r = 0; r < n; r++)
+        {
+            sum1 += nums[r];
+            sum2 += nums[r];
+
+            if (r - l1 + 1 == firstLen)
+            {
+                queue1.Add((l1, r, sum1));
+                sum1 -= nums[l1];
+                l1++;
+            }
+
+            if (r - l2 + 1 == secondLen)
+            {
+                queue2.Add((l2, r, sum2));
+                sum2 -= nums[l2];
+                l2++;
+            }
+        }
+
+        var result = -1;
+        foreach (var q1 in queue1)
+        {
+            foreach (var q2 in queue2)
+            {
+                if (q2.r < q1.l || q1.r < q2.l)
+                {
+                    result = Math.Max(result, q1.sum + q2.sum);
+                }
+            }
+        }
+
+        return result;
+    }
+    #endregion
+
     // 
     #region
     #endregion
